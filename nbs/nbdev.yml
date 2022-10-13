@@ -1,9 +1,0 @@
-project:
-  output-dir: _docs
-
-website:
-  title: "lovely"
-  site-url: "https://xl0.github.io/lovely"
-  description: "Lovely Tensors"
-  repo-branch: master
-  repo-url: "https://github.com/xl0/lovely"
