@@ -104,7 +104,7 @@ lt.lovely(numbers)
 Now the important queston - is it the Tenchman?
 
 ``` python
-lt.rgb(numbers)
+lt.show_rgb(numbers)
 ```
 
 ![](index_files/figure-gfm/cell-8-output-1.png)
@@ -113,7 +113,7 @@ lt.rgb(numbers)
 
 ``` python
 in_stats = { "mean": (0.485, 0.456, 0.406), "std": (0.229, 0.224, 0.225) }
-lt.rgb(numbers, in_stats)
+lt.show_rgb(numbers, in_stats)
 ```
 
 ![](index_files/figure-gfm/cell-9-output-1.png)
@@ -146,7 +146,15 @@ t.plain
      [-4.2255e-01, -4.9105e-01, -5.0818e-01, -5.5955e-01, -5.4243e-01, -5.0818e-01]]
 
 ``` python
-numbers.rgb(in_stats)
+numbers.rgb
 ```
 
 ![](index_files/figure-gfm/cell-13-output-1.png)
+
+``` python
+# The values are the same, but we de-norm before displaying.
+numbers.denorm=in_stats
+numbers.rgb
+```
+
+![](index_files/figure-gfm/cell-14-output-1.png)
