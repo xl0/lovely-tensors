@@ -49,9 +49,6 @@ What are the statistics?
 Are any of the values `nan` or `int`?  
 Is it an image of a man holding a tench?
 
-You can answer those questions with just a couple lines of code, but is
-there a better way?
-
 ``` python
 import lovely.tensors as lt
 ```
@@ -121,7 +118,7 @@ lt.rgb(numbers, in_stats)
 
 ![](index_files/figure-gfm/cell-9-output-1.png)
 
-There can be no doubt now.
+There can be no doubt.
 
 One last thing - let’s monkey-patch `torch.Tensor` for convenience.
 
