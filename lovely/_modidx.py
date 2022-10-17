@@ -10,9 +10,7 @@ d = { 'settings': { 'branch': 'master',
                                 'lovely.tensors.lovely': ('tensors.html#lovely', 'lovely/tensors.py'),
                                 'lovely.tensors.lovely_repr': ('tensors.html#lovely_repr', 'lovely/tensors.py'),
                                 'lovely.tensors.monkey_patch': ('tensors.html#monkey_patch', 'lovely/tensors.py'),
-                                'lovely.tensors.plain_tensor': ('tensors.html#plain_tensor', 'lovely/tensors.py'),
+                                'lovely.tensors.rgb': ('tensors.html#rgb', 'lovely/tensors.py'),
                                 'lovely.tensors.sci_mode': ('tensors.html#sci_mode', 'lovely/tensors.py'),
                                 'lovely.tensors.space_join': ('tensors.html#space_join', 'lovely/tensors.py'),
-                                'lovely.tensors.styled_tensor': ('tensors.html#styled_tensor', 'lovely/tensors.py'),
-                                'lovely.tensors.tensor_str': ('tensors.html#tensor_str', 'lovely/tensors.py'),
-                                'lovely.tensors.verbose_tensor': ('tensors.html#verbose_tensor', 'lovely/tensors.py')}}}
+                                'lovely.tensors.tensor_str': ('tensors.html#tensor_str', 'lovely/tensors.py')}}}
