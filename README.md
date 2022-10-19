@@ -56,17 +56,19 @@ import lovely_tensors.tensors as lt
 ```
 
 ``` python
-# A very short tensor
-print(lt.lovely(numbers.view(-1)[:2]))
+lt.lovely(numbers)
 ```
 
-    tensor[2] μ=-0.345 σ=0.012 x=[-0.354, -0.337]
+    'tensor[3, 196, 196] n=115248 x∈[-2.118, 2.640] μ=-0.388 σ=1.073 x=...'
 
 ``` python
+# A very short tensor - no min/max
+print(lt.lovely(numbers.view(-1)[:2]))
 # A slightly longer tensor
 print(lt.lovely(numbers.view(-1)[:6].view(2,3)))
 ```
 
+    tensor[2] μ=-0.345 σ=0.012 x=[-0.354, -0.337]
     tensor[2, 3] n=6 x∈[-0.440, -0.337] μ=-0.388 σ=0.038 x=[[-0.354, -0.337, -0.405], [-0.440, -0.388, -0.405]]
 
 ``` python
@@ -96,37 +98,30 @@ print(lt.lovely(torch.zeros(10, 10)))
     tensor[2, 6] n=12 x∈[-3.541e+03, -3.369e-05] μ=-393.776 σ=1.180e+03 +inf! -inf! nan! x=...
     tensor[10, 10] all_zeros 
 
-``` python
-# Too long to show values
-lt.lovely(numbers)
-```
-
-    'tensor[3, 196, 196] n=115248 x∈[-2.118, 2.640] μ=-0.388 σ=1.073 x=...'
-
-Now the important queston - is it the Tenchman?
+Now the important queston - is it our man?
 
 ``` python
 lt.show_rgb(numbers)
 ```
 
-![](index_files/figure-gfm/cell-9-output-1.png)
+![](index_files/figure-gfm/cell-8-output-1.png)
 
 *Maaaaybe?* Looks like someone normalized him.
 
 ``` python
-in_stats = { "mean": (0.485, 0.456, 0.406), "std": (0.229, 0.224, 0.225) }
+in_stats = { "mean": (0.485, 0.456, 0.406),
+             "std": (0.229, 0.224, 0.225) }
 lt.show_rgb(numbers, in_stats)
 ```
 
-![](index_files/figure-gfm/cell-10-output-1.png)
+![](index_files/figure-gfm/cell-9-output-1.png)
 
-There can be no doubt.
+There can be no doubt, it’s out hero the Tenchman!
 
 One last thing - let’s monkey-patch `torch.Tensor` for convenience.
 
 ``` python
 lt.monkey_patch()
-
 t
 ```
 
@@ -151,7 +146,7 @@ t.plain
 numbers.rgb
 ```
 
-![](index_files/figure-gfm/cell-14-output-1.png)
+![](index_files/figure-gfm/cell-13-output-1.png)
 
 ``` python
 # The values are the same, but we de-norm before displaying.
@@ -159,4 +154,4 @@ numbers.denorm=in_stats
 numbers.rgb
 ```
 
-![](index_files/figure-gfm/cell-15-output-1.png)
+![](index_files/figure-gfm/cell-14-output-1.png)
