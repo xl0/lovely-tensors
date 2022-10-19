@@ -11,6 +11,8 @@ pip install lovely-tensors
 
 ## How to use
 
+![jif](https://github.com/xl0/lovely-tensors/raw/master/demo.gif)
+
 How often do you find yourself debuggin a neural network? You dump a
 tensor to the cell output, and see this:
 
@@ -107,7 +109,7 @@ Now the important queston - is it the Tenchman?
 lt.show_rgb(numbers)
 ```
 
-![](index_files/figure-gfm/cell-8-output-1.png)
+![](index_files/figure-gfm/cell-9-output-1.png)
 
 *Maaaaybe?* Looks like someone normalized him.
 
@@ -116,7 +118,7 @@ in_stats = { "mean": (0.485, 0.456, 0.406), "std": (0.229, 0.224, 0.225) }
 lt.show_rgb(numbers, in_stats)
 ```
 
-![](index_files/figure-gfm/cell-9-output-1.png)
+![](index_files/figure-gfm/cell-10-output-1.png)
 
 There can be no doubt.
 
@@ -149,7 +151,7 @@ t.plain
 numbers.rgb
 ```
 
-![](index_files/figure-gfm/cell-13-output-1.png)
+![](index_files/figure-gfm/cell-14-output-1.png)
 
 ``` python
 # The values are the same, but we de-norm before displaying.
@@ -157,4 +159,4 @@ numbers.denorm=in_stats
 numbers.rgb
 ```
 
-![](index_files/figure-gfm/cell-14-output-1.png)
+![](index_files/figure-gfm/cell-15-output-1.png)
