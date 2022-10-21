@@ -11,7 +11,7 @@ pip install lovely-tensors
 
 ## How to use
 
-![jif](https://github.com/xl0/lovely-tensors/raw/master/demo.gif)
+![](https://github.com/xl0/lovely-tensors/raw/master/demo.gif)
 
 How often do you find yourself debuggin a neural network? You dump a
 tensor to the cell output, and see this:
@@ -20,29 +20,7 @@ tensor to the cell output, and see this:
 numbers
 ```
 
-    tensor([[[-0.3541, -0.3369, -0.4054,  ..., -0.5596, -0.4739,  2.2489],
-             [-0.4054, -0.4226, -0.4911,  ..., -0.9192, -0.8507,  2.1633],
-             [-0.4739, -0.4739, -0.5424,  ..., -1.0390, -1.0390,  2.1975],
-             ...,
-             [-0.9020, -0.8335, -0.9363,  ..., -1.4672, -1.2959,  2.2318],
-             [-0.8507, -0.7822, -0.9363,  ..., -1.6042, -1.5014,  2.1804],
-             [-0.8335, -0.8164, -0.9705,  ..., -1.6555, -1.5528,  2.1119]],
-
-            [[-0.1975, -0.1975, -0.3025,  ..., -0.4776, -0.3725,  2.4111],
-             [-0.2500, -0.2325, -0.3375,  ..., -0.7052, -0.6702,  2.3585],
-             [-0.3025, -0.2850, -0.3901,  ..., -0.7402, -0.8102,  2.3761],
-             ...,
-             [-0.4251, -0.2325, -0.3725,  ..., -1.0903, -1.0203,  2.4286],
-             [-0.3901, -0.2325, -0.4251,  ..., -1.2304, -1.2304,  2.4111],
-             [-0.4076, -0.2850, -0.4776,  ..., -1.2829, -1.2829,  2.3410]],
-
-            [[-0.6715, -0.9853, -0.8807,  ..., -0.9678, -0.6890,  2.3960],
-             [-0.7238, -1.0724, -0.9678,  ..., -1.2467, -1.0201,  2.3263],
-             [-0.8284, -1.1247, -1.0201,  ..., -1.2641, -1.1596,  2.3786],
-             ...,
-             [-1.2293, -1.4733, -1.3861,  ..., -1.5081, -1.2641,  2.5180],
-             [-1.1944, -1.4559, -1.4210,  ..., -1.6476, -1.4733,  2.4308],
-             [-1.2293, -1.5256, -1.5081,  ..., -1.6824, -1.5256,  2.3611]]])
+    tensor[3, 196, 196] n=115248 x∈[-2.118, 2.640] μ=-0.388 σ=1.073
 
 Was it really useful?
 
@@ -56,10 +34,8 @@ import lovely_tensors.tensors as lt
 ```
 
 ``` python
-lt.lovely(numbers)
+lt.PRINT_OPTS.color=True
 ```
-
-    'tensor[3, 196, 196] n=115248 x∈[-2.118, 2.640] μ=-0.388 σ=1.073 x=...'
 
 ``` python
 # A very short tensor - no min/max
@@ -70,6 +46,21 @@ print(lt.lovely(numbers.view(-1)[:6].view(2,3)))
 
     tensor[2] μ=-0.345 σ=0.012 x=[-0.354, -0.337]
     tensor[2, 3] n=6 x∈[-0.440, -0.337] μ=-0.388 σ=0.038 x=[[-0.354, -0.337, -0.405], [-0.440, -0.388, -0.405]]
+
+``` python
+lt.lovely(numbers)
+```
+
+    tensor[3, 196, 196] n=115248 x∈[-2.118, 2.640] μ=-0.388 σ=1.073
+
+``` python
+lt.lovely(numbers, depth=1)
+```
+
+    tensor[3, 196, 196] n=115248 x∈[-2.118, 2.640] μ=-0.388 σ=1.073
+      tensor[196, 196] n=38416 x∈[-2.118, 2.249] μ=-0.324 σ=1.036
+      tensor[196, 196] n=38416 x∈[-1.966, 2.429] μ=-0.274 σ=0.973
+      tensor[196, 196] n=38416 x∈[-1.804, 2.640] μ=-0.567 σ=1.178
 
 ``` python
 t = numbers.view(-1)[:12].clone()
@@ -91,30 +82,29 @@ print(lt.lovely(t))
 print(lt.lovely(torch.zeros(10, 10)))
 ```
 
-    tensor([[-3.5405e+03, -3.3693e-05,         inf,        -inf,         nan, -4.0543e-01],
-            [-4.2255e-01, -4.9105e-01, -5.0818e-01, -5.5955e-01, -5.4243e-01, -5.0818e-01]])
+    tensor[2, 6] n=12 x∈[-3.541e+03, -3.369e-05] μ=-393.776 σ=1.180e+03 +inf! -inf! nan!
 
 
-    tensor[2, 6] n=12 x∈[-3.541e+03, -3.369e-05] μ=-393.776 σ=1.180e+03 +inf! -inf! nan! x=...
-    tensor[10, 10] all_zeros 
+    tensor[2, 6] n=12 x∈[-3.541e+03, -3.369e-05] μ=-393.776 σ=1.180e+03 +inf! -inf! nan!
+    tensor[10, 10] all_zeros
 
 Now the important queston - is it our man?
 
 ``` python
-lt.show_rgb(numbers)
+lt.rgb(numbers)
 ```
 
-![](index_files/figure-gfm/cell-8-output-1.png)
+![](index_files/figure-gfm/cell-9-output-1.png)
 
 *Maaaaybe?* Looks like someone normalized him.
 
 ``` python
 in_stats = { "mean": (0.485, 0.456, 0.406),
              "std": (0.229, 0.224, 0.225) }
-lt.show_rgb(numbers, in_stats)
+lt.rgb(numbers, in_stats)
 ```
 
-![](index_files/figure-gfm/cell-9-output-1.png)
+![](index_files/figure-gfm/cell-10-output-1.png)
 
 There can be no doubt, it’s out hero the Tenchman!
 
@@ -125,7 +115,7 @@ lt.monkey_patch()
 t
 ```
 
-    tensor[2, 6] n=12 x∈[-3.541e+03, -3.369e-05] μ=-393.776 σ=1.180e+03 +inf! -inf! nan! x=...
+    tensor[2, 6] n=12 x∈[-3.541e+03, -3.369e-05] μ=-393.776 σ=1.180e+03 +inf! -inf! nan!
 
 ``` python
 t.verbose
@@ -144,14 +134,44 @@ t.plain
 
 ``` python
 numbers.rgb
-```
-
-![](index_files/figure-gfm/cell-13-output-1.png)
-
-``` python
-# The values are the same, but we de-norm before displaying.
-numbers.denorm=in_stats
-numbers.rgb
+# you can also do numbers.rgb()
 ```
 
 ![](index_files/figure-gfm/cell-14-output-1.png)
+
+``` python
+#per-channel stats
+numbers.deeper
+```
+
+    tensor[3, 196, 196] n=115248 x∈[-2.118, 2.640] μ=-0.388 σ=1.073
+      tensor[196, 196] n=38416 x∈[-2.118, 2.249] μ=-0.324 σ=1.036
+      tensor[196, 196] n=38416 x∈[-1.966, 2.429] μ=-0.274 σ=0.973
+      tensor[196, 196] n=38416 x∈[-1.804, 2.640] μ=-0.567 σ=1.178
+
+``` python
+# You can go even deeper if you want to
+dt = torch.randn(3, 3, 5)
+dt.deeper(2)
+```
+
+    tensor[3, 3, 5] n=45 x∈[-2.419, 2.111] μ=-0.039 σ=0.990
+      tensor[3, 5] n=15 x∈[-1.218, 1.495] μ=0.140 σ=0.774
+        tensor[5] x∈[-0.364, 0.450] μ=0.009 σ=0.378 x=[0.377, 0.450, -0.364, -0.150, -0.269]
+        tensor[5] x∈[-0.870, 1.495] μ=0.286 σ=1.022 x=[1.160, -0.482, 0.125, -0.870, 1.495]
+        tensor[5] x∈[-1.218, 1.228] μ=0.124 σ=0.928 x=[1.228, -0.300, 0.353, 0.559, -1.218]
+      tensor[3, 5] n=15 x∈[-2.419, 1.800] μ=-0.156 σ=1.244
+        tensor[5] x∈[-0.619, 1.252] μ=0.268 σ=0.710 x=[-0.619, 1.252, -0.122, 0.593, 0.237]
+        tensor[5] x∈[-2.419, 1.320] μ=-0.472 σ=1.550 x=[-2.419, -1.113, -1.043, 1.320, 0.896]
+        tensor[5] x∈[-1.786, 1.800] μ=-0.263 σ=1.465 x=[0.280, -1.555, -1.786, -0.056, 1.800]
+      tensor[3, 5] n=15 x∈[-1.121, 2.111] μ=-0.102 σ=0.938
+        tensor[5] x∈[-0.915, 2.111] μ=0.337 σ=1.152 x=[0.721, -0.248, 0.015, 2.111, -0.915]
+        tensor[5] x∈[-1.121, 0.433] μ=-0.489 σ=0.657 x=[-0.781, 0.433, -0.931, -0.048, -1.121]
+        tensor[5] x∈[-0.936, 1.163] μ=-0.154 σ=0.942 x=[0.525, -0.721, 1.163, -0.801, -0.936]
+
+``` python
+# A quick de-norm. Don't worry, the data stays the same.
+numbers.rgb(in_stats)
+```
+
+![](index_files/figure-gfm/cell-17-output-1.png)
