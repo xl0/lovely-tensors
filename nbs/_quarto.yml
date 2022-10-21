@@ -15,6 +15,9 @@ website:
   navbar:
     background: primary
     search: true
+    right:
+      - icon: github
+        href: "http://github.com/xl0/lovely-tensors/"
   sidebar:
     style: floating
 
