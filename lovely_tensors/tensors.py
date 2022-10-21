@@ -7,7 +7,6 @@ __all__ = ['PRINT_OPTS', 'tensor_str', 'lovely', 'rgb', 'monkey_patch']
 from nbdev.showdoc import *
 from typing import Optional
 
-from click import style
 from PIL import Image
 import torch
 
@@ -79,8 +78,9 @@ class LovelyProxy():
             return torch._tensor_str._tensor_str(t, indent=0)
 
         
-        gray_style = (127, 127, 127) if PRINT_OPTS.color else None
-        red_stype = "red" if PRINT_OPTS else None
+        grey_style = "\x1b[38;2;127;127;127m" if PRINT_OPTS.color else ""
+        red_style = "\x1b[31m" if PRINT_OPTS.color else ""
+        end_style = "\x1b[0m" if PRINT_OPTS.color else ""
 
         tname = "tensor" if type(t) in [torch.Tensor, torch.nn.Parameter] else type(t).__name__
 
@@ -90,10 +90,10 @@ class LovelyProxy():
 
         shape = str(list(t.shape))
 
-        zeros = style("all_zeros", gray_style) if not t.count_nonzero() else None
-        pinf = style("+inf!", red_stype) if t.isposinf().any() else None
-        ninf = style("-inf!", red_stype) if t.isneginf().any() else None
-        nan = style("nan!", red_stype) if t.isnan().any() else None
+        zeros = grey_style+"all_zeros"+end_style if not t.count_nonzero() else None
+        pinf = red_style+"+inf!"+end_style if t.isposinf().any() else None
+        ninf = red_style+"-inf!"+end_style if t.isneginf().any() else None
+        nan = red_style+"nan!"+end_style if t.isnan().any() else None
 
         # zeros = "all_zeros" if not t.count_nonzero() else None
         # pinf = "+inf!" if t.isposinf().any() else None
