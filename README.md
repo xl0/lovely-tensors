@@ -93,22 +93,23 @@ t[2] = float('inf')
 t[3] = float('-inf')
 t[4] = float('nan')
 t = t.reshape((2,6))
-
-print(t)
-print("\n")
-
-# A spicy tensor
-print(lt.lovely(t))
-
-# A zero tensor
-print(lt.lovely(torch.zeros(10, 10)))
 ```
 
     tensor([[-3.5405e+03, -3.3693e-05,         inf,        -inf,         nan, -4.0543e-01],
             [-4.2255e-01, -4.9105e-01, -5.0818e-01, -5.5955e-01, -5.4243e-01, -5.0818e-01]])
 
+``` python
+# A spicy tensor
+lt.lovely(t)
+```
 
     tensor[2, 6] n=12 x∈[-3.541e+03, -3.369e-05] μ=-393.776 σ=1.180e+03 +inf! -inf! nan!
+
+``` python
+# A zero tensor
+lt.lovely(torch.zeros(10, 10))
+```
+
     tensor[10, 10] all_zeros
 
 Now the important queston - is it our man?
@@ -117,7 +118,7 @@ Now the important queston - is it our man?
 lt.rgb(numbers)
 ```
 
-![](index_files/figure-gfm/cell-9-output-1.png)
+![](index_files/figure-gfm/cell-11-output-1.png)
 
 *Maaaaybe?* Looks like someone normalized him.
 
@@ -127,7 +128,7 @@ in_stats = { "mean": (0.485, 0.456, 0.406),
 lt.rgb(numbers, in_stats)
 ```
 
-![](index_files/figure-gfm/cell-10-output-1.png)
+![](index_files/figure-gfm/cell-12-output-1.png)
 
 There can be no doubt, it’s out hero the Tenchman!
 
@@ -160,7 +161,7 @@ numbers.rgb
 # you can also do numbers.rgb()
 ```
 
-![](index_files/figure-gfm/cell-14-output-1.png)
+![](index_files/figure-gfm/cell-16-output-1.png)
 
 ``` python
 #per-channel stats
@@ -178,23 +179,23 @@ dt = torch.randn(3, 3, 5)
 dt.deeper(2)
 ```
 
-    tensor[3, 3, 5] n=45 x∈[-1.755, 2.311] μ=0.021 σ=1.010
-      tensor[3, 5] n=15 x∈[-1.527, 1.774] μ=0.107 σ=1.073
-        tensor[5] x∈[-0.476, 1.228] μ=0.083 σ=0.732 x=[0.406, -0.349, -0.393, 1.228, -0.476]
-        tensor[5] x∈[-1.527, 0.684] μ=-0.639 σ=0.998 x=[0.168, -1.527, -1.161, -1.358, 0.684]
-        tensor[5] x∈[-0.768, 1.774] μ=0.875 σ=1.033 x=[1.774, 1.089, -0.768, 1.676, 0.605]
-      tensor[3, 5] n=15 x∈[-1.700, 0.939] μ=-0.005 σ=0.768
-        tensor[5] x∈[-0.077, 0.939] μ=0.364 σ=0.425 x=[-0.033, 0.441, 0.549, -0.077, 0.939]
-        tensor[5] x∈[-0.446, 0.805] μ=0.147 σ=0.489 x=[0.042, -0.114, 0.805, 0.450, -0.446]
-        tensor[5] x∈[-1.700, 0.581] μ=-0.525 σ=1.052 x=[0.382, -0.372, -1.514, 0.581, -1.700]
-      tensor[3, 5] n=15 x∈[-1.755, 2.311] μ=-0.039 σ=1.205
-        tensor[5] x∈[-1.755, 1.243] μ=-0.691 σ=1.331 x=[-1.604, 1.243, -1.755, 0.162, -1.502]
-        tensor[5] x∈[-1.310, 0.669] μ=-0.245 σ=0.717 x=[-1.310, 0.669, -0.130, -0.417, -0.037]
-        tensor[5] x∈[-0.630, 2.311] μ=0.820 σ=1.134 x=[2.311, 0.784, 0.181, 1.457, -0.630]
+    tensor[3, 3, 5] n=45 x∈[-1.398, 3.680] μ=0.312 σ=1.020
+      tensor[3, 5] n=15 x∈[-1.198, 3.680] μ=0.289 σ=1.199
+        tensor[5] x∈[-1.198, 3.680] μ=0.702 σ=1.804 x=[3.680, 0.083, 0.621, 0.322, -1.198]
+        tensor[5] x∈[-1.122, 0.467] μ=-0.426 σ=0.739 x=[-1.122, 0.255, -1.029, -0.699, 0.467]
+        tensor[5] x∈[-0.206, 1.124] μ=0.592 σ=0.512 x=[0.678, 1.124, 0.913, -0.206, 0.451]
+      tensor[3, 5] n=15 x∈[-1.398, 1.547] μ=0.207 σ=0.859
+        tensor[5] x∈[-0.300, 1.252] μ=0.407 σ=0.597 x=[0.558, 1.252, -0.006, 0.532, -0.300]
+        tensor[5] x∈[-0.378, 1.547] μ=0.642 σ=0.900 x=[-0.378, 1.547, -0.252, 1.332, 0.964]
+        tensor[5] x∈[-1.398, 0.654] μ=-0.428 σ=0.791 x=[0.021, -0.833, 0.654, -1.398, -0.583]
+      tensor[3, 5] n=15 x∈[-0.969, 2.827] μ=0.440 σ=1.033
+        tensor[5] x∈[-0.744, 1.555] μ=0.373 σ=0.820 x=[0.222, 1.555, -0.744, 0.326, 0.507]
+        tensor[5] x∈[-0.441, 2.827] μ=1.072 σ=1.291 x=[0.428, 2.827, -0.441, 1.905, 0.641]
+        tensor[5] x∈[-0.969, 0.825] μ=-0.124 σ=0.704 x=[-0.218, -0.553, -0.969, 0.297, 0.825]
 
 ``` python
 # A quick de-norm. Don't worry, the data stays the same.
 numbers.rgb(in_stats)
 ```
 
-![](index_files/figure-gfm/cell-17-output-1.png)
+![](index_files/figure-gfm/cell-19-output-1.png)

@@ -102,7 +102,8 @@ class LovelyProxy():
 
         attention = space_join([zeros,pinf,ninf,nan])
 
-        x = summary = ""
+        x = ""
+        summary = f"n={t.numel()}" if t.numel() > 5 else None
         if not zeros:
             if t.numel() <= 10: x = " x=" + tensor_str(t)
 
