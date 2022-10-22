@@ -152,7 +152,7 @@ class LovelyProxy():
 def lovely(t: torch.Tensor, verbose=False, plain=False, depth=0):
     return LovelyProxy(t, verbose=verbose, plain=plain, depth=depth)
 
-# %% ../nbs/00_tensors.ipynb 32
+# %% ../nbs/00_tensors.ipynb 31
 # This is here for the monkey-patched tensor use case.
 
 # I want to be able to call both `tensor.rgb` and `tensor.rgb(stats)`. For the
@@ -171,21 +171,21 @@ class ProxyImage(Image.Image):
 
     @torch.no_grad()
     def __call__(self, denorm=None):            
-        means = torch.tensor(denorm["mean"] if denorm else (0., 0., 0.,))
-        stds = torch.tensor(denorm["std"] if denorm else (1., 1., 1.,))
-        return Image.fromarray((self.t*stds+means).mul(255).byte().numpy())
+        means = torch.tensor(denorm["mean"] if denorm else (0., 0., 0.,), device=self.t.device)
+        stds = torch.tensor(denorm["std"] if denorm else (1., 1., 1.,), device=self.t.device)
+        return Image.fromarray((self.t*stds+means).mul(255).byte().cpu().numpy())
 
     @torch.no_grad()
     def _repr_png_(self):
         "Jupyter PNG representation"
-        return Image.fromarray(self.t.mul(255).byte().numpy())._repr_png_()
+        return Image.fromarray(self.t.mul(255).byte().cpu().numpy())._repr_png_()
 
 
-# %% ../nbs/00_tensors.ipynb 33
+# %% ../nbs/00_tensors.ipynb 32
 def rgb(t: torch.Tensor, denorm=None):
     return ProxyImage(t)(denorm)
 
-# %% ../nbs/00_tensors.ipynb 36
+# %% ../nbs/00_tensors.ipynb 35
 def monkey_patch(cls=torch.Tensor):
     "Monkey-patch lovely features into `cls`" 
 
