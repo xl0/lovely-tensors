@@ -175,10 +175,10 @@ class PlotProxy():
 
     def __call__(self, center="zero", fmt="svg", ax=None):
         if ax:
-            _plot(self.t, center=self.center, ax=ax)
+            _plot(self.t, center=center, ax=ax)
             return ax
 
-        return PlotProxy(self.t, center=self.center, fmt=fmt)
+        return PlotProxy(self.t, center=center, fmt=fmt)
 
     # Do an explicit print_figure instead of relying on IPythons repr formatter
     # for pyplot.Figure. Mainly for speed.
