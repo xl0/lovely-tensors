@@ -67,7 +67,7 @@ class StrProxy():
     @torch.no_grad()
     def to_str(self):
         t = self.t
-        if self.plain:
+        if self.plain or t.is_complex():
             return torch._tensor_str._tensor_str(t, indent=0)
 
         color = PRINT_OPTS.color if self.color is None else self.color
