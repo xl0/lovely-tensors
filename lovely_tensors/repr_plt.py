@@ -165,7 +165,7 @@ def _plot(t: torch.Tensor, center="zero", max_s=100000, ax=None):
 class PlotProxy(): 
     """Flexible `PIL.Image.Image` wrapper"""
     @torch.no_grad()
-    def __init__(self, t:torch.Tensor, center="zero", max_s=10000, fmt="svg"):
+    def __init__(self, t:torch.Tensor, center="zero", max_s=10000, fmt="png"):
         self.t = t
         self.center = center
         self.fmt = fmt
@@ -200,5 +200,5 @@ class PlotProxy():
 
 
 # %% ../nbs/02_repr_plt.ipynb 8
-def plot(t: torch.Tensor, center="zero", max_s=10000, fmt="svg", ax=None):
+def plot(t: torch.Tensor, center="zero", max_s=10000, fmt="png", ax=None):
     return PlotProxy(t=t, center=center, max_s=max_s, fmt=fmt)(ax=ax)

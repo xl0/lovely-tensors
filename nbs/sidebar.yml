@@ -5,4 +5,8 @@ website:
       - 00_repr_str.ipynb
       - 01_repr_rgb.ipynb
       - 02_repr_plt.ipynb
+      - 05_repr_chans.ipynb
       - 10_patch.ipynb
+      - colormap.ipynb
+      - pad.ipynb
+      - tile2d.ipynb

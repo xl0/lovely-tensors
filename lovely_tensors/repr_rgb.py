@@ -14,29 +14,34 @@ import torch
 # first case, the class defines `_repr_png_` to send the image to Jupyter. For
 # the later case, it defines __call__, which accps the argument.
 
-class ImageProxy(Image.Image):
+class RGBProxy():
     """Flexible `PIL.Image.Image` wrapper"""
     @torch.no_grad()
     def __init__(self, t:torch.Tensor):
         super().__init__()
-        self.t = t.detach().permute(1, 2, 0)
-        
-        # Mode and size - to be used by super().__repr__()
-        self.mode = "RGB"
-        self._size = tuple(t.shape[1:])
+        assert t.dim() == 3, f"Expecting a 3-dim tensor, got {t.shape}={t.dim()}"
+        self.t = t
 
     @torch.no_grad()
-    def __call__(self, denorm=None):            
-        means = torch.tensor(denorm["mean"] if denorm else (0., 0., 0.,), device=self.t.device)
-        stds = torch.tensor(denorm["std"] if denorm else (1., 1., 1.,), device=self.t.device)
-        return Image.fromarray((self.t*stds+means).mul(255).byte().cpu().numpy())
+    def __call__(self, denorm=None, cl=False):
+        t = self.t.permute(1, 2, 0) if not cl else self.t
+        
+        n_ch = t.shape[-1]
+        assert n_ch in (3, 4), f"Expecting 3 (RGB) or 4 (RGBA) channels, got {n_ch}" 
+        if denorm:            
+            means = torch.tensor(denorm["mean"], device=t.device)
+            stds = torch.tensor(denorm["std"], device=t.device)
+            t = t.mul(stds).add(means)
+        return Image.fromarray(t.mul(255).byte().cpu().numpy())
 
+    
     @torch.no_grad()
     def _repr_png_(self):
-        "Jupyter PNG representation"
-        return Image.fromarray(self.t.mul(255).byte().cpu().numpy())._repr_png_()
+        return self.__call__()._repr_png_()
 
 
 # %% ../nbs/01_repr_rgb.ipynb 5
-def rgb(t: torch.Tensor, denorm=None):
-    return ImageProxy(t)(denorm)
+def rgb(t: torch.Tensor, # Tensor to display
+            denorm=None, # Reverse per-channel normalizatoin applied to the tensor
+            cl=False):   # Channel-last
+    return RGBProxy(t)(denorm, cl=cl)

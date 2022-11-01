@@ -9,8 +9,9 @@ from fastcore.foundation import patch_to
 import matplotlib.pyplot as plt
 
 from .repr_str import StrProxy
-from .repr_rgb import ImageProxy
+from .repr_rgb import RGBProxy
 from .repr_plt import PlotProxy
+from .repr_chans import ChanProxy
 
 # %% ../nbs/10_patch.ipynb 4
 def monkey_patch(cls=torch.Tensor):
@@ -36,7 +37,11 @@ def monkey_patch(cls=torch.Tensor):
 
     @patch_to(cls, as_prop=True)
     def rgb(t: torch.Tensor):
-        return ImageProxy(t)
+        return RGBProxy(t)
+    
+    @patch_to(cls, as_prop=True)
+    def chans(t: torch.Tensor):
+        return ChanProxy(t)
 
     @patch_to(cls, as_prop=True)
     def plt(t: torch.Tensor):
