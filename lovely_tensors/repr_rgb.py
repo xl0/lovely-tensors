@@ -20,20 +20,18 @@ class RGBProxy():
     def __init__(self, t:torch.Tensor):
         super().__init__()
         assert t.dim() == 3, f"Expecting a 3-dim tensor, got {t.shape}={t.dim()}"
-        self.t = t
+        self.t = t.detach().cpu()
 
     @torch.no_grad()
     def __call__(self, denorm=None, cl=False):
         t = self.t.permute(1, 2, 0) if not cl else self.t
-        
         n_ch = t.shape[-1]
         assert n_ch in (3, 4), f"Expecting 3 (RGB) or 4 (RGBA) channels, got {n_ch}" 
-        if denorm:            
-            means = torch.tensor(denorm["mean"], device=t.device)
-            stds = torch.tensor(denorm["std"], device=t.device)
+        if denorm:
+            means = torch.tensor(denorm[0])
+            stds = torch.tensor(denorm[1])
             t = t.mul(stds).add(means)
-        return Image.fromarray(t.mul(255).byte().cpu().numpy())
-
+        return Image.fromarray(t.mul(255).byte().numpy())
     
     @torch.no_grad()
     def _repr_png_(self):
@@ -44,4 +42,4 @@ class RGBProxy():
 def rgb(t: torch.Tensor, # Tensor to display
             denorm=None, # Reverse per-channel normalizatoin applied to the tensor
             cl=False):   # Channel-last
-    return RGBProxy(t)(denorm, cl=cl)
+    return RGBProxy(t)(denorm, cl=cl) 
