@@ -89,10 +89,10 @@ class StrProxy():
         dtype = dtnames[t.dtype] if t.dtype in dtnames else str(t.dtype)[6:]
 
 
-        grad_fn = "grad_fn" if t.grad_fn else None
+        grad_fn = t.grad_fn.name() if t.grad_fn else None
         # All tensors along the compute path actually have required_grad=True.
         # Torch __repr__ just dones not show it.
-        grad = "grad" if t.requires_grad and not t.grad_fn else None
+        grad = "grad" if t.requires_grad else None
 
         shape = str(list(t.shape))
 
