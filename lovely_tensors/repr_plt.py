@@ -38,12 +38,13 @@ def normal_pdf( x: torch.Tensor,
 
 # %% ../nbs/02_repr_plt.ipynb 6
 @torch.no_grad()
-def _plot(t: torch.Tensor, center="zero", max_s=100000, ax=None):
+def _plot(t: torch.Tensor, center="zero", max_s=100000, plt0=True, ax=None):
     """Plot tensor statistics"""
 
     assert center in ["zero", "mean", "range"]
 
-    t_str = str(lovely(t, color=False))
+    orig_str = str(lovely(t, color=False))
+    orig_numel = t.numel()
 
     # Same as in `lovely()`, we have to move it to cpu before good-value indexing.
     cput = t.detach().cpu()
@@ -53,7 +54,13 @@ def _plot(t: torch.Tensor, center="zero", max_s=100000, ax=None):
     # `t`` may have nasty things like 'nan' and 'inf'. Could also be of non-float type.
     t = t[ torch.isfinite(t) ].float()
 
+    
     t_min, t_max = t.min().item(), t.max().item()
+
+    # Sometimes we don't want count zeros in the histogram.
+    # Think activations after ReLU where half the values are 0.
+    if not plt0: t = t[t != 0.]
+
     t_mean, t_std = t.mean().item(), t.std().item()
     
     # `t` might be not on CPU. `t` also might be pretty large. If the tensor is large,
@@ -63,10 +70,16 @@ def _plot(t: torch.Tensor, center="zero", max_s=100000, ax=None):
         # For efficieny reasons, we have to sample with replacement.
         idxs = torch.randint(low=0, high=t.numel(), size=(max_s,), device=t.device)
         t = t.flatten()[idxs]
-        t_str = f"{max_s} samples of " + t_str
 
     if t.numel() < 10:
         return
+   
+    t_str = ""
+    if t.numel() != orig_numel:
+        t_str += str(t.numel()) 
+        if not plt0: t_str += " non-zero"
+        t_str += f" samples (μ={pretty_str(t_mean)}, σ={pretty_str(t_std)}) of "
+    t_str += orig_str
 
     fig = None
     if not ax:
@@ -165,24 +178,25 @@ def _plot(t: torch.Tensor, center="zero", max_s=100000, ax=None):
 class PlotProxy(): 
     """Flexible `PIL.Image.Image` wrapper"""
     @torch.no_grad()
-    def __init__(self, t:torch.Tensor, center="zero", max_s=10000, fmt="png"):
+    def __init__(self, t:torch.Tensor, center="zero", max_s=10000, plt0=True, fmt="png"):
         self.t = t
         self.center = center
         self.fmt = fmt
         self.max_s = max_s
-        
+        self.plt0 = plt0
         assert fmt in ["png", "svg"]
         assert center in ["zero", "mean", "range"]
 
-    def __call__(self, center=None, max_s=None, fmt=None, ax=None):
+    def __call__(self, center=None, max_s=None, plt0=None, fmt=None, ax=None):
         center = center or self.center
         fmt = fmt or self.fmt
         max_s = max_s or self.max_s
+        if plt0 is None: plt0 = self.plt0
         if ax:
-            _plot(self.t, center=center, max_s=max_s, ax=ax)
+            _plot(self.t, center=center, max_s=max_s, plt0=plt0, ax=ax)
             return ax
 
-        return PlotProxy(self.t, center=center, max_s=max_s, fmt=fmt)
+        return PlotProxy(self.t, center=center, max_s=max_s, plt0=plt0, fmt=fmt)
 
     # Do an explicit print_figure instead of relying on IPythons repr formatter
     # for pyplot.Figure. Mainly for speed.
@@ -192,13 +206,13 @@ class PlotProxy():
     # one format instead.
     def _repr_svg_(self):
         if self.fmt == "svg":
-            return print_figure(_plot(self.t, center=self.center, max_s=self.max_s), fmt="svg")
+            return print_figure(_plot(self.t, center=self.center, max_s=self.max_s, plt0=self.plt0), fmt="svg")
 
     def _repr_png_(self):
         if self.fmt == "png":
-            return print_figure(_plot(self.t, center=self.center, max_s=self.max_s), fmt="png")
+            return print_figure(_plot(self.t, center=self.center, max_s=self.max_s, plt0=self.plt0), fmt="png")
 
 
 # %% ../nbs/02_repr_plt.ipynb 8
-def plot(t: torch.Tensor, center="zero", max_s=10000, fmt="png", ax=None):
-    return PlotProxy(t=t, center=center, max_s=max_s, fmt=fmt)(ax=ax)
+def plot(t: torch.Tensor, center="zero", max_s=10000, plt0=True, fmt="png", ax=None):
+    return PlotProxy(t=t, fmt=fmt)(center=center, max_s=max_s, plt0=plt0, ax=ax)
