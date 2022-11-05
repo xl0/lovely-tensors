@@ -32,7 +32,6 @@ def _chans(t: torch.Tensor, # 2 or 3-dim tensor to view. Channel-first if 3d.
     assert t.dim() in (2, 3), f"Expected a 2 or 3-dim input, got {t.shape}={t.dim()}"
     if t.dim() == 2: t = t.expand(0)
     
-    
     ### XXX Do we want a way to pass a custom cmap instead of mpl one?
     tcmap = TorchCmap(cmap=colormaps[cmap],
                   below=cm_below, above=cm_above,

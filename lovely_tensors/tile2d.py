@@ -54,7 +54,7 @@ def tile_images(t:torch.Tensor, # Tensor containing images, 4-dim, ch-last
     n_channels = t.shape[-1]
     xy_shape = t.shape[1:3]
 
-    n_rows, n_cols = fit_columns(t)
+    n_rows, n_cols = fit_columns(t, view_width=view_width)
 
     
     # We need to form the images inro a rectangular area. For this, we might

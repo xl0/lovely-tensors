@@ -37,7 +37,9 @@ class TorchCmap():
         # For +/- inf, use above/below as defaults.
         tensor_cmap_ninf = torch.tensor(to_rgba(ninf)) if ninf else lut[256]
         tensor_cmap_pinf = torch.tensor(to_rgba(pinf)) if pinf else lut[257]
-        self.lut = torch.cat([ lut, tensor_cmap_ninf[None], tensor_cmap_pinf[None] ])
+
+        # Remove the alpha channel, it causes probems in pad_frame_gutters().
+        self.lut = torch.cat([ lut, tensor_cmap_ninf[None], tensor_cmap_pinf[None] ])[:,:3] 
 
     def __call__(self, t: torch.Tensor):
         lut_idxs = t.mul(255).byte().long()
@@ -50,4 +52,4 @@ class TorchCmap():
         lut_idxs[ t.isposinf() ] = 260
         
 #         return embedding(lut_idxs, self.lut.to(t.device)) # RGBA added as color-last.
-        return embedding(lut_idxs, self.lut.to(t.device))[:3] # Return RGB to work around an issue in pad_frame
+        return embedding(lut_idxs, self.lut.to(t.device)) # Return RGB to work around an issue in pad_frame
