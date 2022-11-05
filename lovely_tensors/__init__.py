@@ -1,4 +1,4 @@
-__version__ = "0.0.9"
+__version__ = "0.1.0"
 
 from lovely_tensors.repr_str import *
 from lovely_tensors.repr_rgb import *
