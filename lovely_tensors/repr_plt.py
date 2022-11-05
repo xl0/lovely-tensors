@@ -60,8 +60,6 @@ def _plot(t: torch.Tensor, center="zero", max_s=100000, plt0=True, ax=None):
     # Sometimes we don't want count zeros in the histogram.
     # Think activations after ReLU where half the values are 0.
     if not plt0: t = t[t != 0.]
-
-    t_mean, t_std = t.mean().item(), t.std().item()
     
     # `t` might be not on CPU. `t` also might be pretty large. If the tensor is large,
     # randomly sample up to `limit` before moving it to cpu. Here sampling does
@@ -70,6 +68,10 @@ def _plot(t: torch.Tensor, center="zero", max_s=100000, plt0=True, ax=None):
         # For efficieny reasons, we have to sample with replacement.
         idxs = torch.randint(low=0, high=t.numel(), size=(max_s,), device=t.device)
         t = t.flatten()[idxs]
+
+
+    t_mean, t_std = t.mean().item(), t.std().item()
+
 
     if t.numel() < 10:
         return

@@ -44,7 +44,7 @@ numbers
              [-1.1944, -1.4559, -1.4210,  ..., -1.6476, -1.4733,  2.4308],
              [-1.2293, -1.5256, -1.5081,  ..., -1.6824, -1.5256,  2.3611]]])
 
-Was it really useful for me, as a human, to see all these numbers?
+Was it really useful for you, as a human, to see all these numbers?
 
 What is the shape?  
 What are the statistics?  
@@ -105,7 +105,7 @@ spicy.verbose
      [-4.2255e-01, -4.9105e-01, -5.0818e-01, -5.5955e-01, -5.4243e-01, -5.0818e-01]]
 
 ``` python
-spicy.plain # The old way
+spicy.plain # The plain old way
 ```
 
     [[-3.5405e+03, -3.3693e-05,         inf,        -inf,         nan, -4.0543e-01],
