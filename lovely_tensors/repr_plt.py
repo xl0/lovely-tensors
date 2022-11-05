@@ -214,5 +214,10 @@ class PlotProxy():
 
 
 # %% ../nbs/02_repr_plt.ipynb 8
-def plot(t: torch.Tensor, center="zero", max_s=10000, plt0=True, fmt="png", ax=None):
+def plot(t: torch.Tensor, # Tensor to explore
+    center="zero",        # Center plot on  `zero`, `mean`, or `range`
+    max_s=10000,          # Draw up to this many samples.
+    plt0=True,            # Take zero values into account
+    fmt="png",            # Render figure in this format (`png`, `svg`)
+    ax=None):             # Optionally supply your own matplotlib axes.
     return PlotProxy(t=t, fmt=fmt)(center=center, max_s=max_s, plt0=plt0, ax=ax)

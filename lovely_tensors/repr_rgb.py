@@ -39,7 +39,7 @@ class RGBProxy():
 
 
 # %% ../nbs/01_repr_rgb.ipynb 5
-def rgb(t: torch.Tensor, # Tensor to display
-            denorm=None, # Reverse per-channel normalizatoin applied to the tensor
+def rgb(t: torch.Tensor, # Tensor to display. [C,H,W] or [H,W,C]
+            denorm=None, # Reverse per-channel normalizatoin
             cl=False):   # Channel-last
     return RGBProxy(t)(denorm, cl=cl) 

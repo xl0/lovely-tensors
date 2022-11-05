@@ -16,9 +16,11 @@ class __PrinterOptions(object):
     indent: int = 2 # Indent for .deeper()
     color: bool = True
 
+PRINT_OPTS = __PrinterOptions()
 
 # %% ../nbs/00_repr_str.ipynb 5
-PRINT_OPTS = __PrinterOptions()
+# |export
+
 
 # %% ../nbs/00_repr_str.ipynb 6
 # Do we want this float in decimal or scientific mode?
@@ -30,7 +32,7 @@ def sci_mode(f: float):
 # Convert a tensor or scalar into a string.
 # This only looks good for small tensors, which is how it's intended to be used.
 def pretty_str(t: Union[torch.Tensor, float, int]):
-    """A slightly better way to print `floaty` values"""
+    """A slightly better way to print `float`-y values"""
 
     if isinstance(t, int):
         return '{}'.format(t)
@@ -155,5 +157,9 @@ class StrProxy():
         return StrProxy(self.t, depth=depth)
 
 # %% ../nbs/00_repr_str.ipynb 18
-def lovely(t: torch.Tensor, verbose=False, plain=False, depth=0, color=None):
+def lovely(t: torch.Tensor, # Tensor of interest
+            verbose=False,  # Whether to show the full tensor
+            plain=False,    # Just print if exactly as before
+            depth=0,        # Show stats in depth
+            color=None):    # Force color (True/False) or auto.
     return StrProxy(t, verbose=verbose, plain=plain, depth=depth, color=color)

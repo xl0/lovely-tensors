@@ -5,14 +5,13 @@ __all__ = ['chans']
 
 # %% ../nbs/05_repr_chans.ipynb 4
 from matplotlib import colormaps
-from matplotlib.colors import to_rgba, ListedColormap
 import torch
 
 # %% ../nbs/05_repr_chans.ipynb 5
 from .repr_rgb import RGBProxy
-from .colormap import TorchCmap
-from .pad import pad_frame_gutters
-from .tile2d import tile_images
+from .utils.colormap import TorchCmap
+from .utils.pad import pad_frame_gutters
+from .utils.tile2d import tile_images
 
 # %% ../nbs/05_repr_chans.ipynb 6
 def _chans(t: torch.Tensor, # 2 or 3-dim tensor to view. Channel-first if 3d.
@@ -76,10 +75,12 @@ class ChanProxy():
 # %% ../nbs/05_repr_chans.ipynb 8
 def chans(t: torch.Tensor, # 2 or 3-dim tensor to view. Channel-first if 3d.
              cmap = "coolwarm", # Use matplotlib colormap by this name
-             cm_below="blue", cm_above="red",
-             cm_ninf="cyan", cm_pinf="fuchsia",
-             cm_nan="yellow",
-             view_width=966,
+             cm_below="blue",   # Color for values below 0
+             cm_above="red",    # Color for values above 1
+             cm_ninf="cyan",    # Color for -inf values
+             cm_pinf="fuchsia", # Color for +inf values
+             cm_nan="yellow",   # Color for NaN values
+             view_width=966,    # Try to produce an image at most this wide
              pad_frac=0.05,   # Draw write gutters when tiling the images
              frame_px=1):     # Draw black frame around each image
     
