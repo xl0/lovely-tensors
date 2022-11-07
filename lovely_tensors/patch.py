@@ -21,14 +21,14 @@ def monkey_patch(cls=torch.Tensor):
     def __repr__(self: torch.Tensor, *, tensor_contents=None):        
         return str(StrProxy(self))
 
-    # Keep an esiy way to get the standard behavior.
+    # Plain - the old behavior
     @patch_to(cls, as_prop=True)
-    def plain(self: torch.Tensor, *, tensor_contents=None):
+    def p(self: torch.Tensor, *, tensor_contents=None):
         return StrProxy(self, plain=True)
 
-    # And a verbose option for a good measure.
+    # Verbose - print both stats and plain values
     @patch_to(cls, as_prop=True)
-    def verbose(self: torch.Tensor, *, tensor_contents=None):
+    def v(self: torch.Tensor, *, tensor_contents=None):
         return StrProxy(self, verbose=True)
 
     @patch_to(cls, as_prop=True)
