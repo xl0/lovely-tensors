@@ -17,6 +17,10 @@ from .repr_chans import ChanProxy
 def monkey_patch(cls=torch.Tensor):
     "Monkey-patch lovely features into `cls`" 
 
+    if not hasattr(cls, '_plain_repr'):
+        cls._plain_repr = cls.__repr__
+        cls._plain_str = cls.__str__
+
     @patch_to(cls)
     def __repr__(self: torch.Tensor, *, tensor_contents=None):        
         return str(StrProxy(self))
@@ -31,18 +35,22 @@ def monkey_patch(cls=torch.Tensor):
     def v(self: torch.Tensor, *, tensor_contents=None):
         return StrProxy(self, verbose=True)
 
+    # .deeper and .deeper(...)
     @patch_to(cls, as_prop=True)
     def deeper(self: torch.Tensor):
         return StrProxy(self, depth=1)
 
+    # .rgb and .rgb(...)
     @patch_to(cls, as_prop=True)
     def rgb(t: torch.Tensor):
         return RGBProxy(t)
     
+    # .chans and .chans(...)
     @patch_to(cls, as_prop=True)
     def chans(t: torch.Tensor):
         return ChanProxy(t)
 
+    # .plt and .plt(...)
     @patch_to(cls, as_prop=True)
     def plt(t: torch.Tensor):
         return PlotProxy(t)
