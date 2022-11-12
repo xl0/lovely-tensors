@@ -67,5 +67,7 @@ d = { 'settings': { 'branch': 'master',
                                                                                           'lovely_tensors/utils/pad.py')},
             'lovely_tensors.utils.tile2d': { 'lovely_tensors.utils.tile2d.fit_columns': ( 'utils.tile2d.html#fit_columns',
                                                                                           'lovely_tensors/utils/tile2d.py'),
-                                             'lovely_tensors.utils.tile2d.tile_images': ( 'utils.tile2d.html#tile_images',
-                                                                                          'lovely_tensors/utils/tile2d.py')}}}
+                                             'lovely_tensors.utils.tile2d.hypertile': ( 'utils.tile2d.html#hypertile',
+                                                                                        'lovely_tensors/utils/tile2d.py'),
+                                             'lovely_tensors.utils.tile2d.tile2d': ( 'utils.tile2d.html#tile2d',
+                                                                                     'lovely_tensors/utils/tile2d.py')}}}

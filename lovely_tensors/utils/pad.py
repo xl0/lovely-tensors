@@ -9,7 +9,7 @@ import torch
 from torch.nn.functional import pad
 
 # %% ../../nbs/03b_utils.pad.ipynb 6
-def pad_frame(t: torch.Tensor,  # 3D+ Tensor image tensor, [...,H,W,C]
+def pad_frame(t: torch.Tensor,  # 3D+ image tensor, [...,H,W,C]
               frame_px=1,       # Number of pixels to pad each side.
               val :float=0):           # Value to pad with.
     """Pad H and W dimensitons of an image tensor with `val` of thickness `frame_px`"""
@@ -19,12 +19,12 @@ def pad_frame(t: torch.Tensor,  # 3D+ Tensor image tensor, [...,H,W,C]
 
 # %% ../../nbs/03b_utils.pad.ipynb 10
 def pad_frame_gutters(t: torch.Tensor,  # 3D+ Tensor image tensor, [...,H,W,C]
-                      gutter_frac=0.05, # Fraction of max(W,H) for the gutter
+                      gutter_px=3,      # Write gutter in pixels.
                       frame_px=1):      # Black frame, in pixels
     """Add a black frame and white gutters around an image"""
     assert t.dim() >= 3
     xy_shape = t.shape[-2:]
-    gutter_px = ceil(max(xy_shape)*gutter_frac//2)
+    # gutter_px = ceil(max(xy_shape)*gutter_frac//2)
     
     # XXX This does not work for RGBA images, as the alpha channel is set to 0!
     t = pad_frame(t, frame_px=frame_px, val=0) # Black frame

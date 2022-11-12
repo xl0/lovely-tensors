@@ -11,10 +11,10 @@
 }
 
 .cell-output > pre, .cell-output > .sourceCode > pre, .cell-output-stdout > pre {
-  margin-left: 0.8rem;
+  /* margin-left: 0.8rem; */
   margin-top: 0;
   background: none;
-  border-left: 2px solid lightsalmon;
+  /* border-left: 2px solid lightsalmon; */
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
