@@ -16,3 +16,4 @@ website:
       - section: Misc
         contents:
           - 10_patch.ipynb
+          - history.ipynb

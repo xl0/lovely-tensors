@@ -207,7 +207,7 @@ numbers_01.chans
 Let’s try with a Convolutional Neural Network
 
 ``` python
-from torchvision.models import vgg11, VGG11_Weights
+from torchvision.models import vgg11
 ```
 
 ``` python

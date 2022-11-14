@@ -72,9 +72,6 @@ dtnames = { type_to_dtype(k): v
                             "int16": "i16",
                             "int32": "i32",
                             "int64": "i64",
-                            "complex32": "c32",
-                            "complex64": "c64",
-                            "complex128": "c128",
                         }.items()
 }
 
