@@ -5,7 +5,7 @@ __all__ = ['TorchCmap']
 
 # %% ../../nbs/03a_utils.colormap.ipynb 4
 from typing import Optional
-from matplotlib import colormaps
+from matplotlib.cm import get_cmap
 from matplotlib.colors import to_rgba, ListedColormap
 import torch
 from torch.nn.functional import embedding

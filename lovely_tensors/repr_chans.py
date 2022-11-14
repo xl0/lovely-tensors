@@ -4,7 +4,7 @@
 __all__ = ['chans']
 
 # %% ../nbs/05_repr_chans.ipynb 4
-from matplotlib import colormaps
+from matplotlib.cm import get_cmap
 import torch
 from .repr_rgb import RGBProxy
 from .utils.colormap import TorchCmap
@@ -27,7 +27,7 @@ def _chans(t: torch.Tensor,         # Input tensor
     if t.dim() == 2: t = t.expand(0)
     
     ### XXX Do we want a way to pass a custom cmap instead of mpl one?
-    tcmap = TorchCmap(cmap=colormaps[cmap],
+    tcmap = TorchCmap(cmap=get_cmap(cmap),
                   below=cm_below, above=cm_above,
                   nan=cm_nan, ninf=cm_ninf, pinf=cm_pinf)
 

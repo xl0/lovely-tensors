@@ -85,7 +85,8 @@ def _plot(t: torch.Tensor, center="zero", max_s=100000, plt0=True, ax=None):
 
     fig = None
     if not ax:
-        fig, ax = plt.subplots(figsize=(12, 2), layout="tight")
+        fig, ax = plt.subplots(figsize=(12, 2))
+        fig.tight_layout()
         plt.close(fig)
 
     # Center the plot around zero, mean, or the extents of the range of t.
