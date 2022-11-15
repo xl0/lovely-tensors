@@ -5,14 +5,14 @@ __all__ = ['TorchCmap']
 
 # %% ../../nbs/03a_utils.colormap.ipynb 4
 from typing import Optional
-from matplotlib.cm import get_cmap
-from matplotlib.colors import to_rgba, ListedColormap
+import matplotlib as mpl, matplotlib.cm as cm
+from matplotlib.colors import ListedColormap, to_rgba
 import torch
 from torch.nn.functional import embedding
 
 from ..repr_rgb import RGBProxy
 
-# %% ../../nbs/03a_utils.colormap.ipynb 16
+# %% ../../nbs/03a_utils.colormap.ipynb 17
 class TorchCmap():
     """
     Fast lut-based color mapping that is compatible with matplotlib colormaps
