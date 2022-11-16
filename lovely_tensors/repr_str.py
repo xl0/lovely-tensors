@@ -6,6 +6,7 @@ __all__ = ['PRINT_OPTS', 'pretty_str', 'lovely']
 # %% ../nbs/00_repr_str.ipynb 3
 from typing import Optional, Union
 from collections import defaultdict
+import warnings
 import torch
 
 # %% ../nbs/00_repr_str.ipynb 4
@@ -120,7 +121,6 @@ def to_str(t: torch.Tensor,
     # tensors actuall have `requires_grad=True`` too.
     grad = "grad" if t.requires_grad else None 
 
-
     # Later, we might be indexing 't' with a bool tensor derived from it. 
     # THis takes 4x memory and will result in a CUDA OOM if 't' is very large.
     # Move it to the cpu now - it won't matter for small tensors, and for
@@ -172,6 +172,13 @@ def to_str(t: torch.Tensor,
     return res
 
 # %% ../nbs/00_repr_str.ipynb 24
+def history_warning():
+    "Issue a warning (once) ifw e are running in IPYthon with output cache enabled"
+
+    if "get_ipython" in globals() and get_ipython().cache_size > 0:
+        warnings.warn("IPYthon has its output cache enabled. See https://xl0.github.io/lovely-tensors/history.html")
+
+# %% ../nbs/00_repr_str.ipynb 27
 class StrProxy():
     def __init__(self, t: torch.Tensor, plain=False, verbose=False, depth=0, lvl=0, color=None):
         self.t = t
@@ -180,6 +187,7 @@ class StrProxy():
         self.depth=depth
         self.lvl=lvl
         self.color=color
+        history_warning()
     
     def __repr__(self):
         return to_str(self.t, plain=self.plain, verbose=self.verbose,
@@ -187,10 +195,10 @@ class StrProxy():
 
     # This is used for .deeper attribute and .deeper(depth=...).
     # The second onthe results in a __call__.
-    def __call__(self, depth=0):
+    def __call__(self, depth=1):
         return StrProxy(self.t, depth=depth)
 
-# %% ../nbs/00_repr_str.ipynb 26
+# %% ../nbs/00_repr_str.ipynb 29
 def lovely(t: torch.Tensor, # Tensor of interest
             verbose=False,  # Whether to show the full tensor
             plain=False,    # Just print if exactly as before
