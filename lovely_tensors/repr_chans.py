@@ -17,6 +17,7 @@ def _chans(t: torch.Tensor,         # Input tensor
                  cm_nan="yellow",
                  gutter_px=3,   # Draw write gutters when tiling the images
                  frame_px=1,    # Draw black frame around each image
+                 scale=1,
                  view_width=966):    
     """
     Process individual channels of a tensor that can be interpreted as as image
@@ -31,7 +32,7 @@ def _chans(t: torch.Tensor,         # Input tensor
                   below=cm_below, above=cm_above,
                   nan=cm_nan, ninf=cm_ninf, pinf=cm_pinf)
 
-    return RGBProxy(tcmap(t))(cl=True, gutter_px=gutter_px, frame_px=frame_px, view_width=view_width)
+    return RGBProxy(tcmap(t))(cl=True, gutter_px=gutter_px, frame_px=frame_px, view_width=view_width, scale=scale)
 
 # %% ../nbs/05_repr_chans.ipynb 6
 class ChanProxy():
@@ -47,7 +48,8 @@ class ChanProxy():
                  cm_nan="yellow",
                  view_width=966,
                  gutter_px=3,
-                 frame_px=1):
+                 frame_px=1,
+                 scale=1):
         
         return _chans(self.t,
                      cmap=cmap,
@@ -58,7 +60,8 @@ class ChanProxy():
                      cm_nan=cm_nan,
                      view_width=view_width,
                      gutter_px=gutter_px,
-                     frame_px=frame_px)
+                     frame_px=frame_px,
+                     scale=scale)
     
     def _repr_png_(self):
         return self.__call__()._repr_png_()
@@ -74,6 +77,7 @@ def chans(t: torch.Tensor,      # Input, shape=([...], H, W)
              view_width=966,    # Try to produce an image at most this wide
              gutter_px=3,       # Draw write gutters when tiling the images
              frame_px=1,        # Draw black frame around each image
+             scale=1,
              cl=False):     
 
     "Map tensor values to colors. RGB[A] color is added as channel-last"
@@ -85,4 +89,5 @@ def chans(t: torch.Tensor,      # Input, shape=([...], H, W)
                          cm_nan=cm_nan,
                          view_width=view_width,
                          gutter_px=gutter_px,
+                         scale=scale,
                          frame_px=frame_px)

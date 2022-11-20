@@ -26,8 +26,12 @@ class RGBProxy():
         self.t = t.detach().cpu()
 
     @torch.no_grad()
-    def __call__(self, denorm=None, cl=False, 
-                    gutter_px=3, frame_px=1, view_width=966):
+    def __call__(self,
+                    denorm=None,
+                    cl=False, 
+                    gutter_px=3, frame_px=1,
+                    scale=1,
+                    view_width=966):
         t = self.t
 
         # This object might linger in PyTorch history.
@@ -38,13 +42,16 @@ class RGBProxy():
         if not cl:
             # Is there any easy way to .permute() without knowing the number of dims?
             t = torch.swapaxes(torch.swapaxes(t, -3, -1), -3, -2)
-            
+
         n_ch = t.shape[-1]
         assert n_ch in (3, 4), f"Expecting 3 (RGB) or 4 (RGBA) channels, got {n_ch}" 
         if denorm:
             means = torch.tensor(denorm[0])
             stds = torch.tensor(denorm[1])
             t = t.mul(stds).add(means)
+
+        t = t.repeat_interleave(scale, dim=-2).repeat_interleave(scale, dim=-3)
+
 
         if t.ndim > 3:
             t = hypertile(  t=t,
@@ -68,8 +75,10 @@ def rgb(t: torch.Tensor, # Tensor to display. [[...], C,H,W] or [[...], H,W,C]
             cl=False,    # Channel-last
             gutter_px = 3,  # If more than one tensor -> tile with this gutter width
             frame_px=1,  # If more than one tensor -> tile with this frame width
+            scale=1,
             view_width=966): # targer width of the image
     return RGBProxy(t)( denorm=denorm, cl=cl,
                         gutter_px=gutter_px,
                         frame_px=frame_px,
+                        scale=scale,
                         view_width=view_width)
