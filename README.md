@@ -211,7 +211,7 @@ from torchvision.models import vgg11
 ```
 
 ``` python
-features = vgg11().features
+features: torch.nn.Sequential = vgg11().features
 
 # I saved the first 5 layers in "features.pt"
 _ = features.load_state_dict(torch.load("../features.pt"), strict=False)
