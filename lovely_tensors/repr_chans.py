@@ -4,35 +4,37 @@
 __all__ = ['chans']
 
 # %% ../nbs/05_repr_chans.ipynb 4
-from matplotlib.cm import get_cmap
 import torch
-from .repr_rgb import RGBProxy
-from .utils.colormap import TorchCmap
+from lovely_numpy.repr_chans import chans as np_chans
+
 
 # %% ../nbs/05_repr_chans.ipynb 5
-def _chans(t: torch.Tensor,         # Input tensor 
-                 cmap = "coolwarm", # Use matplotlib colormap by this name
-                 cm_below="blue", cm_above="red",
-                 cm_ninf="cyan", cm_pinf="fuchsia",
-                 cm_nan="yellow",
-                 gutter_px=3,   # Draw write gutters when tiling the images
-                 frame_px=1,    # Draw black frame around each image
-                 scale=1,
-                 view_width=966):    
-    """
-    Process individual channels of a tensor that can be interpreted as as image
-    `x` and `y` specify which dimensions should be used as spatial ones.
-    """
-    
-    assert t.dim() >= 2, f"Expected a 2 or 3-dim input, got {t.shape}={t.dim()}"
-    if t.dim() == 2: t = t[None] # Add an extra 0-th dimension
-    
-    ### XXX Do we want a way to pass a custom cmap instead of mpl one?
-    tcmap = TorchCmap(cmap=get_cmap(cmap),
-                  below=cm_below, above=cm_above,
-                  nan=cm_nan, ninf=cm_ninf, pinf=cm_pinf)
+def chans(t: torch.Tensor,      # Input, shape=([...], H, W)
+             cmap = "coolwarm", # Use matplotlib colormap by this name
+             cm_below="blue",   # Color for values below 0
+             cm_above="red",    # Color for values above 1
+             cm_ninf="cyan",    # Color for -inf values
+             cm_pinf="fuchsia", # Color for +inf values
+             cm_nan="yellow",   # Color for NaN values
+             view_width=966,    # Try to produce an image at most this wide
+             gutter_px=3,       # Draw write gutters when tiling the images
+             frame_px=1,        # Draw black frame around each image
+             scale=1,
+             cl=False):     
 
-    return RGBProxy(tcmap(t))(cl=True, gutter_px=gutter_px, frame_px=frame_px, view_width=view_width, scale=scale)
+    "Map tensor values to colors. RGB[A] color is added as channel-last"
+    return np_chans(t.detach().cpu().numpy(),
+                    cmap=cmap,
+                    cm_below=cm_below,
+                    cm_above=cm_above,
+                    cm_ninf=cm_ninf,
+                    cm_pinf=cm_pinf,
+                    cm_nan=cm_nan,
+                    view_width=view_width,
+                    gutter_px=gutter_px,
+                    scale=scale,
+                    frame_px=frame_px)
+
 
 # %% ../nbs/05_repr_chans.ipynb 6
 class ChanProxy():
@@ -51,7 +53,7 @@ class ChanProxy():
                  frame_px=1,
                  scale=1):
         
-        return _chans(self.t,
+        return chans(self.t,
                      cmap=cmap,
                      cm_below=cm_below,
                      cm_above=cm_above,
@@ -65,29 +67,3 @@ class ChanProxy():
     
     def _repr_png_(self):
         return self.__call__()._repr_png_()
-
-# %% ../nbs/05_repr_chans.ipynb 7
-def chans(t: torch.Tensor,      # Input, shape=([...], H, W)
-             cmap = "coolwarm", # Use matplotlib colormap by this name
-             cm_below="blue",   # Color for values below 0
-             cm_above="red",    # Color for values above 1
-             cm_ninf="cyan",    # Color for -inf values
-             cm_pinf="fuchsia", # Color for +inf values
-             cm_nan="yellow",   # Color for NaN values
-             view_width=966,    # Try to produce an image at most this wide
-             gutter_px=3,       # Draw write gutters when tiling the images
-             frame_px=1,        # Draw black frame around each image
-             scale=1,
-             cl=False):     
-
-    "Map tensor values to colors. RGB[A] color is added as channel-last"
-    return ChanProxy(t)(cmap=cmap,
-                         cm_below=cm_below,
-                         cm_above=cm_above,
-                         cm_ninf=cm_ninf,
-                         cm_pinf=cm_pinf,
-                         cm_nan=cm_nan,
-                         view_width=view_width,
-                         gutter_px=gutter_px,
-                         scale=scale,
-                         frame_px=frame_px)
