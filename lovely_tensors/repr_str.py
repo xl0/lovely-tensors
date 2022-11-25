@@ -105,7 +105,7 @@ class StrProxy():
     def __call__(self, depth=1):
         return StrProxy(self.t, depth=depth)
 
-# %% ../nbs/00_repr_str.ipynb 16
+# %% ../nbs/00_repr_str.ipynb 15
 def lovely(t: torch.Tensor, # Tensor of interest
             verbose=False,  # Whether to show the full tensor
             plain=False,    # Just print if exactly as before

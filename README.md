@@ -231,7 +231,7 @@ acts.chans
 
 ![](index_files/figure-gfm/cell-23-output-1.png)
 
-## Grouping (`.rgb` and `.chans` )
+## Grouping
 
 ``` python
 # Make 8 images with progressively higher brightness and stack them 2x2x2.

@@ -11,9 +11,6 @@ from lovely_numpy.utils.pad import pad_frame_gutters
 from lovely_numpy.utils.tile2d import hypertile
 from lovely_numpy import rgb as np_rgb
 
-# from lovely_tensors.utils.pad import pad_frame_gutters
-# from lovely_tensors.utils.tile2d import hypertile
-
 # %% ../nbs/01_repr_rgb.ipynb 5
 def rgb(t: torch.Tensor, # Tensor to display. [[...], C,H,W] or [[...], H,W,C]
             denorm=None, # Reverse per-channel normalizatoin
