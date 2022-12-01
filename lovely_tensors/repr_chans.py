@@ -32,8 +32,9 @@ def chans(t: torch.Tensor,      # Input, shape=([...], H, W)
                     cm_nan=cm_nan,
                     view_width=view_width,
                     gutter_px=gutter_px,
+                    frame_px=frame_px,
                     scale=scale,
-                    frame_px=frame_px)
+                    cl=cl)
 
 
 # %% ../nbs/05_repr_chans.ipynb 6
