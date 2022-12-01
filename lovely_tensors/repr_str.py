@@ -4,11 +4,9 @@
 __all__ = ['lovely']
 
 # %% ../nbs/00_repr_str.ipynb 3
-from typing import Optional, Union
-from collections import defaultdict
 import warnings
 import torch
-from lovely_numpy.utils import np_to_str_common, pretty_str, sparse_join, plain_repr, PRINT_OPTS
+from lovely_numpy.utils import np_to_str_common, pretty_str, sparse_join, PRINT_OPTS, ansi_color
 
 # %% ../nbs/00_repr_str.ipynb 6
 def type_to_dtype(t: str) -> torch.dtype:
@@ -17,7 +15,6 @@ def type_to_dtype(t: str) -> torch.dtype:
     dtp = vars(torch)[t]
     assert isinstance(dtp, torch.dtype)
     return dtp
-
 
 # %% ../nbs/00_repr_str.ipynb 8
 dtnames = { type_to_dtype(k): v
@@ -35,6 +32,51 @@ dtnames = { type_to_dtype(k): v
 def short_dtype(x): return dtnames.get(x.dtype, str(x.dtype)[6:])
 
 # %% ../nbs/00_repr_str.ipynb 10
+def plain_repr(x: torch.Tensor):
+    "Pick the right function to get a plain repr"
+    # assert isinstance(x, np.ndarray), f"expected np.ndarray but got {type(x)}" # Could be a sub-class.
+    return x._plain_repr() if hasattr(type(x), "_plain_repr") else repr(x)
+
+def plain_str(x: torch.Tensor):
+    "Pick the right function to get a plain str."
+    # assert isinstance(x, np.ndarray), f"expected np.ndarray but got {type(x)}"
+    return x._plain_str() if hasattr(type(x), "_plain_str") else str(x)
+
+# %% ../nbs/00_repr_str.ipynb 11
+def is_nasty(t: torch.Tensor):
+    """Return true of any `t` values are inf or nan"""
+    
+    # Unlike .min()/.max(), amin/amax do not allocate extra GPU memory.
+    t_min = t.amin()
+    t_max = t.amax()
+
+    return (t_min.isnan() or t_min.isinf() or t_max.isinf()).item()
+
+# %% ../nbs/00_repr_str.ipynb 13
+def torch_to_str_common(t: torch.Tensor,  # Input
+                        color=True,       # ANSI color highlighting
+                        ) -> str:
+    
+    amin, amax = t.amin(), t.amax()
+
+    zeros = ansi_color("all_zeros", "grey", color) if amin.eq(0) and amax.eq(0) and t.numel() > 1 else None
+    pinf = ansi_color("+Inf!", "red", color) if amax.isposinf() else None
+    ninf = ansi_color("-Inf!", "red", color) if amin.isneginf() else None
+    nan = ansi_color("NaN!", "red", color) if amin.isnan() else None
+
+    attention = sparse_join([zeros,pinf,ninf,nan])
+    numel = f"n={t.numel()}" if t.numel() > 5 and max(t.shape) != t.numel() else None
+
+    summary = None
+    if not zeros:
+        minmax = f"x∈[{pretty_str(amin)}, {pretty_str(amax)}]" if t.numel() > 2 else None
+        meanstd = f"μ={pretty_str(t.mean())} σ={pretty_str(t.std())}" if t.numel() >= 2 else None
+        summary = sparse_join([numel, minmax, meanstd])
+
+
+    return sparse_join([ summary, attention])
+
+# %% ../nbs/00_repr_str.ipynb 14
 @torch.no_grad()
 def to_str(t: torch.Tensor,
             plain: bool=False,
@@ -58,14 +100,19 @@ def to_str(t: torch.Tensor,
     grad = "grad" if t.requires_grad else None 
     
 
-    # Done with collecting torch-specific info. Pass it to Lovely-Numpy
-    common=None
-    vals=None
+    # For complex tensors, just show the shape / size part for now.
     if not t.is_complex():
-        common = np_to_str_common(t.cpu().numpy(), color=color, ddof=1)
-        vals = pretty_str(t.cpu().numpy()) if t.numel() <= 10 else None
+        color = PRINT_OPTS.color if color is None else color
+        if t.is_cpu or is_nasty(t) or not t.is_floating_point():
+            common = np_to_str_common(t.detach().cpu().numpy(), color=color, ddof=1)
+        else:
+            common = torch_to_str_common(t, color=color)
 
-    res = sparse_join([type_str, dtype, common, grad, grad_fn, dev, vals])
+        vals = pretty_str(t.cpu().numpy()) if t.numel() <= 10 else None
+        res = sparse_join([type_str, dtype, common, grad, grad_fn, dev, vals])
+    else:
+        res = plain_repr(t)
+
 
     if verbose or t.is_complex():
         res += "\n" + plain_repr(t)
@@ -78,14 +125,14 @@ def to_str(t: torch.Tensor,
 
     return res
 
-# %% ../nbs/00_repr_str.ipynb 11
+# %% ../nbs/00_repr_str.ipynb 15
 def history_warning():
     "Issue a warning (once) ifw e are running in IPYthon with output cache enabled"
 
     if "get_ipython" in globals() and get_ipython().cache_size > 0:
         warnings.warn("IPYthon has its output cache enabled. See https://xl0.github.io/lovely-tensors/history.html")
 
-# %% ../nbs/00_repr_str.ipynb 14
+# %% ../nbs/00_repr_str.ipynb 18
 class StrProxy():
     def __init__(self, t: torch.Tensor, plain=False, verbose=False, depth=0, lvl=0, color=None):
         self.t = t
@@ -105,7 +152,7 @@ class StrProxy():
     def __call__(self, depth=1):
         return StrProxy(self.t, depth=depth)
 
-# %% ../nbs/00_repr_str.ipynb 15
+# %% ../nbs/00_repr_str.ipynb 19
 def lovely(t: torch.Tensor, # Tensor of interest
             verbose=False,  # Whether to show the full tensor
             plain=False,    # Just print if exactly as before

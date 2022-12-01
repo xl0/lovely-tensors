@@ -36,9 +36,8 @@ class RGBProxy():
     """Flexible `PIL.Image.Image` wrapper"""
     
     def __init__(self, t:torch.Tensor):
-        # super().__init__()
         assert t.ndim >= 3, f"Expecting at least 3 dimensions, got shape{t.shape}={t.dim()}"
-        self.t = t #.detach().cpu().numpy()
+        self.t = t
 
     def __call__(   self,
                     denorm=None,
@@ -48,9 +47,8 @@ class RGBProxy():
                     view_width=966):
 
         return rgb(self.t, denorm=denorm, cl=cl, gutter_px=gutter_px,
-                frame_px=frame_px, view_width=view_width)
+                frame_px=frame_px, view_width=view_width, scale=scale)
     
-    @torch.no_grad()
     def _repr_png_(self):
         # Note: In order to prevernt IPYthon from hogging memory, we
         # delete the reference to the tensor after the first call to
