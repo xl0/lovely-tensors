@@ -5,7 +5,7 @@ assert parse_version(setuptools.__version__)>=parse_version('36.2')
 
 # note: all settings are in settings.ini; edit there, not here
 config = ConfigParser(delimiters=['='])
-config.read('settings.ini')
+config.read('settings.ini', encoding="utf-8")
 cfg = config['DEFAULT']
 
 cfg_keys = 'version description keywords author author_email'.split()
@@ -45,7 +45,7 @@ setuptools.setup(
     extras_require={ 'dev': dev_requirements },
     dependency_links = cfg.get('dep_links','').split(),
     python_requires  = '>=' + cfg['min_python'],
-    long_description = open('README.md').read(),
+    long_description = open('README.md', encoding="utf-8").read(),
     long_description_content_type = 'text/markdown',
     zip_safe = False,
     entry_points = {
