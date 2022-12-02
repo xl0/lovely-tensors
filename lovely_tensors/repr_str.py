@@ -5,8 +5,15 @@ __all__ = ['lovely']
 
 # %% ../nbs/00_repr_str.ipynb 3
 import warnings
+
 import torch
-from lovely_numpy.utils import np_to_str_common, pretty_str, sparse_join, PRINT_OPTS, ansi_color
+
+
+from lovely_numpy import np_to_str_common, pretty_str, sparse_join, ansi_color
+from lovely_numpy import config as lnp_config
+
+from .utils.config import get_config
+
 
 # %% ../nbs/00_repr_str.ipynb 6
 def type_to_dtype(t: str) -> torch.dtype:
@@ -88,6 +95,8 @@ def to_str(t: torch.Tensor,
     if plain:
         return plain_repr(t)
 
+    conf = get_config()
+
     tname = "tensor" if type(t) is torch.Tensor else type(t).__name__.split(".")[-1]
     shape = str(list(t.shape)) if t.ndim else None
     type_str = sparse_join([tname, shape], sep="")
@@ -102,25 +111,36 @@ def to_str(t: torch.Tensor,
 
     # For complex tensors, just show the shape / size part for now.
     if not t.is_complex():
-        color = PRINT_OPTS.color if color is None else color
-        if t.is_cpu or is_nasty(t) or not t.is_floating_point():
-            common = np_to_str_common(t.detach().cpu().numpy(), color=color, ddof=1)
-        else:
-            common = torch_to_str_common(t, color=color)
+        color = conf.color if color is None else color
+        # `lovely-numpy` is used to calculate stats when doing so on GPU would require
+        # memory allocation (not float tensors, tensors with bad numbers), or if the
+        # data is on CPU (because numpy is faster).
+        #
+        # Temporarily set the numpy config to match our config for consistency.
+        with lnp_config(precision=conf.precision,
+                        threshold_min=conf.threshold_min,
+                        threshold_max=conf.threshold_max,
+                        sci_mode=conf.sci_mode,
+                        color=color):
 
-        vals = pretty_str(t.cpu().numpy()) if t.numel() <= 10 else None
-        res = sparse_join([type_str, dtype, common, grad, grad_fn, dev, vals])
+            if t.is_cpu or is_nasty(t) or not t.is_floating_point():
+                common = np_to_str_common(t.detach().cpu().numpy(), color=color, ddof=1)
+            else:
+                common = torch_to_str_common(t, color=color)
+
+            vals = pretty_str(t.cpu().numpy()) if t.numel() <= 10 else None
+            res = sparse_join([type_str, dtype, common, grad, grad_fn, dev, vals])
     else:
         res = plain_repr(t)
 
 
-    if verbose or t.is_complex():
+    if verbose:
         res += "\n" + plain_repr(t)
 
     if depth and t.dim() > 1:
         res += "\n" + "\n".join([
-            " "*PRINT_OPTS.indent*(lvl+1) +
-            str(StrProxy(t[i,:], depth=depth-1, lvl=lvl+1))
+            " "*conf.indent*(lvl+1) +
+            str(StrProxy(t[i,:], depth=depth-1, lvl=lvl+1)) # XXX use to_str
             for i in range(t.shape[0])])
 
     return res

@@ -53,4 +53,10 @@ d = { 'settings': { 'branch': 'master',
                                          'lovely_tensors.repr_str.torch_to_str_common': ( 'repr_str.html#torch_to_str_common',
                                                                                           'lovely_tensors/repr_str.py'),
                                          'lovely_tensors.repr_str.type_to_dtype': ( 'repr_str.html#type_to_dtype',
-                                                                                    'lovely_tensors/repr_str.py')}}}
+                                                                                    'lovely_tensors/repr_str.py')},
+            'lovely_tensors.utils.config': { 'lovely_tensors.utils.config.config': ( 'utils.config.html#config',
+                                                                                     'lovely_tensors/utils/config.py'),
+                                             'lovely_tensors.utils.config.get_config': ( 'utils.config.html#get_config',
+                                                                                         'lovely_tensors/utils/config.py'),
+                                             'lovely_tensors.utils.config.set_config': ( 'utils.config.html#set_config',
+                                                                                         'lovely_tensors/utils/config.py')}}}
