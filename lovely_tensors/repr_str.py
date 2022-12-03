@@ -125,8 +125,7 @@ def to_str(t: torch.Tensor,
         with lnp_config(precision=conf.precision,
                         threshold_min=conf.threshold_min,
                         threshold_max=conf.threshold_max,
-                        sci_mode=conf.sci_mode,
-                        color=color):
+                        sci_mode=conf.sci_mode):
 
             if is_cpu(t) or is_nasty(t) or not t.is_floating_point():
                 common = np_to_str_common(t.detach().cpu().numpy(), color=color, ddof=1)

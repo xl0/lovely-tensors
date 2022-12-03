@@ -293,6 +293,39 @@ weights[:4].chans(frame_px=1, gutter_px=0, scale=10)
 
 ![](index_files/figure-gfm/cell-29-output-1.png)
 
+## Options
+
+See [docs](https://xl0.github.io/lovely-tensors/03_utils.config.html)
+for more
+
+``` python
+from lovely_tensors import set_config, config, lovely, get_config
+```
+
+``` python
+set_config(precision=5, sci_mode=True, color=False)
+torch.tensor([1, 2, torch.nan])
+```
+
+    tensor[3] μ=1.50000e+00 σ=7.07107e-01 NaN! [1.00000e+00, 2.00000e+00, nan]
+
+``` python
+set_config(precision=None, sci_mode=None, color=None) # None -> Reset to defaults
+```
+
+``` python
+print(torch.tensor([1., 2]))
+# Or with config context manager.
+with config(sci_mode=True, precision=5):
+    print(torch.tensor([1., 2]))
+
+print(torch.tensor([1., 2]))
+```
+
+    tensor[2] μ=1.500 σ=0.707 [1.000, 2.000]
+    tensor[2] μ=1.50000e+00 σ=7.07107e-01 [1.00000e+00, 2.00000e+00]
+    tensor[2] μ=1.500 σ=0.707 [1.000, 2.000]
+
 ## Without `.monkey_patch`
 
 ``` python
@@ -322,16 +355,16 @@ lt.lovely(numbers, depth=1)
 lt.rgb(numbers, in_stats)
 ```
 
-![](index_files/figure-gfm/cell-33-output-1.png)
+![](index_files/figure-gfm/cell-37-output-1.png)
 
 ``` python
 lt.plot(numbers, center="mean")
 ```
 
-![](index_files/figure-gfm/cell-34-output-1.png)
+![](index_files/figure-gfm/cell-38-output-1.png)
 
 ``` python
 lt.chans(numbers_01)
 ```
 
-![](index_files/figure-gfm/cell-35-output-1.png)
+![](index_files/figure-gfm/cell-39-output-1.png)
