@@ -18,12 +18,13 @@ _defaults = SimpleNamespace(
     sci_mode      = None, # Sci mode (2.3e4). 
     indent        = 2,    # Indent for .deeper()
     color         = True, # ANSI colors in text
+    deeper_width  = 9,    # For .deeper, how many entries to show per level
 )
 
 _config = copy(_defaults)
 
 # %% ../../nbs/03_utils.config.ipynb 5
-# Allows passing None as an argument to reset the 
+# Allows passing None as an argument to reset to defaults
 class _Default():
     def __repr__(self):
         return "Ignore"
@@ -31,12 +32,13 @@ Default = _Default()
 D = TypeVar("Default")
 
 # %% ../../nbs/03_utils.config.ipynb 6
-def set_config( precision       :Optional[Union[D, int]]    =Default, # Digits after `.`
-                threshold_min   :Optional[Union[D,int]]     =Default, # .abs() larger than 1e3 -> Sci mode
-                threshold_max   :Optional[Union[D,int]]     =Default, # .abs() smaller that 1e-4 -> Sci mode
-                sci_mode        :Optional[Union[D,bool]]    =Default, # Sci mode (1.2e3), True, False, None=auto.
-                indent          :Optional[Union[D,bool]]    =Default, # Indent for .deeper()
-                color           :Optional[Union[D,bool]]    =Default): # ANSI colors in text
+def set_config( precision       :Optional[Union[D, int]] =Default,  # Digits after `.`
+                threshold_min   :Optional[Union[D,int]]  =Default,  # .abs() larger than 1e3 -> Sci mode
+                threshold_max   :Optional[Union[D,int]]  =Default,  # .abs() smaller that 1e-4 -> Sci mode
+                sci_mode        :Optional[Union[D,bool]] =Default,  # Sci mode (1.2e3), True, False, None=auto.
+                indent          :Optional[Union[D,bool]] =Default,  # Indent for .deeper()
+                color           :Optional[Union[D,bool]] =Default,  # ANSI colors in text
+                deeper_width     :Optional[Union[D,int]] =Default): # For .deeper, how many entries to show per level
 
     "Set config variables"
     args = locals().copy()
@@ -54,12 +56,13 @@ def get_config():
 
 # %% ../../nbs/03_utils.config.ipynb 8
 @contextmanager
-def config( precision       :Optional[Union[D,int]]     =Default,  # Digits after `.`
-            threshold_min   :Optional[Union[D,int]]     =Default, # .abs() larger than 1e3 -> Sci mode
-            threshold_max   :Optional[Union[D,int]]     =Default, # .abs() smaller that 1e-4 -> Sci mode
-            sci_mode        :Optional[Union[D,bool]]    =Default, # Sci mode (1.2e3), True, False, None=auto.
-            indent          :Optional[Union[D,bool]]    =Default, # Indent for .deeper()
-            color           :Optional[Union[D,bool]]    =Default):# ANSI colors in text
+def config( precision       :Optional[Union[D,int]]  =Default,  # Digits after `.`
+            threshold_min   :Optional[Union[D,int]]  =Default,  # .abs() larger than 1e3 -> Sci mode
+            threshold_max   :Optional[Union[D,int]]  =Default,  # .abs() smaller that 1e-4 -> Sci mode
+            sci_mode        :Optional[Union[D,bool]] =Default,  # Sci mode (1.2e3), True, False, None=auto.
+            indent          :Optional[Union[D,bool]] =Default,  # Indent for .deeper()
+            color           :Optional[Union[D,bool]] =Default,  # ANSI colors in text
+            deeper_width     :Optional[Union[D,int]] =Default): # For .deeper, how many entries to show per level
 
     "Context manager for temporarily setting printting options."
     global _config
