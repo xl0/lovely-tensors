@@ -84,6 +84,11 @@ def torch_to_str_common(t: torch.Tensor,  # Input
     return sparse_join([ summary, attention])
 
 # %% ../nbs/00_repr_str.ipynb 14
+# tensor.is_cpu was only introduced in 1.13.
+def is_cpu(t: torch.Tensor):
+    return t.device == torch.device("cpu")
+
+# %% ../nbs/00_repr_str.ipynb 15
 @torch.no_grad()
 def to_str(t: torch.Tensor,
             plain: bool=False,
@@ -123,7 +128,7 @@ def to_str(t: torch.Tensor,
                         sci_mode=conf.sci_mode,
                         color=color):
 
-            if t.is_cpu or is_nasty(t) or not t.is_floating_point():
+            if is_cpu(t) or is_nasty(t) or not t.is_floating_point():
                 common = np_to_str_common(t.detach().cpu().numpy(), color=color, ddof=1)
             else:
                 common = torch_to_str_common(t, color=color)
@@ -145,14 +150,14 @@ def to_str(t: torch.Tensor,
 
     return res
 
-# %% ../nbs/00_repr_str.ipynb 15
+# %% ../nbs/00_repr_str.ipynb 16
 def history_warning():
     "Issue a warning (once) ifw e are running in IPYthon with output cache enabled"
 
     if "get_ipython" in globals() and get_ipython().cache_size > 0:
         warnings.warn("IPYthon has its output cache enabled. See https://xl0.github.io/lovely-tensors/history.html")
 
-# %% ../nbs/00_repr_str.ipynb 18
+# %% ../nbs/00_repr_str.ipynb 19
 class StrProxy():
     def __init__(self, t: torch.Tensor, plain=False, verbose=False, depth=0, lvl=0, color=None):
         self.t = t
@@ -172,7 +177,7 @@ class StrProxy():
     def __call__(self, depth=1):
         return StrProxy(self.t, depth=depth)
 
-# %% ../nbs/00_repr_str.ipynb 19
+# %% ../nbs/00_repr_str.ipynb 20
 def lovely(t: torch.Tensor, # Tensor of interest
             verbose=False,  # Whether to show the full tensor
             plain=False,    # Just print if exactly as before
