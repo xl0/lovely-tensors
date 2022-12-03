@@ -18,7 +18,7 @@ _defaults = SimpleNamespace(
     sci_mode      = None, # Sci mode (2.3e4). 
     indent        = 2,    # Indent for .deeper()
     color         = True, # ANSI colors in text
-    deeper_width  = 9,    # For .deeper, how many entries to show per level
+    deeper_width  = 9,    # For .deeper, width per level
 )
 
 _config = copy(_defaults)
@@ -38,7 +38,7 @@ def set_config( precision       :Optional[Union[D, int]] =Default,  # Digits aft
                 sci_mode        :Optional[Union[D,bool]] =Default,  # Sci mode (1.2e3), True, False, None=auto.
                 indent          :Optional[Union[D,bool]] =Default,  # Indent for .deeper()
                 color           :Optional[Union[D,bool]] =Default,  # ANSI colors in text
-                deeper_width     :Optional[Union[D,int]] =Default): # For .deeper, how many entries to show per level
+                deeper_width     :Optional[Union[D,int]] =Default): # For .deeper, width per level
 
     "Set config variables"
     args = locals().copy()
@@ -62,7 +62,7 @@ def config( precision       :Optional[Union[D,int]]  =Default,  # Digits after `
             sci_mode        :Optional[Union[D,bool]] =Default,  # Sci mode (1.2e3), True, False, None=auto.
             indent          :Optional[Union[D,bool]] =Default,  # Indent for .deeper()
             color           :Optional[Union[D,bool]] =Default,  # ANSI colors in text
-            deeper_width     :Optional[Union[D,int]] =Default): # For .deeper, how many entries to show per level
+            deeper_width     :Optional[Union[D,int]] =Default): # For .deeper, width per level
 
     "Context manager for temporarily setting printting options."
     global _config
