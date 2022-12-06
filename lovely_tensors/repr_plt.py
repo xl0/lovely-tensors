@@ -46,6 +46,7 @@ def _plot(t: torch.Tensor, center="zero", max_s=100000, plt0=True, ax=None):
     orig_str = str(lovely(t, color=False))
     orig_numel = t.numel()
 
+    # XXX Rework this to match what I did in lovely()
     # Same as in `lovely()`, we have to move it to cpu before good-value indexing.
     cput = t.detach().cpu()
     del t
@@ -54,7 +55,6 @@ def _plot(t: torch.Tensor, center="zero", max_s=100000, plt0=True, ax=None):
     # `t`` may have nasty things like 'nan' and 'inf'. Could also be of non-float type.
     t = t[ torch.isfinite(t) ].float()
 
-    
     t_min, t_max = t.min().item(), t.max().item()
 
     # Sometimes we don't want count zeros in the histogram.
@@ -64,7 +64,7 @@ def _plot(t: torch.Tensor, center="zero", max_s=100000, plt0=True, ax=None):
     # `t` might be not on CPU. `t` also might be pretty large. If the tensor is large,
     # randomly sample up to `limit` before moving it to cpu. Here sampling does
     # not cause excessice CUDA memory allocation, because the index tensor is not large.   
-    if t.numel() > max_s:
+    if t.numel() > max_s and max_s > 0:
         # For efficieny reasons, we have to sample with replacement.
         idxs = torch.randint(low=0, high=t.numel(), size=(max_s,), device=t.device)
         t = t.flatten()[idxs]
@@ -193,7 +193,7 @@ class PlotProxy():
     def __call__(self, center=None, max_s=None, plt0=None, fmt=None, ax=None):
         center = center or self.center
         fmt = fmt or self.fmt
-        max_s = max_s or self.max_s
+        if max_s is None: max_s = self.max_s
         if plt0 is None: plt0 = self.plt0
         if ax:
             _plot(self.t, center=center, max_s=max_s, plt0=plt0, ax=ax)
@@ -219,7 +219,7 @@ class PlotProxy():
 # %% ../nbs/02_repr_plt.ipynb 8
 def plot(t: torch.Tensor, # Tensor to explore
     center="zero",        # Center plot on  `zero`, `mean`, or `range`
-    max_s=10000,          # Draw up to this many samples.
+    max_s=10000,          # Draw up to this many samples. =0 to draw all
     plt0=True,            # Take zero values into account
     fmt="png",            # Render figure in this format (`png`, `svg`)
     ax=None):             # Optionally supply your own matplotlib axes.
