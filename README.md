@@ -230,7 +230,7 @@ acts
     tensor[128, 49, 49] n=307328 x∈[0., 12.508] μ=0.367 σ=0.634 grad DivBackward0
 
 ``` python
-acts.chans
+acts[:4].chans(cmap="coolwarm", scale=4)
 ```
 
 ![](index_files/figure-gfm/cell-23-output-1.png)
@@ -271,7 +271,7 @@ Quick and dirty normalization. I want +/- 2σ to fall in the range
 ``` python
 weights = features[3].weight.data
 weights = weights / (2*2*weights.std()) # *2 because we want 2σ on both sides, so 4σ
-weights += weights.std() * 2
+# weights += weights.std() * 2
 weights.plt
 ```
 

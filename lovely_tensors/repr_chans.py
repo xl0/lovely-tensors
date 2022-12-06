@@ -10,8 +10,8 @@ from lovely_numpy.repr_chans import chans as np_chans
 
 # %% ../nbs/05_repr_chans.ipynb 5
 def chans(t: torch.Tensor,      # Input, shape=([...], H, W)
-             cmap = "coolwarm", # Use matplotlib colormap by this name
-             cm_below="blue",   # Color for values below 0
+             cmap = "twilight", # Use matplotlib colormap by this name
+             cm_below="blue",   # Color for values below -1
              cm_above="red",    # Color for values above 1
              cm_ninf="cyan",    # Color for -inf values
              cm_pinf="fuchsia", # Color for +inf values
@@ -43,7 +43,7 @@ class ChanProxy():
         self.t = t
     
     def __call__(self,
-                 cmap = "coolwarm", 
+                 cmap = "twilight", 
                  cm_below="blue",
                  cm_above="red",
                  cm_ninf="cyan",
