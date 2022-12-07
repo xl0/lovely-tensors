@@ -53,6 +53,8 @@ def plain_str(x: torch.Tensor):
 def is_nasty(t: torch.Tensor):
     """Return true of any `t` values are inf or nan"""
     
+    if t.numel() == 0: return False # amin/amax don't like zero-lenght tensors
+
     # Unlike .min()/.max(), amin/amax do not allocate extra GPU memory.
     t_min = t.amin()
     t_max = t.amax()
@@ -64,6 +66,8 @@ def torch_to_str_common(t: torch.Tensor,  # Input
                         color=True,       # ANSI color highlighting
                         ) -> str:
     
+    if t.numel() == 0: return ansi_color("empty", "grey", color)
+
     amin, amax = t.amin(), t.amax()
 
     zeros = ansi_color("all_zeros", "grey", color) if amin.eq(0) and amax.eq(0) and t.numel() > 1 else None
@@ -80,7 +84,6 @@ def torch_to_str_common(t: torch.Tensor,  # Input
         meanstd = f"μ={pretty_str(t.mean())} σ={pretty_str(t.std())}" if t.numel() >= 2 else None
         summary = sparse_join([numel, minmax, meanstd])
 
-
     return sparse_join([ summary, attention])
 
 # %% ../nbs/00_repr_str.ipynb 14
@@ -89,10 +92,6 @@ def is_cpu(t: torch.Tensor):
     return t.device == torch.device("cpu")
 
 # %% ../nbs/00_repr_str.ipynb 15
-# |exporti
-
-
-# %% ../nbs/00_repr_str.ipynb 16
 @torch.no_grad()
 def to_str(t: torch.Tensor,
             plain: bool=False,
@@ -136,7 +135,7 @@ def to_str(t: torch.Tensor,
             else:
                 common = torch_to_str_common(t, color=color)
 
-            vals = pretty_str(t.cpu().numpy()) if t.numel() <= 10 else None
+            vals = pretty_str(t.cpu().numpy()) if 0 < t.numel() <= 10 else None
             res = sparse_join([type_str, dtype, common, grad, grad_fn, dev, vals])
     else:
         res = plain_repr(t)
@@ -158,14 +157,14 @@ def to_str(t: torch.Tensor,
 
     return res
 
-# %% ../nbs/00_repr_str.ipynb 17
+# %% ../nbs/00_repr_str.ipynb 16
 def history_warning():
     "Issue a warning (once) ifw e are running in IPYthon with output cache enabled"
 
     if "get_ipython" in globals() and get_ipython().cache_size > 0:
         warnings.warn("IPYthon has its output cache enabled. See https://xl0.github.io/lovely-tensors/history.html")
 
-# %% ../nbs/00_repr_str.ipynb 20
+# %% ../nbs/00_repr_str.ipynb 19
 class StrProxy():
     def __init__(self, t: torch.Tensor, plain=False, verbose=False, depth=0, lvl=0, color=None):
         self.t = t
@@ -185,7 +184,7 @@ class StrProxy():
     def __call__(self, depth=1):
         return StrProxy(self.t, depth=depth)
 
-# %% ../nbs/00_repr_str.ipynb 21
+# %% ../nbs/00_repr_str.ipynb 20
 def lovely(t: torch.Tensor, # Tensor of interest
             verbose=False,  # Whether to show the full tensor
             plain=False,    # Just print if exactly as before

@@ -192,7 +192,7 @@ It’s indeed our hero, the Tenchman!
 ## See the `.chans`
 
 ``` python
-# .chans will map values betwen [0,1] to colors.
+# .chans will map values betwen [-1,1] to colors.
 # Make our values fit into that range to avoid clipping.
 mean = torch.tensor(in_stats[0])[:,None,None]
 std = torch.tensor(in_stats[1])[:,None,None]
@@ -265,8 +265,7 @@ features[3].weight
     Parameter containing:
     Parameter[128, 64, 3, 3] n=73728 x∈[-0.783, 0.776] μ=-0.004 σ=0.065 grad
 
-Quick and dirty normalization. I want +/- 2σ to fall in the range
-\[0..1\]
+I want +/- 2σ to fall in the range \[-1..1\]
 
 ``` python
 weights = features[3].weight.data

@@ -37,6 +37,7 @@ def normal_pdf( x: torch.Tensor,
             )
 
 # %% ../nbs/02_repr_plt.ipynb 6
+### XXX This thing needs a rewrite!
 @torch.no_grad()
 def _plot(t: torch.Tensor, center="zero", max_s=100000, plt0=True, ax=None):
     """Plot tensor statistics"""
@@ -45,6 +46,8 @@ def _plot(t: torch.Tensor, center="zero", max_s=100000, plt0=True, ax=None):
 
     orig_str = str(lovely(t, color=False))
     orig_numel = t.numel()
+
+    assert t.numel() > 0, f"Cannot plot an empty tensor: {orig_str}"
 
     # XXX Rework this to match what I did in lovely()
     # Same as in `lovely()`, we have to move it to cpu before good-value indexing.
@@ -69,12 +72,13 @@ def _plot(t: torch.Tensor, center="zero", max_s=100000, plt0=True, ax=None):
         idxs = torch.randint(low=0, high=t.numel(), size=(max_s,), device=t.device)
         t = t.flatten()[idxs]
 
+    ### Plot an empty histogram instead of throwing an assert!
+    assert t.numel() > 0, f"Cannot plot tensor because all values are invalid: {str(lovely(t, color=False))}"
+
+    if t.numel() < 1:
+        return
 
     t_mean, t_std = t.mean().item(), t.std().item()
-
-
-    if t.numel() < 10:
-        return
    
     t_str = ""
     if t.numel() != orig_numel:
@@ -105,8 +109,11 @@ def _plot(t: torch.Tensor, center="zero", max_s=100000, plt0=True, ax=None):
                     # (t_mean-max_sigma*t_std).item(), (t_mean+max_sigma*t_std).item())
         x_min, x_max = -abs_max_value, abs_max_value
 
+    assert t_std != 0, "Std is 0! This is not good. XXX: Handle this"
+    assert t_std == t_std, "Std is Nan! This is not good. XXX: Handle this"
+        
     sigmas = max(int(math.floor((abs(t_mean - t_min) / t_std))),
-        int(math.floor((abs(t_max - t_mean) / t_std))))
+                int(math.floor((abs(t_max - t_mean) / t_std))))
 
     x_min -= abs(x_max - x_min) * 0.02
     x_max += abs(x_max - x_min) * 0.02
@@ -123,6 +130,7 @@ def _plot(t: torch.Tensor, center="zero", max_s=100000, plt0=True, ax=None):
     # Histogram normalized to look like PDF: area under histogram = 1.
     histc_density = (histc / (histc.sum() * bar_width))
     ax.bar(x=bar_edges.numpy(), height=histc_density.numpy(), width=bar_width, color="deepskyblue", align="edge", zorder=4,)
+
 
     # PDF of normal distribution with the same mean and std.
     x = torch.linspace(x_min, x_max, 100)
