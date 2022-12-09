@@ -56,8 +56,9 @@ def is_nasty(t: torch.Tensor):
     if t.numel() == 0: return False # amin/amax don't like zero-lenght tensors
 
     # Unlike .min()/.max(), amin/amax do not allocate extra GPU memory.
-    t_min = t.amin()
-    t_max = t.amax()
+
+    t_min = t.amin().cpu()
+    t_max = t.amax().cpu()
 
     return (t_min.isnan() or t_min.isinf() or t_max.isinf()).item()
 
@@ -68,7 +69,10 @@ def torch_to_str_common(t: torch.Tensor,  # Input
     
     if t.numel() == 0: return ansi_color("empty", "grey", color)
 
-    amin, amax = t.amin(), t.amax()
+
+    # Note: At the moment the MPS backend does not support isinf or isnan.
+    # Move to CPU, as this does not cost us anything.
+    amin, amax = t.amin().cpu(), t.amax().cpu()
 
     zeros = ansi_color("all_zeros", "grey", color) if amin.eq(0) and amax.eq(0) and t.numel() > 1 else None
     pinf = ansi_color("+Inf!", "red", color) if amax.isposinf() else None
