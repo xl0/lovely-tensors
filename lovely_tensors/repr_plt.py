@@ -10,7 +10,8 @@ from matplotlib import pyplot as plt
 from IPython.core.pylabtools import print_figure
 import torch
 
-from .repr_str import lovely, pretty_str
+from .repr_str import to_str, pretty_str
+from lovely_numpy import plot as np_plot
 
 # %% ../nbs/02_repr_plt.ipynb 4
 def normal_pdf( x: torch.Tensor,
@@ -37,152 +38,6 @@ def normal_pdf( x: torch.Tensor,
             )
 
 # %% ../nbs/02_repr_plt.ipynb 6
-### XXX This thing needs a rewrite!
-@torch.no_grad()
-def _plot(t: torch.Tensor, center="zero", max_s=100000, plt0=True, ax=None):
-    """Plot tensor statistics"""
-
-    assert center in ["zero", "mean", "range"]
-
-    orig_str = str(lovely(t, color=False))
-    orig_numel = t.numel()
-
-    assert t.numel() > 0, f"Cannot plot an empty tensor: {orig_str}"
-
-    # XXX Rework this to match what I did in lovely()
-    # Same as in `lovely()`, we have to move it to cpu before good-value indexing.
-    cput = t.detach().cpu()
-    del t
-    t = cput
-
-    # `t`` may have nasty things like 'nan' and 'inf'. Could also be of non-float type.
-    t = t[ torch.isfinite(t) ].float()
-
-    t_min, t_max = t.min().item(), t.max().item()
-
-    # Sometimes we don't want count zeros in the histogram.
-    # Think activations after ReLU where half the values are 0.
-    if not plt0: t = t[t != 0.]
-    
-    # `t` might be not on CPU. `t` also might be pretty large. If the tensor is large,
-    # randomly sample up to `limit` before moving it to cpu. Here sampling does
-    # not cause excessice CUDA memory allocation, because the index tensor is not large.   
-    if t.numel() > max_s and max_s > 0:
-        # For efficieny reasons, we have to sample with replacement.
-        idxs = torch.randint(low=0, high=t.numel(), size=(max_s,), device=t.device)
-        t = t.flatten()[idxs]
-
-    ### Plot an empty histogram instead of throwing an assert!
-    assert t.numel() > 0, f"Cannot plot tensor because all values are invalid: {str(lovely(t, color=False))}"
-
-    if t.numel() < 1:
-        return
-
-    t_mean, t_std = t.mean().item(), t.std().item()
-   
-    t_str = ""
-    if t.numel() != orig_numel:
-        t_str += str(t.numel()) 
-        if not plt0: t_str += " non-zero"
-        t_str += f" samples (μ={pretty_str(t_mean)}, σ={pretty_str(t_std)}) of "
-    t_str += orig_str
-
-    fig = None
-    if not ax:
-        fig, ax = plt.subplots(figsize=(12, 2))
-        fig.tight_layout()
-        plt.close(fig)
-
-    # Center the plot around zero, mean, or the extents of the range of t.
-    if center == "range":
-        # X limits should center the plot around the mean value
-        # x_limit = max(t_min.abs().item(), t_max.abs().item())
-        x_min, x_max = t_min, t_max
-    elif center == "mean":
-        max_div = max((t_mean - abs(t_min)), (abs(t_max) - t_mean))
-        x_min, x_max = t_mean - max_div, t_mean + max_div
-        # x_limits = [t_mean - x_limit, t_mean + x_limit]
-    else:
-        # X limits should center the plot around zero
-        abs_max_value = max(abs(t_min), abs(t_max))
-        # ,
-                    # (t_mean-max_sigma*t_std).item(), (t_mean+max_sigma*t_std).item())
-        x_min, x_max = -abs_max_value, abs_max_value
-
-    assert t_std != 0, "Std is 0! This is not good. XXX: Handle this"
-    assert t_std == t_std, "Std is Nan! This is not good. XXX: Handle this"
-        
-    sigmas = max(int(math.floor((abs(t_mean - t_min) / t_std))),
-                int(math.floor((abs(t_max - t_mean) / t_std))))
-
-    x_min -= abs(x_max - x_min) * 0.02
-    x_max += abs(x_max - x_min) * 0.02
-
-    # Around 50 items / bin seems ot look good. But don't go below 10 or above 100.
-    bins = int(t.numel() / 50)
-    bins = max(min(bins, 100), 10)
-
-    histc = t.histc(bins=bins, min=t_min, max=t_max)
-
-    bar_edges = torch.linspace(t_min, t_max, bins+1)[:bins]
-    bar_width = bar_edges[:2].diff()
-
-    # Histogram normalized to look like PDF: area under histogram = 1.
-    histc_density = (histc / (histc.sum() * bar_width))
-    ax.bar(x=bar_edges.numpy(), height=histc_density.numpy(), width=bar_width, color="deepskyblue", align="edge", zorder=4,)
-
-
-    # PDF of normal distribution with the same mean and std.
-    x = torch.linspace(x_min, x_max, 100)
-    normal_density = normal_pdf(x, mean=t_mean, std=t_std)
-    ax.plot(x, normal_pdf(x, mean=t_mean, std=t_std), zorder=5)
-
-    y_lim = max(histc_density.max().item(), normal_density.max().item()) * 1.3
-
-    # Make text bank part of the line under it
-    bbox = dict(boxstyle="round", fc="white", edgecolor="none")
-
-    for s in range(-sigmas, sigmas+1):
-        x_pos = (t_mean + s*t_std)
-        if x_min < x_pos < x_max:
-            greek = ["-σ", "μ", "+σ"][s+1]  if -1 <= s <= 1 else f"{s:+}σ"
-            weight='bold' if not s else None
-            ax.axvline(x_pos, 0, 1, c="black")
-            ax.text(x_pos, y_lim*0.95, greek, ha="center", va="top", bbox=bbox, zorder=5, weight=weight)
-
-    # 2 red lines for min and max values
-    ax.annotate(
-        f"min={pretty_str(t_min)}",
-        (t_min, y_lim/2),
-        xytext=(-1, 0), textcoords='offset points',
-        bbox=bbox,
-        rotation=90,
-        ha="right",
-        va="center"
-        )
-
-    ax.annotate(
-        f"max={pretty_str(t_max)}",
-        (t_max, y_lim/2),
-        xytext=(2, 0), textcoords='offset points',
-        bbox=bbox,
-        rotation=90,
-        ha="left",
-        va="center"
-        )
-
-    ax.axvline(t_min, 0, 1, c="red", zorder=4)
-    ax.axvline(t_max, 0, 1, c="red", zorder=4)
-
-    ax.text(x_min, y_lim*1.05, s=t_str)
-    ax.set_ylim(0, y_lim)
-    ax.set_yticks([])
-
-    ax.set_xlim(x_min, x_max )
-
-    return fig
-
-# %% ../nbs/02_repr_plt.ipynb 7
 # This is here for the monkey-patched tensor use case.
 # Gives the ability to call both .plt and .plt(ax=ax).  
 
@@ -199,12 +54,14 @@ class PlotProxy():
         assert center in ["zero", "mean", "range"]
 
     def __call__(self, center=None, max_s=None, plt0=None, fmt=None, ax=None):
+        t = self.t
         center = center or self.center
         fmt = fmt or self.fmt
         if max_s is None: max_s = self.max_s
         if plt0 is None: plt0 = self.plt0
         if ax:
-            _plot(self.t, center=center, max_s=max_s, plt0=plt0, ax=ax)
+            summary = to_str(t, color=False)
+            np_plot(t.detach().cpu().numpy(), center=center, max_s=max_s, plt0=plt0, ax=ax, summary=summary)
             return ax
 
         return PlotProxy(self.t, center=center, max_s=max_s, plt0=plt0, fmt=fmt)
@@ -217,14 +74,18 @@ class PlotProxy():
     # one format instead.
     def _repr_svg_(self):
         if self.fmt == "svg":
-            return print_figure(_plot(self.t, center=self.center, max_s=self.max_s, plt0=self.plt0), fmt="svg")
+            summary = to_str(self.t, color=False)
+            t = self.t.detach().cpu().numpy()
+            return print_figure(np_plot(t, center=self.center, max_s=self.max_s, plt0=self.plt0, summary=summary), fmt="svg")
 
     def _repr_png_(self):
         if self.fmt == "png":
-            return print_figure(_plot(self.t, center=self.center, max_s=self.max_s, plt0=self.plt0), fmt="png")
+            summary = to_str(self.t, color=False)
+            t = self.t.detach().cpu().numpy()
+            return print_figure(np_plot(t, center=self.center, max_s=self.max_s, plt0=self.plt0, summary=summary), fmt="png")
 
 
-# %% ../nbs/02_repr_plt.ipynb 8
+# %% ../nbs/02_repr_plt.ipynb 7
 def plot(t: torch.Tensor, # Tensor to explore
     center="zero",        # Center plot on  `zero`, `mean`, or `range`
     max_s=10000,          # Draw up to this many samples. =0 to draw all
