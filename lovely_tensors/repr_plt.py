@@ -3,21 +3,23 @@
 # %% auto 0
 __all__ = ['plot']
 
-# %% ../nbs/02_repr_plt.ipynb 3
+# %% ../nbs/02_repr_plt.ipynb 4
 import math
 from typing import Union, Any, Optional as O
 from functools import cached_property
+
+import torch
 from matplotlib import pyplot as plt, axes, figure, rc_context
 from IPython.core.pylabtools import print_figure
 
-import torch
-
 from lovely_numpy.repr_plt import fig_plot
+from lovely_numpy import config as np_config
 
 from .repr_str import to_str, pretty_str
 from .utils.misc import to_numpy
+from .utils.config import get_config
 
-# %% ../nbs/02_repr_plt.ipynb 4
+# %% ../nbs/02_repr_plt.ipynb 5
 # This is here for the monkey-patched tensor use case.
 # Gives the ability to call both .plt and .plt(ax=ax).  
 
@@ -46,9 +48,13 @@ class PlotProxy():
 
     @cached_property
     def fig(self) -> figure.Figure:
-        return fig_plot( to_numpy(self.x),
-                        summary=to_str(self.x, color=False),
-                        **self.params)
+        cfg = get_config()
+        with np_config( fig_close=cfg.fig_close,
+                        fig_show=cfg.fig_show,
+                        plt_seed=cfg.plt_seed ):
+            return fig_plot( to_numpy(self.x),
+                            summary=to_str(self.x, color=False),
+                            **self.params)
 
     def _repr_png_(self):
         return print_figure(self.fig, fmt="png",
@@ -65,7 +71,7 @@ class PlotProxy():
         return svg_repr
 
 
-# %% ../nbs/02_repr_plt.ipynb 5
+# %% ../nbs/02_repr_plt.ipynb 6
 def plot(   x       : torch.Tensor, # Tensor to explore
             center  :str    ="zero",    # Center plot on  `zero`, `mean`, or `range`
             max_s   :int    =10000,     # Draw up to this many samples. =0 to draw all

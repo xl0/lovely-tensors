@@ -10,6 +10,7 @@ website:
           - 05_repr_chans.ipynb
       - section: ✨ Misc
         contents:
-          - 03_utils.config.ipynb
+          - 03a_utils.config.ipynb
           - 10_patch.ipynb
+          - matplotlib.ipynb
           - history.ipynb

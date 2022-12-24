@@ -292,10 +292,7 @@ weights[:4].chans(frame_px=1, gutter_px=0, scale=10)
 
 ![](index_files/figure-gfm/cell-29-output-1.png)
 
-## Options
-
-See [docs](https://xl0.github.io/lovely-tensors/utils.config.html) for
-more
+## Options \| [Docs](utils.config.html)
 
 ``` python
 from lovely_tensors import set_config, config, lovely, get_config
@@ -368,7 +365,7 @@ lt.chans(numbers_01)
 
 ![](index_files/figure-gfm/cell-39-output-1.png)
 
-## Matplotlib integration
+## Matplotlib integration \| [Docs](matplotlib.html)
 
 ``` python
 numbers.rgb(in_stats).fig # matplotlib figure
@@ -392,14 +389,22 @@ numbers.plt.fig.savefig('pretty.svg') # Save it
 
     pretty.svg: SVG Scalable Vector Graphics image
 
-``` python
-fig, (ax1, ax2) = plt.subplots(2, figsize=(10,4))
-ax1.set_axis_off()
-plt.close(fig)
-fig.tight_layout()
+### Add content to existing Axes
 
-numbers_01.chans(ax=ax1)
-numbers_01.plt(ax=ax2)
+``` python
+fig = plt.figure(figsize=(8,3))
+fig.set_constrained_layout(True)
+gs = fig.add_gridspec(2,2)
+ax1 = fig.add_subplot(gs[0, :])
+ax2 = fig.add_subplot(gs[1, 0])
+ax3 = fig.add_subplot(gs[1,1:])
+
+ax2.set_axis_off()
+ax3.set_axis_off()
+
+numbers_01.plt(ax=ax1)
+numbers_01.rgb(ax=ax2)
+numbers_01.chans(ax=ax3);
 ```
 
 ![](index_files/figure-gfm/cell-44-output-1.svg)

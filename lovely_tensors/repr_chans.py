@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['chans']
 
-# %% ../nbs/05_repr_chans.ipynb 4
+# %% ../nbs/05_repr_chans.ipynb 5
 from typing import Any, Optional as O
 from functools import cached_property
 
@@ -12,9 +12,13 @@ from matplotlib import pyplot as plt, axes, figure
 from IPython.core.pylabtools import print_figure
 
 from lovely_numpy.repr_chans import fig_chans
-from .utils.misc import to_numpy
+from lovely_numpy import config as np_config
 
-# %% ../nbs/05_repr_chans.ipynb 5
+from .utils.misc import to_numpy
+from .utils.config import get_config
+
+
+# %% ../nbs/05_repr_chans.ipynb 6
 class ChanProxy():   
     def __init__(self, t: torch.Tensor):
         self.t = t
@@ -53,13 +57,15 @@ class ChanProxy():
 
     @cached_property
     def fig(self) -> figure.Figure:
-        return fig_chans(to_numpy(self.t), **self.params, )
+        cfg = get_config()
+        with np_config(fig_close=cfg.fig_close, fig_show=cfg.fig_show):
+            return fig_chans(to_numpy(self.t), **self.params)
 
     def _repr_png_(self):
         return print_figure(self.fig, fmt="png", pad_inches=0,
             metadata={"Software": "Matplotlib, https://matplotlib.org/"})
 
-# %% ../nbs/05_repr_chans.ipynb 6
+# %% ../nbs/05_repr_chans.ipynb 7
 def chans(  x: torch.Tensor,                # Input, shape=([...], H, W)
             cmap        :str    ="twilight",# Use matplotlib colormap by this name
             cm_below    :str    ="blue",    # Color for values below -1

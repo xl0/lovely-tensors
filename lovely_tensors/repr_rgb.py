@@ -3,22 +3,25 @@
 # %% auto 0
 __all__ = ['rgb']
 
-# %% ../nbs/01_repr_rgb.ipynb 4
+# %% ../nbs/01_repr_rgb.ipynb 5
 from typing import Any, Optional as O
 from functools import cached_property
+
 from matplotlib import axes, figure
 from IPython.core.pylabtools import print_figure
-
 from PIL import Image
 import torch
 
 from lovely_numpy.utils.pad import pad_frame_gutters
 from lovely_numpy.utils.tile2d import hypertile
 from lovely_numpy.repr_rgb import fig_rgb
+from lovely_numpy import config as np_config
 
 from .utils.misc import to_numpy
+from .utils.config import get_config
 
-# %% ../nbs/01_repr_rgb.ipynb 5
+
+# %% ../nbs/01_repr_rgb.ipynb 6
 # This is here for the monkey-patched tensor use case.
 
 # I want to be able to call both `tensor.rgb` and `tensor.rgb(stats)`. For the
@@ -57,14 +60,16 @@ class RGBProxy():
 
     @cached_property
     def fig(self) -> figure.Figure:
-        return fig_rgb(to_numpy(self.t), **self.params)
+        cfg = get_config()
+        with np_config(fig_close=cfg.fig_close, fig_show=cfg.fig_show):
+            return fig_rgb(to_numpy(self.t), **self.params)
 
     def _repr_png_(self):
         return print_figure(self.fig, fmt="png", pad_inches=0,
             metadata={"Software": "Matplotlib, https://matplotlib.org/"})
 
 
-# %% ../nbs/01_repr_rgb.ipynb 6
+# %% ../nbs/01_repr_rgb.ipynb 7
 def rgb(x           :torch.Tensor,  # Tensor to display. [[...], C,H,W] or [[...], H,W,C]
         denorm      :Any =None,     # Reverse per-channel normalizatoin
         cl          :Any =False,    # Channel-last
