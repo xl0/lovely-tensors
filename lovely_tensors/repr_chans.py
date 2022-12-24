@@ -12,7 +12,7 @@ from matplotlib import pyplot as plt, axes, figure
 from IPython.core.pylabtools import print_figure
 
 from lovely_numpy.repr_chans import fig_chans
-
+from .utils.misc import to_numpy
 
 # %% ../nbs/05_repr_chans.ipynb 5
 class ChanProxy():   
@@ -53,7 +53,7 @@ class ChanProxy():
 
     @cached_property
     def fig(self) -> figure.Figure:
-        return fig_chans(self.t.detach().cpu().numpy(), **self.params, )
+        return fig_chans(to_numpy(self.t), **self.params, )
 
     def _repr_png_(self):
         return print_figure(self.fig, fmt="png", pad_inches=0,

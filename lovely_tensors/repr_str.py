@@ -12,6 +12,7 @@ from lovely_numpy import np_to_str_common, pretty_str, sparse_join, ansi_color
 from lovely_numpy import config as lnp_config
 
 from .utils.config import get_config
+from .utils.misc import to_numpy
 
 # %% ../nbs/00_repr_str.ipynb 6
 def type_to_dtype(t: str) -> torch.dtype:
@@ -26,6 +27,7 @@ dtnames = { type_to_dtype(k): v
                 for k,v in {"float32": "",
                             "float16": "f16",
                             "float64": "f64",
+                            "bfloat16": "bf16",
                             "uint8": "u8", # torch does not have uint16/32/64
                             "int8": "i8",
                             "int16": "i16",
@@ -133,11 +135,11 @@ def to_str(t: torch.Tensor,
                         sci_mode=conf.sci_mode):
 
             if is_cpu(t) or is_nasty(t) or not t.is_floating_point():
-                common = np_to_str_common(t.detach().cpu().numpy(), color=color, ddof=1)
+                common = np_to_str_common(to_numpy(t), color=color, ddof=1)
             else:
                 common = torch_to_str_common(t, color=color)
 
-            vals = pretty_str(t.cpu().numpy()) if 0 < t.numel() <= 10 else None
+            vals = pretty_str(to_numpy(t)) if 0 < t.numel() <= 10 else None
             res = sparse_join([type_str, dtype, common, grad, grad_fn, dev, vals])
     else:
         res = plain_repr(t)

@@ -12,11 +12,11 @@ from IPython.core.pylabtools import print_figure
 from PIL import Image
 import torch
 
-
 from lovely_numpy.utils.pad import pad_frame_gutters
 from lovely_numpy.utils.tile2d import hypertile
 from lovely_numpy.repr_rgb import fig_rgb
 
+from .utils.misc import to_numpy
 
 # %% ../nbs/01_repr_rgb.ipynb 5
 # This is here for the monkey-patched tensor use case.
@@ -57,7 +57,7 @@ class RGBProxy():
 
     @cached_property
     def fig(self) -> figure.Figure:
-        return fig_rgb(self.t.detach().cpu().numpy(), **self.params)
+        return fig_rgb(to_numpy(self.t), **self.params)
 
     def _repr_png_(self):
         return print_figure(self.fig, fmt="png", pad_inches=0,

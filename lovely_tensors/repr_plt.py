@@ -12,8 +12,10 @@ from IPython.core.pylabtools import print_figure
 
 import torch
 
-from .repr_str import to_str, pretty_str
 from lovely_numpy.repr_plt import fig_plot
+
+from .repr_str import to_str, pretty_str
+from .utils.misc import to_numpy
 
 # %% ../nbs/02_repr_plt.ipynb 4
 # This is here for the monkey-patched tensor use case.
@@ -44,7 +46,7 @@ class PlotProxy():
 
     @cached_property
     def fig(self) -> figure.Figure:
-        return fig_plot( self.x.detach().cpu().numpy(),
+        return fig_plot( to_numpy(self.x),
                         summary=to_str(self.x, color=False),
                         **self.params)
 
