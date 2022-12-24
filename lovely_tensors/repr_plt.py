@@ -5,91 +5,74 @@ __all__ = ['plot']
 
 # %% ../nbs/02_repr_plt.ipynb 3
 import math
-from typing import Union
-from matplotlib import pyplot as plt
+from typing import Union, Any, Optional as O
+from functools import cached_property
+from matplotlib import pyplot as plt, axes, figure, rc_context
 from IPython.core.pylabtools import print_figure
+
 import torch
 
 from .repr_str import to_str, pretty_str
-from lovely_numpy import plot as np_plot
+from lovely_numpy.repr_plt import fig_plot
 
 # %% ../nbs/02_repr_plt.ipynb 4
-def normal_pdf( x: torch.Tensor,
-                mean: Union[torch.Tensor, float] =0.,
-                std: Union[torch.Tensor, float] =1.):
-    r"""Probability Distribution Function of Normal Distribution:
-        $$f(x, \mu, \sigma)
-        = \dfrac{1}
-            {\sigma \sqrt{2\pi} }
-        e^{-\frac{1}{2} \left(\frac{x-\mu}{\sigma}\right)^{2}}
-        = \dfrac{e^{- \frac{1}{2}\left(\frac{x-\mu}{\sigma}\right)^{2}}}
-            {\sigma \sqrt{2\pi}}$$"""
-
-    dev = x.device
-    e = torch.tensor(math.e).to(dev)
-    pi = torch.tensor(math.pi).to(dev)
-
-    mean = torch.tensor(mean).to(dev) if not isinstance(mean, torch.Tensor) else mean
-    std = torch.tensor(std).to(dev) if not isinstance(std, torch.Tensor) else std
-
-    return (e
-                .pow( -0.5 * ((x - mean)/std).pow(2) )
-                .div((std * (pi * 2).sqrt()))
-            )
-
-# %% ../nbs/02_repr_plt.ipynb 6
 # This is here for the monkey-patched tensor use case.
 # Gives the ability to call both .plt and .plt(ax=ax).  
 
 class PlotProxy(): 
     """Flexible `PIL.Image.Image` wrapper"""
-    @torch.no_grad()
-    def __init__(self, t:torch.Tensor, center="zero", max_s=10000, plt0=True, fmt="png"):
-        self.t = t
-        self.center = center
-        self.fmt = fmt
-        self.max_s = max_s
-        self.plt0 = plt0
-        assert fmt in ["png", "svg"]
-        assert center in ["zero", "mean", "range"]
 
-    def __call__(self, center=None, max_s=None, plt0=None, fmt=None, ax=None):
-        t = self.t
-        center = center or self.center
-        fmt = fmt or self.fmt
-        if max_s is None: max_s = self.max_s
-        if plt0 is None: plt0 = self.plt0
-        if ax:
-            summary = to_str(t, color=False)
-            np_plot(t.detach().cpu().numpy(), center=center, max_s=max_s, plt0=plt0, ax=ax, summary=summary)
-            return ax
+    def __init__(self, x:torch.Tensor):
+        self.x = x
+        self.params = dict( center="zero",
+                            max_s=10000,
+                            plt0=True,
+                            ax=None)
 
-        return PlotProxy(self.t, center=center, max_s=max_s, plt0=plt0, fmt=fmt)
+    def __call__(   self,
+                    center  :O[str] =None,
+                    max_s   :O[int] =None,
+                    plt0    :Any    =None,
+                    ax      :O[axes.Axes]=None):
 
-    # Do an explicit print_figure instead of relying on IPythons repr formatter
-    # for pyplot.Figure. Mainly for speed.
-    #
-    # IPython will attempt to render the figure in a bunch of formats, and then
-    # pick one to show. This takes a noticeable amount of time. Render just
-    # one format instead.
-    def _repr_svg_(self):
-        if self.fmt == "svg":
-            summary = to_str(self.t, color=False)
-            t = self.t.detach().cpu().numpy()
-            return print_figure(np_plot(t, center=self.center, max_s=self.max_s, plt0=self.plt0, summary=summary), fmt="svg")
+        self.params.update( { k:v for
+                    k,v in locals().items()
+                    if k != "self" and v is not None } )
+        
+        _ = self.fig # Trigger figure generation
+        return self
+
+    @cached_property
+    def fig(self) -> figure.Figure:
+        return fig_plot( self.x.detach().cpu().numpy(),
+                        summary=to_str(self.x, color=False),
+                        **self.params)
 
     def _repr_png_(self):
-        if self.fmt == "png":
-            summary = to_str(self.t, color=False)
-            t = self.t.detach().cpu().numpy()
-            return print_figure(np_plot(t, center=self.center, max_s=self.max_s, plt0=self.plt0, summary=summary), fmt="png")
+        return print_figure(self.fig, fmt="png",
+            metadata={"Software": "Matplotlib, https://matplotlib.org/"})
+
+    def _repr_svg_(self):
+        # Metadata and context for a mode deterministic svg generation
+        metadata={
+            "Date": None,
+            "Creator": "Matplotlib, https://matplotlib.org/",
+        }
+        with rc_context({"svg.hashsalt": "1"}):
+            svg_repr = print_figure(self.fig, fmt="svg", metadata=metadata)
+        return svg_repr
 
 
-# %% ../nbs/02_repr_plt.ipynb 7
-def plot(t: torch.Tensor, # Tensor to explore
-    center="zero",        # Center plot on  `zero`, `mean`, or `range`
-    max_s=10000,          # Draw up to this many samples. =0 to draw all
-    plt0=True,            # Take zero values into account
-    fmt="png",            # Render figure in this format (`png`, `svg`)
-    ax=None):             # Optionally supply your own matplotlib axes.
-    return PlotProxy(t=t, fmt=fmt)(center=center, max_s=max_s, plt0=plt0, ax=ax)
+# %% ../nbs/02_repr_plt.ipynb 5
+def plot(   x       : torch.Tensor, # Tensor to explore
+            center  :str    ="zero",    # Center plot on  `zero`, `mean`, or `range`
+            max_s   :int    =10000,     # Draw up to this many samples. =0 to draw all
+            plt0    :Any    =True,      # Take zero values into account
+            ax      :O[axes.Axes]=None  # Optionally provide a matplotlib axes.
+        ) -> PlotProxy:
+    
+    args = locals()
+    del args["x"]
+
+    return PlotProxy(x)(**args)
+

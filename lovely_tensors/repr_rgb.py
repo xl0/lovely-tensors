@@ -4,28 +4,21 @@
 __all__ = ['rgb']
 
 # %% ../nbs/01_repr_rgb.ipynb 4
+from typing import Any, Optional as O
+from functools import cached_property
+from matplotlib import axes, figure
+from IPython.core.pylabtools import print_figure
+
 from PIL import Image
 import torch
 
+
 from lovely_numpy.utils.pad import pad_frame_gutters
 from lovely_numpy.utils.tile2d import hypertile
-from lovely_numpy import rgb as np_rgb
+from lovely_numpy.repr_rgb import fig_rgb
+
 
 # %% ../nbs/01_repr_rgb.ipynb 5
-def rgb(t: torch.Tensor, # Tensor to display. [[...], C,H,W] or [[...], H,W,C]
-            denorm=None, # Reverse per-channel normalizatoin
-            cl=False,    # Channel-last
-            gutter_px = 3,  # If more than one tensor -> tile with this gutter width
-            frame_px=1,  # If more than one tensor -> tile with this frame width
-            scale=1,
-            view_width=966): # targer width of the image
-     
-    return np_rgb(t.detach().cpu().numpy(),
-                    denorm=denorm, cl=cl, gutter_px=gutter_px,
-                    frame_px=frame_px, scale=scale,
-                    view_width=view_width)
-
-# %% ../nbs/01_repr_rgb.ipynb 6
 # This is here for the monkey-patched tensor use case.
 
 # I want to be able to call both `tensor.rgb` and `tensor.rgb(stats)`. For the
@@ -37,21 +30,52 @@ class RGBProxy():
     
     def __init__(self, t:torch.Tensor):
         assert t.ndim >= 3, f"Expecting at least 3 dimensions, got shape{t.shape}={t.dim()}"
-        self.t = t
+        self.t =t
+        self.params = dict(denorm   = None,
+                            cl         = False,
+                            gutter_px  = 3,     
+                            frame_px   = 1,
+                            scale      = 1,
+                            view_width = 966,
+                            ax = None)
 
-    def __call__(   self,
-                    denorm=None,
-                    cl=False,
-                    gutter_px=3, frame_px=1,
-                    scale=1,
-                    view_width=966):
 
-        return rgb(self.t, denorm=denorm, cl=cl, gutter_px=gutter_px,
-                frame_px=frame_px, view_width=view_width, scale=scale)
-    
+    def __call__(self,
+                denorm      :Any    =None,
+                cl          :Any    =False,
+                gutter_px   :O[int] =None,
+                frame_px    :O[int] =None,
+                scale       :O[int] =None,
+                view_width  :O[int] =None,
+                ax          :O[axes.Axes]=None):
+        
+        self.params.update( { k:v for
+                            k,v in locals().items()
+                            if k != "self" and v is not None } )
+        _ = self.fig # Trigger figure generation
+        return self
+
+    @cached_property
+    def fig(self) -> figure.Figure:
+        return fig_rgb(self.t.detach().cpu().numpy(), **self.params)
+
     def _repr_png_(self):
-        # Note: In order to prevernt IPYthon from hogging memory, we
-        # delete the reference to the tensor after the first call to
-        # `_repr_png_`. This is fine for Jupyter use.
-        return self.__call__()._repr_png_()
+        return print_figure(self.fig, fmt="png", pad_inches=0,
+            metadata={"Software": "Matplotlib, https://matplotlib.org/"})
 
+
+# %% ../nbs/01_repr_rgb.ipynb 6
+def rgb(x           :torch.Tensor,  # Tensor to display. [[...], C,H,W] or [[...], H,W,C]
+        denorm      :Any =None,     # Reverse per-channel normalizatoin
+        cl          :Any =False,    # Channel-last
+        gutter_px   :int =3,        # If more than one tensor -> tile with this gutter width
+        frame_px    :int =1,        # If more than one tensor -> tile with this frame width
+        scale       :int =1,        # Scale up. Can't scale down.
+        view_width  :int =966,      # target width of the image
+        ax          :O[axes.Axes] =None # Use this Axes
+        ) -> RGBProxy:
+
+    args = locals()
+    del args["x"]
+    
+    return RGBProxy(x)(**args)

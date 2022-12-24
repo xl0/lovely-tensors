@@ -175,19 +175,19 @@ It’s indeed our hero, the Tenchman!
 (numbers+3).plt
 ```
 
-![](index_files/figure-gfm/cell-15-output-1.png)
+![](index_files/figure-gfm/cell-15-output-1.svg)
 
 ``` python
 (numbers+3).plt(center="mean", max_s=1000)
 ```
 
-![](index_files/figure-gfm/cell-16-output-1.png)
+![](index_files/figure-gfm/cell-16-output-1.svg)
 
 ``` python
 (numbers+3).plt(center="range")
 ```
 
-![](index_files/figure-gfm/cell-17-output-1.png)
+![](index_files/figure-gfm/cell-17-output-1.svg)
 
 ## See the `.chans`
 
@@ -274,7 +274,7 @@ weights = weights / (2*2*weights.std()) # *2 because we want 2σ on both sides, 
 weights.plt
 ```
 
-![](index_files/figure-gfm/cell-27-output-1.png)
+![](index_files/figure-gfm/cell-27-output-1.svg)
 
 ``` python
 # Weights of the second conv layer (64ch -> 128ch) of VGG11,
@@ -360,7 +360,7 @@ lt.rgb(numbers, in_stats)
 lt.plot(numbers, center="mean")
 ```
 
-![](index_files/figure-gfm/cell-38-output-1.png)
+![](index_files/figure-gfm/cell-38-output-1.svg)
 
 ``` python
 lt.chans(numbers_01)

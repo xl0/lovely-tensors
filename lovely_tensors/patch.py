@@ -4,9 +4,11 @@
 __all__ = ['monkey_patch']
 
 # %% ../nbs/10_patch.ipynb 3
+from typing import Any, Optional as O
+
 import torch
 from fastcore.foundation import patch_to
-import matplotlib.pyplot as plt
+from matplotlib import pyplot as plt
 
 from .repr_str import StrProxy
 from .repr_rgb import RGBProxy

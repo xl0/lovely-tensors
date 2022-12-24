@@ -4,67 +4,79 @@
 __all__ = ['chans']
 
 # %% ../nbs/05_repr_chans.ipynb 4
+from typing import Any, Optional as O
+from functools import cached_property
+
 import torch
-from lovely_numpy.repr_chans import chans as np_chans
+from matplotlib import pyplot as plt, axes, figure
+from IPython.core.pylabtools import print_figure
+
+from lovely_numpy.repr_chans import fig_chans
 
 
 # %% ../nbs/05_repr_chans.ipynb 5
-def chans(t: torch.Tensor,      # Input, shape=([...], H, W)
-             cmap = "twilight", # Use matplotlib colormap by this name
-             cm_below="blue",   # Color for values below -1
-             cm_above="red",    # Color for values above 1
-             cm_ninf="cyan",    # Color for -inf values
-             cm_pinf="fuchsia", # Color for +inf values
-             cm_nan="yellow",   # Color for NaN values
-             view_width=966,    # Try to produce an image at most this wide
-             gutter_px=3,       # Draw write gutters when tiling the images
-             frame_px=1,        # Draw black frame around each image
-             scale=1,
-             cl=False):     
-
-    "Map tensor values to colors. RGB[A] color is added as channel-last"
-    return np_chans(t.detach().cpu().numpy(),
-                    cmap=cmap,
-                    cm_below=cm_below,
-                    cm_above=cm_above,
-                    cm_ninf=cm_ninf,
-                    cm_pinf=cm_pinf,
-                    cm_nan=cm_nan,
-                    view_width=view_width,
-                    gutter_px=gutter_px,
-                    frame_px=frame_px,
-                    scale=scale,
-                    cl=cl)
-
-
-# %% ../nbs/05_repr_chans.ipynb 6
-class ChanProxy():
+class ChanProxy():   
     def __init__(self, t: torch.Tensor):
         self.t = t
-    
+        self.params = dict(cmap = "twilight", 
+                    cm_below="blue",
+                    cm_above="red",
+                    cm_ninf="cyan",
+                    cm_pinf="fuchsia",
+                    cm_nan="yellow",
+                    view_width=966,
+                    gutter_px=3,
+                    frame_px=1,
+                    scale=1,
+                    cl=False,
+                    ax=None)
+
     def __call__(self,
-                 cmap = "twilight", 
-                 cm_below="blue",
-                 cm_above="red",
-                 cm_ninf="cyan",
-                 cm_pinf="fuchsia",
-                 cm_nan="yellow",
-                 view_width=966,
-                 gutter_px=3,
-                 frame_px=1,
-                 scale=1):
+                 cmap       :O[str]=None, 
+                 cm_below   :O[str]=None,
+                 cm_above   :O[str]=None,
+                 cm_ninf    :O[str]=None,
+                 cm_pinf    :O[str]=None,
+                 cm_nan     :O[str]=None,
+                 view_width :O[int]=None,
+                 gutter_px  :O[int]=None,
+                 frame_px   :O[int]=None,
+                 scale      :O[int]=None,
+                 cl         :Any=None,
+                 ax         :O[axes.Axes]=None):
         
-        return chans(self.t,
-                     cmap=cmap,
-                     cm_below=cm_below,
-                     cm_above=cm_above,
-                     cm_ninf=cm_ninf,
-                     cm_pinf=cm_pinf,
-                     cm_nan=cm_nan,
-                     view_width=view_width,
-                     gutter_px=gutter_px,
-                     frame_px=frame_px,
-                     scale=scale)
-    
+        self.params.update( {   k:v for
+                                k,v in locals().items()
+                                if k != "self" and v is not None } )
+        _ = self.fig # Trigger figure generation
+        return self
+
+    @cached_property
+    def fig(self) -> figure.Figure:
+        return fig_chans(self.t.detach().cpu().numpy(), **self.params, )
+
     def _repr_png_(self):
-        return self.__call__()._repr_png_()
+        return print_figure(self.fig, fmt="png", pad_inches=0,
+            metadata={"Software": "Matplotlib, https://matplotlib.org/"})
+
+# %% ../nbs/05_repr_chans.ipynb 6
+def chans(  x: torch.Tensor,                # Input, shape=([...], H, W)
+            cmap        :str    ="twilight",# Use matplotlib colormap by this name
+            cm_below    :str    ="blue",    # Color for values below -1
+            cm_above    :str    ="red",     # Color for values above 1
+            cm_ninf     :str    ="cyan",    # Color for -inf values
+            cm_pinf     :str    ="fuchsia", # Color for +inf values
+            cm_nan      :str    ="yellow",  # Color for NaN values
+            view_width  :int    =966,       # Try to produce an image at most this wide
+            gutter_px   :int    =3,         # Draw write gutters when tiling the images
+            frame_px    :int    =1,         # Draw black frame around each image
+            scale       :int    =1,
+            cl          :Any    =False,
+            ax          :O[axes.Axes]=None
+        ) -> ChanProxy:
+
+    "Map tensor values to colors. RGB[A] color is added as channel-last"
+    args = locals()
+    del args["x"]
+
+    return ChanProxy(x)(**args)
