@@ -367,3 +367,39 @@ lt.chans(numbers_01)
 ```
 
 ![](index_files/figure-gfm/cell-39-output-1.png)
+
+## Matplotlib integration
+
+``` python
+numbers.rgb(in_stats).fig # matplotlib figure
+```
+
+![](index_files/figure-gfm/cell-40-output-1.svg)
+
+``` python
+(numbers*0.3+0.5).chans.fig # matplotlib figure
+```
+
+![](index_files/figure-gfm/cell-41-output-1.svg)
+
+``` python
+numbers.plt.fig.savefig('pretty.svg') # Save it
+```
+
+``` python
+!file pretty.svg
+```
+
+    pretty.svg: SVG Scalable Vector Graphics image
+
+``` python
+fig, (ax1, ax2) = plt.subplots(2, figsize=(10,4))
+ax1.set_axis_off()
+plt.close(fig)
+fig.tight_layout()
+
+numbers_01.chans(ax=ax1)
+numbers_01.plt(ax=ax2)
+```
+
+![](index_files/figure-gfm/cell-44-output-1.svg)
