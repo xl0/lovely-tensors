@@ -384,7 +384,7 @@ numbers.plt.fig.savefig('pretty.svg') # Save it
 ```
 
 ``` python
-!file pretty.svg
+!file pretty.svg; rm pretty.svg
 ```
 
     pretty.svg: SVG Scalable Vector Graphics image
