@@ -294,8 +294,8 @@ weights[:4].chans(frame_px=1, gutter_px=0, scale=10)
 
 ## Options
 
-See [docs](https://xl0.github.io/lovely-tensors/03_utils.config.html)
-for more
+See [docs](https://xl0.github.io/lovely-tensors/utils.config.html) for
+more
 
 ``` python
 from lovely_tensors import set_config, config, lovely, get_config
