@@ -36,7 +36,9 @@ dtnames = { type_to_dtype(k): v
                         }.items()
 }
 
-def short_dtype(x): return dtnames.get(x.dtype, str(x.dtype)[6:])
+def short_dtype(x):
+    # split(".") to torch.uint4 -> uint4
+    return dtnames.get(x.dtype, str(x.dtype).split(".")[-1])
 
 # %% ../nbs/00_repr_str.ipynb 10
 def plain_repr(x: torch.Tensor):
@@ -132,7 +134,8 @@ def to_str(t: torch.Tensor,
         with lnp_config(precision=conf.precision,
                         threshold_min=conf.threshold_min,
                         threshold_max=conf.threshold_max,
-                        sci_mode=conf.sci_mode):
+                        sci_mode=conf.sci_mode,
+                        deeper_width=conf.deeper_width):
 
             if is_cpu(t) or is_nasty(t) or not t.is_floating_point():
                 common = np_to_str_common(to_numpy(t), color=color, ddof=1)
