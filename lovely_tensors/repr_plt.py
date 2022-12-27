@@ -54,6 +54,7 @@ class PlotProxy():
                         plt_seed=cfg.plt_seed ):
             return fig_plot( to_numpy(self.x),
                             summary=to_str(self.x, color=False),
+                            ddof=1,
                             **self.params)
 
     def _repr_png_(self):
