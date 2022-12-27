@@ -71,7 +71,6 @@ def torch_to_str_common(t: torch.Tensor,  # Input
     
     if t.numel() == 0: return ansi_color("empty", "grey", color)
 
-
     # Note: At the moment the MPS backend does not support isinf or isnan.
     # Move to CPU, as this does not cost us anything.
     amin, amax = t.amin().cpu(), t.amax().cpu()
