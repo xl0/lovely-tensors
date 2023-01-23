@@ -20,8 +20,13 @@ def monkey_patch(cls=torch.Tensor):
     "Monkey-patch lovely features into `cls`" 
 
     if not hasattr(cls, '_plain_repr'):
-        cls._plain_repr = cls.__repr__
-        cls._plain_str = cls.__str__
+        if cls is torch.Tensor:
+            # This avoids invoking the _torch_function_ mechanism
+            cls._plain_repr = torch._tensor_str._str
+            cls._plain_str = torch._tensor_str._str
+        else:
+            cls._plain_repr = cls.__repr__
+            cls._plain_str = cls.__str__
 
     @patch_to(cls)
     def __repr__(self: torch.Tensor, *, tensor_contents=None):        
