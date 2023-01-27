@@ -15,6 +15,18 @@
 pip install lovely-tensors
 ```
 
+or
+
+``` sh
+mamba install lovely-tensors
+```
+
+or
+
+``` sh
+conda install -c conda-forge lovely-tensors
+```
+
 ## How to use
 
 How often do you find yourself debugging PyTorch code? You dump a tensor
@@ -153,7 +165,7 @@ The important queston - is it our man?
 numbers.rgb
 ```
 
-![](index_files/figure-gfm/cell-13-output-1.png)
+![](index_files/figure-commonmark/cell-13-output-1.png)
 
 *Maaaaybe?* Looks like someone normalized him.
 
@@ -165,7 +177,7 @@ in_stats = ( (0.485, 0.456, 0.406),     # mean
 numbers.rgb(in_stats)
 ```
 
-![](index_files/figure-gfm/cell-14-output-1.png)
+![](index_files/figure-commonmark/cell-14-output-1.png)
 
 It’s indeed our hero, the Tenchman!
 
@@ -175,19 +187,19 @@ It’s indeed our hero, the Tenchman!
 (numbers+3).plt
 ```
 
-![](index_files/figure-gfm/cell-15-output-1.svg)
+![](index_files/figure-commonmark/cell-15-output-1.svg)
 
 ``` python
 (numbers+3).plt(center="mean", max_s=1000)
 ```
 
-![](index_files/figure-gfm/cell-16-output-1.svg)
+![](index_files/figure-commonmark/cell-16-output-1.svg)
 
 ``` python
 (numbers+3).plt(center="range")
 ```
 
-![](index_files/figure-gfm/cell-17-output-1.svg)
+![](index_files/figure-commonmark/cell-17-output-1.svg)
 
 ## See the `.chans`
 
@@ -206,7 +218,7 @@ numbers_01
 numbers_01.chans
 ```
 
-![](index_files/figure-gfm/cell-19-output-1.png)
+![](index_files/figure-commonmark/cell-19-output-1.png)
 
 Let’s try with a Convolutional Neural Network
 
@@ -233,7 +245,7 @@ acts
 acts[:4].chans(cmap="coolwarm", scale=4)
 ```
 
-![](index_files/figure-gfm/cell-23-output-1.png)
+![](index_files/figure-commonmark/cell-23-output-1.png)
 
 ## Grouping
 
@@ -255,7 +267,7 @@ eight_images
 eight_images.rgb
 ```
 
-![](index_files/figure-gfm/cell-25-output-1.png)
+![](index_files/figure-commonmark/cell-25-output-1.png)
 
 ``` python
 # Weights of the second conv layer of VGG11
@@ -274,7 +286,7 @@ weights = weights / (2*2*weights.std()) # *2 because we want 2σ on both sides, 
 weights.plt
 ```
 
-![](index_files/figure-gfm/cell-27-output-1.svg)
+![](index_files/figure-commonmark/cell-27-output-1.svg)
 
 ``` python
 # Weights of the second conv layer (64ch -> 128ch) of VGG11,
@@ -282,7 +294,7 @@ weights.plt
 weights.chans(frame_px=1, gutter_px=0)
 ```
 
-![](index_files/figure-gfm/cell-28-output-1.png)
+![](index_files/figure-commonmark/cell-28-output-1.png)
 
 It’s a bit hard to see. Scale up 10x, but onyl show the first 4 filters.
 
@@ -290,9 +302,9 @@ It’s a bit hard to see. Scale up 10x, but onyl show the first 4 filters.
 weights[:4].chans(frame_px=1, gutter_px=0, scale=10)
 ```
 
-![](index_files/figure-gfm/cell-29-output-1.png)
+![](index_files/figure-commonmark/cell-29-output-1.png)
 
-## Options \| [Docs](utils.config.html)
+## Options \| [Docs](https://xl0.github.io/lovely-tensors/utils.config.html)
 
 ``` python
 from lovely_tensors import set_config, config, lovely, get_config
@@ -351,33 +363,33 @@ lt.lovely(numbers, depth=1)
 lt.rgb(numbers, in_stats)
 ```
 
-![](index_files/figure-gfm/cell-37-output-1.png)
+![](index_files/figure-commonmark/cell-37-output-1.png)
 
 ``` python
 lt.plot(numbers, center="mean")
 ```
 
-![](index_files/figure-gfm/cell-38-output-1.svg)
+![](index_files/figure-commonmark/cell-38-output-1.svg)
 
 ``` python
 lt.chans(numbers_01)
 ```
 
-![](index_files/figure-gfm/cell-39-output-1.png)
+![](index_files/figure-commonmark/cell-39-output-1.png)
 
-## Matplotlib integration \| [Docs](matplotlib.html)
+## Matplotlib integration \| [Docs](https://xl0.github.io/lovely-tensors/matplotlib.html)
 
 ``` python
 numbers.rgb(in_stats).fig # matplotlib figure
 ```
 
-![](index_files/figure-gfm/cell-40-output-1.svg)
+![](index_files/figure-commonmark/cell-40-output-1.svg)
 
 ``` python
 (numbers*0.3+0.5).chans.fig # matplotlib figure
 ```
 
-![](index_files/figure-gfm/cell-41-output-1.svg)
+![](index_files/figure-commonmark/cell-41-output-1.svg)
 
 ``` python
 numbers.plt.fig.savefig('pretty.svg') # Save it
@@ -407,4 +419,4 @@ numbers_01.rgb(ax=ax2)
 numbers_01.chans(ax=ax3);
 ```
 
-![](index_files/figure-gfm/cell-44-output-1.svg)
+![](index_files/figure-commonmark/cell-44-output-1.svg)
