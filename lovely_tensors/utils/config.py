@@ -18,6 +18,7 @@ class Config(SimpleNamespace):
             threshold_max = 3,    # .abs() larger than 1e3 -> Sci mode
             threshold_min = -4,   # .abs() smaller that 1e-4 -> Sci mode
             sci_mode      = None, # Sci mode (2.3e4). None=auto
+            show_mem_above= 1024, # Show memory footprint above this threshold
             indent        = 2,    # Indent for .deeper()
             color         = True, # ANSI colors in text
             deeper_width  = 9,    # For .deeper, width per level
@@ -44,6 +45,7 @@ def set_config( precision       :Optional[Union[Default,int]]  =D,
                 threshold_min   :Optional[Union[Default,int]]  =D,
                 threshold_max   :Optional[Union[Default,int]]  =D,
                 sci_mode        :Optional[Union[Default,bool]] =D,
+                show_mem_above  :Optional[Union[Default,bool]] =D,
                 indent          :Optional[Union[Default,bool]] =D,
                 color           :Optional[Union[Default,bool]] =D,
                 deeper_width    :Optional[Union[Default,int]]  =D,
@@ -72,6 +74,7 @@ def config( precision       :Optional[Union[Default,int]]   =D,
             threshold_min   :Optional[Union[Default,int]]   =D,
             threshold_max   :Optional[Union[Default,int]]   =D,
             sci_mode        :Optional[Union[Default,bool]]  =D,
+            show_mem_above  :Optional[Union[Default,bool]]  =D,
             indent          :Optional[Union[Default,bool]]  =D,
             color           :Optional[Union[Default,bool]]  =D,
             deeper_width    :Optional[Union[Default,int]]   =D,

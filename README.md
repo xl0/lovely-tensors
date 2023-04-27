@@ -81,7 +81,7 @@ lt.monkey_patch()
 numbers # torch.Tensor
 ```
 
-    tensor[3, 196, 196] n=115248 x∈[-2.118, 2.640] μ=-0.388 σ=1.073
+    tensor[3, 196, 196] n=115248 (0.4Mb) x∈[-2.118, 2.640] μ=-0.388 σ=1.073
 
 Better, huh?
 
@@ -110,7 +110,7 @@ spicy # Spicy stuff
 torch.zeros(10, 10) # A zero tensor - make it obvious
 ```
 
-    tensor[10, 10] all_zeros
+    tensor[10, 10] n=100 all_zeros
 
 ``` python
 spicy.v # Verbose
@@ -133,7 +133,7 @@ spicy.p # The plain old way
 numbers.deeper
 ```
 
-    tensor[3, 196, 196] n=115248 x∈[-2.118, 2.640] μ=-0.388 σ=1.073
+    tensor[3, 196, 196] n=115248 (0.4Mb) x∈[-2.118, 2.640] μ=-0.388 σ=1.073
       tensor[196, 196] n=38416 x∈[-2.118, 2.249] μ=-0.324 σ=1.036
       tensor[196, 196] n=38416 x∈[-1.966, 2.429] μ=-0.274 σ=0.973
       tensor[196, 196] n=38416 x∈[-1.804, 2.640] μ=-0.567 σ=1.178
@@ -212,7 +212,7 @@ numbers_01 = (numbers*std + mean)
 numbers_01
 ```
 
-    tensor[3, 196, 196] n=115248 x∈[0., 1.000] μ=0.361 σ=0.248
+    tensor[3, 196, 196] n=115248 (0.4Mb) x∈[0., 1.000] μ=0.361 σ=0.248
 
 ``` python
 numbers_01.chans
@@ -239,7 +239,7 @@ acts = (features[:6](numbers[None])[0]/2) # /2 to reduce clipping
 acts
 ```
 
-    tensor[128, 49, 49] n=307328 x∈[0., 12.508] μ=0.367 σ=0.634 grad DivBackward0
+    tensor[128, 49, 49] n=307328 (1.2Mb) x∈[0., 12.508] μ=0.367 σ=0.634 grad DivBackward0
 
 ``` python
 acts[:4].chans(cmap="coolwarm", scale=4)
@@ -261,7 +261,7 @@ eight_images = (torch.stack([numbers]*8)
 eight_images
 ```
 
-    tensor[2, 2, 2, 3, 196, 196] n=921984 x∈[0., 1.000] μ=0.411 σ=0.369
+    tensor[2, 2, 2, 3, 196, 196] n=921984 (3.5Mb) x∈[0., 1.000] μ=0.411 σ=0.369
 
 ``` python
 eight_images.rgb
@@ -275,7 +275,7 @@ features[3].weight
 ```
 
     Parameter containing:
-    Parameter[128, 64, 3, 3] n=73728 x∈[-0.783, 0.776] μ=-0.004 σ=0.065 grad
+    Parameter[128, 64, 3, 3] n=73728 (0.3Mb) x∈[-0.783, 0.776] μ=-0.004 σ=0.065 grad
 
 I want +/- 2σ to fall in the range \[-1..1\]
 
@@ -311,11 +311,11 @@ from lovely_tensors import set_config, config, lovely, get_config
 ```
 
 ``` python
-set_config(precision=5, sci_mode=True, color=False)
+set_config(precision=1, sci_mode=True, color=False)
 torch.tensor([1, 2, torch.nan])
 ```
 
-    tensor[3] μ=1.50000e+00 σ=7.07107e-01 NaN! [1.00000e+00, 2.00000e+00, nan]
+    tensor[3] μ=1.5e+00 σ=7.1e-01 NaN! [1.0e+00, 2.0e+00, nan]
 
 ``` python
 set_config(precision=None, sci_mode=None, color=None) # None -> Reset to defaults
@@ -354,7 +354,7 @@ lt.lovely(spicy, verbose=True)
 lt.lovely(numbers, depth=1)
 ```
 
-    tensor[3, 196, 196] n=115248 x∈[-2.118, 2.640] μ=-0.388 σ=1.073
+    tensor[3, 196, 196] n=115248 (0.4Mb) x∈[-2.118, 2.640] μ=-0.388 σ=1.073
       tensor[196, 196] n=38416 x∈[-2.118, 2.249] μ=-0.324 σ=1.036
       tensor[196, 196] n=38416 x∈[-1.966, 2.429] μ=-0.274 σ=0.973
       tensor[196, 196] n=38416 x∈[-1.804, 2.640] μ=-0.567 σ=1.178
@@ -383,13 +383,13 @@ lt.chans(numbers_01)
 numbers.rgb(in_stats).fig # matplotlib figure
 ```
 
-![](index_files/figure-commonmark/cell-40-output-1.svg)
+![](index_files/figure-commonmark/cell-40-output-1.png)
 
 ``` python
 (numbers*0.3+0.5).chans.fig # matplotlib figure
 ```
 
-![](index_files/figure-commonmark/cell-41-output-1.svg)
+![](index_files/figure-commonmark/cell-41-output-1.png)
 
 ``` python
 numbers.plt.fig.savefig('pretty.svg') # Save it
@@ -419,4 +419,4 @@ numbers_01.rgb(ax=ax2)
 numbers_01.chans(ax=ax3);
 ```
 
-![](index_files/figure-commonmark/cell-44-output-1.svg)
+![](index_files/figure-commonmark/cell-44-output-1.png)

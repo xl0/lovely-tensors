@@ -8,10 +8,10 @@ import warnings
 
 import torch
 
-from lovely_numpy import np_to_str_common, pretty_str, sparse_join, ansi_color, in_debugger
+from lovely_numpy import np_to_str_common, pretty_str, sparse_join, ansi_color, in_debugger, bytes_to_human
 from lovely_numpy import config as lnp_config
 
-from .utils.config import get_config
+from .utils.config import get_config, config
 from .utils.misc import to_numpy
 
 # %% ../nbs/00_repr_str.ipynb 6
@@ -69,25 +69,24 @@ def torch_to_str_common(t: torch.Tensor,  # Input
     
     if t.numel() == 0: return ansi_color("empty", "grey", color)
 
-    # Note: At the moment the MPS backend does not support isinf or isnan.
-    # Move to CPU, as this does not cost us anything.
+    # Unlike .min()/.max(), amin/amax do not allocate extra GPU memory.
     amin, amax = t.amin().cpu(), t.amax().cpu()
 
     zeros = ansi_color("all_zeros", "grey", color) if amin.eq(0) and amax.eq(0) and t.numel() > 1 else None
-    pinf = ansi_color("+Inf!", "red", color) if amax.isposinf() else None
-    ninf = ansi_color("-Inf!", "red", color) if amin.isneginf() else None
-    nan = ansi_color("NaN!", "red", color) if amin.isnan() else None
+    # pinf = ansi_color("+Inf!", "red", color) if amax.isposinf() else None
+    # ninf = ansi_color("-Inf!", "red", color) if amin.isneginf() else None
+    # nan = ansi_color("NaN!", "red", color) if amin.isnan() else None
 
-    attention = sparse_join([zeros,pinf,ninf,nan])
-    numel = f"n={t.numel()}" if t.numel() > 5 and max(t.shape) != t.numel() else None
+    # attention = sparse_join([zeros,pinf,ninf,nan])
+    # numel = f"n={t.numel()}" if t.numel() > 5 and max(t.shape) != t.numel() else None
 
     summary = None
     if not zeros:
         minmax = f"x∈[{pretty_str(amin)}, {pretty_str(amax)}]" if t.numel() > 2 else None
         meanstd = f"μ={pretty_str(t.mean())} σ={pretty_str(t.std())}" if t.numel() >= 2 else None
-        summary = sparse_join([numel, minmax, meanstd])
+        summary = sparse_join([minmax, meanstd])
 
-    return sparse_join([ summary, attention])
+    return sparse_join([ summary, zeros ])
 
 # %% ../nbs/00_repr_str.ipynb 14
 # tensor.is_cpu was only introduced in 1.13.
@@ -132,16 +131,23 @@ def to_str(t: torch.Tensor,
         with lnp_config(precision=conf.precision,
                         threshold_min=conf.threshold_min,
                         threshold_max=conf.threshold_max,
-                        sci_mode=conf.sci_mode,
-                        deeper_width=conf.deeper_width):
-
-            if is_cpu(t) or is_nasty(t) or not t.is_floating_point():
+                        sci_mode=conf.sci_mode):
+            if is_nasty(t) or not t.is_floating_point():
                 common = np_to_str_common(to_numpy(t), color=color, ddof=1)
             else:
                 common = torch_to_str_common(t, color=color)
 
+            numel = None
+            nbytes = t.numel() * t.element_size()
+            if t.shape and max(t.shape) != t.numel():
+                numel = f"n={t.numel()}"
+                if get_config().show_mem_above <= nbytes:
+                    numel = sparse_join([numel, f"({bytes_to_human(nbytes)})"])
+            elif get_config().show_mem_above <= nbytes:
+                numel = bytes_to_human(nbytes)
+
             vals = pretty_str(to_numpy(t)) if 0 < t.numel() <= 10 else None
-            res = sparse_join([type_str, dtype, common, grad, grad_fn, dev, vals])
+            res = sparse_join([type_str, dtype, numel, common, grad, grad_fn, dev, vals])
     else:
         res = plain_repr(t)
 
@@ -150,15 +156,15 @@ def to_str(t: torch.Tensor,
         res += "\n" + plain_repr(t)
 
     if depth and t.dim() > 1:
+        with config(show_mem_above=torch.inf):
+            deep_width = min((t.shape[0]), conf.deeper_width) # Print at most this many lines
+            deep_lines = [ " "*conf.indent*(lvl+1) + to_str(t[i,:], depth=depth-1, lvl=lvl+1)
+                                for i in range(deep_width)] 
 
-        deep_width = min((t.shape[0]), conf.deeper_width) # Print at most this many lines
-        deep_lines = [ " "*conf.indent*(lvl+1) + to_str(t[i,:], depth=depth-1, lvl=lvl+1)
-                            for i in range(deep_width)] 
+            # If we were limited by width, print ...
+            if deep_width < t.shape[0]: deep_lines.append(" "*conf.indent*(lvl+1) + "...")
 
-        # If we were limited by width, print ...
-        if deep_width < t.shape[0]: deep_lines.append(" "*conf.indent*(lvl+1) + "...")
-
-        res += "\n" + "\n".join(deep_lines)
+            res += "\n" + "\n".join(deep_lines)
 
     return res
 

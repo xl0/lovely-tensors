@@ -17,7 +17,7 @@ from lovely_numpy import config as np_config
 
 from .repr_str import to_str, pretty_str
 from .utils.misc import to_numpy
-from .utils.config import get_config
+from .utils.config import get_config, config
 
 # %% ../nbs/02_repr_plt.ipynb 5
 # This is here for the monkey-patched tensor use case.
@@ -49,9 +49,10 @@ class PlotProxy():
     @cached_property
     def fig(self) -> figure.Figure:
         cfg = get_config()
+
         with np_config( fig_close=cfg.fig_close,
                         fig_show=cfg.fig_show,
-                        plt_seed=cfg.plt_seed ):
+                        plt_seed=cfg.plt_seed ), config(show_mem_above=torch.inf):
             return fig_plot( to_numpy(self.x),
                             summary=to_str(self.x, color=False),
                             ddof=1,
