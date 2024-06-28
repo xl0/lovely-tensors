@@ -142,6 +142,18 @@ spicy.p # The plain old way
     tensor([[-3.5405e+03, -4.0543e-05,         inf,        -inf,         nan, -6.1093e-01],
             [-6.1093e-01, -5.9380e-01, -5.9380e-01, -5.4243e-01, -5.4243e-01, -5.4243e-01]])
 
+## Named dimensions
+
+``` python
+named_numbers = numbers.rename("C", "H","W")
+named_numbers
+```
+
+    /home/xl0/mambaforge/envs/lovely-py31-torch25/lib/python3.10/site-packages/torch/_tensor.py:1420: UserWarning: Named tensors and all their associated APIs are an experimental feature and subject to change. Please do not use them for anything important until they are released as stable. (Triggered internally at ../c10/core/TensorImpl.h:1925.)
+      return super().rename(names)
+
+    tensor[C=3, H=196, W=196] n=115248 (0.4Mb) x∈[-2.118, 2.640] μ=-0.388 σ=1.073
+
 ## Going `.deeper`
 
 ``` python
@@ -155,22 +167,45 @@ numbers.deeper
 
 ``` python
 # You can go deeper if you need to
-numbers[:,:3,:5].deeper(2)
+# And we can use `.deeper` with named dimensions.
+
+named_numbers.deeper(2)
 ```
 
-    tensor[3, 3, 5] n=45 x∈[-1.316, -0.197] μ=-0.593 σ=0.306
-      tensor[3, 5] n=15 x∈[-0.765, -0.337] μ=-0.492 σ=0.124
-        tensor[5] x∈[-0.440, -0.337] μ=-0.385 σ=0.041 [-0.354, -0.337, -0.405, -0.440, -0.388]
-        tensor[5] x∈[-0.662, -0.405] μ=-0.512 σ=0.108 [-0.405, -0.423, -0.491, -0.577, -0.662]
-        tensor[5] x∈[-0.765, -0.474] μ=-0.580 σ=0.125 [-0.474, -0.474, -0.542, -0.645, -0.765]
-      tensor[3, 5] n=15 x∈[-0.513, -0.197] μ=-0.321 σ=0.099
-        tensor[5] x∈[-0.303, -0.197] μ=-0.243 σ=0.055 [-0.197, -0.197, -0.303, -0.303, -0.215]
-        tensor[5] x∈[-0.408, -0.232] μ=-0.327 σ=0.084 [-0.250, -0.232, -0.338, -0.408, -0.408]
-        tensor[5] x∈[-0.513, -0.285] μ=-0.394 σ=0.102 [-0.303, -0.285, -0.390, -0.478, -0.513]
-      tensor[3, 5] n=15 x∈[-1.316, -0.672] μ=-0.964 σ=0.176
-        tensor[5] x∈[-0.985, -0.672] μ=-0.846 σ=0.123 [-0.672, -0.985, -0.881, -0.776, -0.916]
-        tensor[5] x∈[-1.212, -0.724] μ=-0.989 σ=0.179 [-0.724, -1.072, -0.968, -0.968, -1.212]
-        tensor[5] x∈[-1.316, -0.828] μ=-1.058 σ=0.179 [-0.828, -1.125, -1.020, -1.003, -1.316]
+    tensor[C=3, H=196, W=196] n=115248 (0.4Mb) x∈[-2.118, 2.640] μ=-0.388 σ=1.073
+      tensor[H=196, W=196] n=38416 x∈[-2.118, 2.249] μ=-0.324 σ=1.036
+        tensor[W=196] x∈[-1.912, 2.249] μ=-0.673 σ=0.522
+        tensor[W=196] x∈[-1.861, 2.163] μ=-0.738 σ=0.418
+        tensor[W=196] x∈[-1.758, 2.198] μ=-0.806 σ=0.397
+        tensor[W=196] x∈[-1.656, 2.249] μ=-0.849 σ=0.369
+        tensor[W=196] x∈[-1.673, 2.198] μ=-0.857 σ=0.357
+        tensor[W=196] x∈[-1.656, 2.146] μ=-0.848 σ=0.372
+        tensor[W=196] x∈[-1.433, 2.215] μ=-0.784 σ=0.397
+        tensor[W=196] x∈[-1.279, 2.249] μ=-0.695 σ=0.486
+        tensor[W=196] x∈[-1.364, 2.249] μ=-0.637 σ=0.539
+        ...
+      tensor[H=196, W=196] n=38416 x∈[-1.966, 2.429] μ=-0.274 σ=0.973
+        tensor[W=196] x∈[-1.861, 2.411] μ=-0.529 σ=0.556
+        tensor[W=196] x∈[-1.826, 2.359] μ=-0.562 σ=0.473
+        tensor[W=196] x∈[-1.756, 2.376] μ=-0.622 σ=0.458
+        tensor[W=196] x∈[-1.633, 2.429] μ=-0.664 σ=0.430
+        tensor[W=196] x∈[-1.651, 2.376] μ=-0.669 σ=0.399
+        tensor[W=196] x∈[-1.633, 2.376] μ=-0.701 σ=0.391
+        tensor[W=196] x∈[-1.563, 2.429] μ=-0.670 σ=0.380
+        tensor[W=196] x∈[-1.475, 2.429] μ=-0.616 σ=0.386
+        tensor[W=196] x∈[-1.511, 2.429] μ=-0.593 σ=0.399
+        ...
+      tensor[H=196, W=196] n=38416 x∈[-1.804, 2.640] μ=-0.567 σ=1.178
+        tensor[W=196] x∈[-1.717, 2.396] μ=-0.982 σ=0.350
+        tensor[W=196] x∈[-1.752, 2.326] μ=-1.034 σ=0.314
+        tensor[W=196] x∈[-1.648, 2.379] μ=-1.086 σ=0.314
+        tensor[W=196] x∈[-1.630, 2.466] μ=-1.121 σ=0.305
+        tensor[W=196] x∈[-1.717, 2.448] μ=-1.120 σ=0.302
+        tensor[W=196] x∈[-1.717, 2.431] μ=-1.166 σ=0.314
+        tensor[W=196] x∈[-1.560, 2.448] μ=-1.124 σ=0.326
+        tensor[W=196] x∈[-1.421, 2.431] μ=-1.064 σ=0.383
+        tensor[W=196] x∈[-1.526, 2.396] μ=-1.047 σ=0.417
+        ...
 
 ## Now in `.rgb` color
 
@@ -180,7 +215,7 @@ The important queston - is it our man?
 numbers.rgb
 ```
 
-![](index_files/figure-commonmark/cell-13-output-1.png)
+![](index_files/figure-commonmark/cell-14-output-1.png)
 
 *Maaaaybe?* Looks like someone normalized him.
 
@@ -192,7 +227,7 @@ in_stats = ( (0.485, 0.456, 0.406),     # mean
 numbers.rgb(in_stats)
 ```
 
-![](index_files/figure-commonmark/cell-14-output-1.png)
+![](index_files/figure-commonmark/cell-15-output-1.png)
 
 It’s indeed our hero, the Tenchman!
 
@@ -202,19 +237,19 @@ It’s indeed our hero, the Tenchman!
 (numbers+3).plt
 ```
 
-![](index_files/figure-commonmark/cell-15-output-1.svg)
+![](index_files/figure-commonmark/cell-16-output-1.svg)
 
 ``` python
 (numbers+3).plt(center="mean", max_s=1000)
 ```
 
-![](index_files/figure-commonmark/cell-16-output-1.svg)
+![](index_files/figure-commonmark/cell-17-output-1.svg)
 
 ``` python
 (numbers+3).plt(center="range")
 ```
 
-![](index_files/figure-commonmark/cell-17-output-1.svg)
+![](index_files/figure-commonmark/cell-18-output-1.svg)
 
 ## See the `.chans`
 
@@ -233,7 +268,7 @@ numbers_01
 numbers_01.chans
 ```
 
-![](index_files/figure-commonmark/cell-19-output-1.png)
+![](index_files/figure-commonmark/cell-20-output-1.png)
 
 Let’s try with a Convolutional Neural Network
 
@@ -260,7 +295,7 @@ acts
 acts[:4].chans(cmap="coolwarm", scale=4)
 ```
 
-![](index_files/figure-commonmark/cell-23-output-1.png)
+![](index_files/figure-commonmark/cell-24-output-1.png)
 
 ## Grouping
 
@@ -282,7 +317,7 @@ eight_images
 eight_images.rgb
 ```
 
-![](index_files/figure-commonmark/cell-25-output-1.png)
+![](index_files/figure-commonmark/cell-26-output-1.png)
 
 ``` python
 # Weights of the second conv layer of VGG11
@@ -301,7 +336,7 @@ weights = weights / (2*2*weights.std()) # *2 because we want 2σ on both sides, 
 weights.plt
 ```
 
-![](index_files/figure-commonmark/cell-27-output-1.svg)
+![](index_files/figure-commonmark/cell-28-output-1.svg)
 
 ``` python
 # Weights of the second conv layer (64ch -> 128ch) of VGG11,
@@ -309,7 +344,7 @@ weights.plt
 weights.chans(frame_px=1, gutter_px=0)
 ```
 
-![](index_files/figure-commonmark/cell-28-output-1.png)
+![](index_files/figure-commonmark/cell-29-output-1.png)
 
 It’s a bit hard to see. Scale up 10x, but onyl show the first 4 filters.
 
@@ -317,7 +352,7 @@ It’s a bit hard to see. Scale up 10x, but onyl show the first 4 filters.
 weights[:4].chans(frame_px=1, gutter_px=0, scale=10)
 ```
 
-![](index_files/figure-commonmark/cell-29-output-1.png)
+![](index_files/figure-commonmark/cell-30-output-1.png)
 
 ## Options \| [Docs](https://xl0.github.io/lovely-tensors/utils.config.html)
 
@@ -378,19 +413,19 @@ lt.lovely(numbers, depth=1)
 lt.rgb(numbers, in_stats)
 ```
 
-![](index_files/figure-commonmark/cell-37-output-1.png)
+![](index_files/figure-commonmark/cell-38-output-1.png)
 
 ``` python
 lt.plot(numbers, center="mean")
 ```
 
-![](index_files/figure-commonmark/cell-38-output-1.svg)
+![](index_files/figure-commonmark/cell-39-output-1.svg)
 
 ``` python
 lt.chans(numbers_01)
 ```
 
-![](index_files/figure-commonmark/cell-39-output-1.png)
+![](index_files/figure-commonmark/cell-40-output-1.png)
 
 ## Matplotlib integration \| [Docs](https://xl0.github.io/lovely-tensors/matplotlib.html)
 
@@ -398,13 +433,13 @@ lt.chans(numbers_01)
 numbers.rgb(in_stats).fig # matplotlib figure
 ```
 
-![](index_files/figure-commonmark/cell-40-output-1.png)
+![](index_files/figure-commonmark/cell-41-output-1.png)
 
 ``` python
 (numbers*0.3+0.5).chans.fig # matplotlib figure
 ```
 
-![](index_files/figure-commonmark/cell-41-output-1.png)
+![](index_files/figure-commonmark/cell-42-output-1.png)
 
 ``` python
 numbers.plt.fig.savefig('pretty.svg') # Save it
@@ -434,7 +469,7 @@ numbers_01.rgb(ax=ax2)
 numbers_01.chans(ax=ax3);
 ```
 
-![](index_files/figure-commonmark/cell-44-output-1.png)
+![](index_files/figure-commonmark/cell-45-output-1.png)
 
 ## torch.compile()
 

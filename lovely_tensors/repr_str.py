@@ -73,12 +73,6 @@ def torch_to_str_common(t: torch.Tensor,  # Input
     amin, amax = t.amin().cpu(), t.amax().cpu()
 
     zeros = ansi_color("all_zeros", "grey", color) if amin.eq(0) and amax.eq(0) and t.numel() > 1 else None
-    # pinf = ansi_color("+Inf!", "red", color) if amax.isposinf() else None
-    # ninf = ansi_color("-Inf!", "red", color) if amin.isneginf() else None
-    # nan = ansi_color("NaN!", "red", color) if amin.isnan() else None
-
-    # attention = sparse_join([zeros,pinf,ninf,nan])
-    # numel = f"n={t.numel()}" if t.numel() > 5 and max(t.shape) != t.numel() else None
 
     summary = None
     if not zeros:
@@ -114,8 +108,21 @@ def to_str(t: torch.Tensor,
 
     conf = get_config()
 
+    names = getattr(t, "names", None)
+    if names and not all(n is None for n in names):
+        # amin/amax don't like named tensors
+        t_no_names = t.rename(None)
+    else:
+        t_no_names = t
+        names = None # If all names are None, we don't want to show them.
+
     tname = "tensor" if type(t) is torch.Tensor else type(t).__name__.split(".")[-1]
-    shape = str(list(t.shape)) if t.ndim else None
+
+    if names:
+        shape = [f"{n}={v}" if n else str(v) for n,v in zip(names, t.shape)]
+        shape = f"[{', '.join(shape)}]"
+    else:
+        shape = str(list(t.shape)) if t.ndim else None
     type_str = sparse_join([tname, shape], sep="")
     
     dev = str(t.device) if t.device.type != "cpu" else None
@@ -139,10 +146,10 @@ def to_str(t: torch.Tensor,
                         threshold_min=conf.threshold_min,
                         threshold_max=conf.threshold_max,
                         sci_mode=conf.sci_mode):
-            if is_nasty(t) or not t.is_floating_point():
+            if is_nasty(t_no_names) or not t.is_floating_point():
                 common = np_to_str_common(to_numpy(t), color=color, ddof=1)
             else:
-                common = torch_to_str_common(t, color=color)
+                common = torch_to_str_common(t_no_names, color=color)
 
             numel = None
             nbytes = t.numel() * t.element_size()
