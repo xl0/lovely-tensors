@@ -149,9 +149,6 @@ named_numbers = numbers.rename("C", "H","W")
 named_numbers
 ```
 
-    /home/xl0/mambaforge/envs/lovely-py31-torch25/lib/python3.10/site-packages/torch/_tensor.py:1420: UserWarning: Named tensors and all their associated APIs are an experimental feature and subject to change. Please do not use them for anything important until they are released as stable. (Triggered internally at ../c10/core/TensorImpl.h:1925.)
-      return super().rename(names)
-
     tensor[C=3, H=196, W=196] n=115248 (0.4Mb) x∈[-2.118, 2.640] μ=-0.388 σ=1.073
 
 ## Going `.deeper`
