@@ -5,9 +5,24 @@
 
 <div>
 
-## [Read full docs](https://xl0.github.io/lovely-tensors) \| 💘 [Lovely `JAX`](https://github.com/xl0/lovely-jax) \| 💟 [Lovely `NumPy`](https://github.com/xl0/lovely-numpy) \| [Discord](https://discord.gg/4NxRV7NH)
+## [Read full docs](https://xl0.github.io/lovely-tensors)
 
 </div>
+
+### More lovely stuff
+
+##### Working with numbers
+
+- [Numpy](https://numpy.org/): ❤️ [Lovely
+  NumPy](https://github.com/xl0/lovely-numpy)
+- [JAX](https://jax.readthedocs.io/): 💘 [Lovely
+  `JAX`](https://github.com/xl0/lovely-jax)
+- [TinyGrad](https://github.com/tinygrad/tinygrad): 🫀 [Lovely
+  Grad](https://github.com/xl0/lovely-grad)
+
+##### Community
+
+- [Discord](https://discord.gg/qBaqauUWXP)
 
 ## Install
 
@@ -230,7 +245,7 @@ from torchvision.models import vgg11
 features: torch.nn.Sequential = vgg11().features
 
 # I saved the first 5 layers in "features.pt"
-_ = features.load_state_dict(torch.load("../features.pt"), strict=False)
+_ = features.load_state_dict(torch.load("../features.pt", weights_only=True), strict=False)
 ```
 
 ``` python
@@ -420,3 +435,19 @@ numbers_01.chans(ax=ax3);
 ```
 
 ![](index_files/figure-commonmark/cell-44-output-1.png)
+
+## torch.compile()
+
+Just works.
+
+``` python
+def func(x):
+    return x*2
+
+if torch.__version__ >= "2.0":
+    func = torch.compile(func)
+
+func(torch.tensor([1,2,3]))
+```
+
+    tensor[3] i64 x∈[2, 6] μ=4.000 σ=2.000 [2, 4, 6]

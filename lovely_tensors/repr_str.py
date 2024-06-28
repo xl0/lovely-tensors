@@ -94,6 +94,13 @@ def is_cpu(t: torch.Tensor):
     return t.device == torch.device("cpu")
 
 # %% ../nbs/00_repr_str.ipynb 15
+# Fake tensors are used by torch.compile when tracing the graph, or something.
+try:
+    from torch._subclasses.fake_tensor import is_fake
+except ImportError:
+    is_fake = lambda t: False
+
+# %% ../nbs/00_repr_str.ipynb 16
 @torch.no_grad()
 def to_str(t: torch.Tensor,
             plain: bool=False,
@@ -102,7 +109,7 @@ def to_str(t: torch.Tensor,
             lvl=0,
             color=None) -> str:
 
-    if plain:
+    if plain or is_fake(t):
         return plain_repr(t)
 
     conf = get_config()
@@ -168,14 +175,14 @@ def to_str(t: torch.Tensor,
 
     return res
 
-# %% ../nbs/00_repr_str.ipynb 16
+# %% ../nbs/00_repr_str.ipynb 17
 def history_warning():
     "Issue a warning (once) ifw e are running in IPYthon with output cache enabled"
 
     if "get_ipython" in globals() and get_ipython().cache_size > 0:
         warnings.warn("IPYthon has its output cache enabled. See https://xl0.github.io/lovely-tensors/history.html")
 
-# %% ../nbs/00_repr_str.ipynb 19
+# %% ../nbs/00_repr_str.ipynb 20
 class StrProxy():
     def __init__(self, t: torch.Tensor, plain=False, verbose=False, depth=0, lvl=0, color=None):
         self.t = t
@@ -195,7 +202,7 @@ class StrProxy():
     def __call__(self, depth=1):
         return StrProxy(self.t, depth=depth)
 
-# %% ../nbs/00_repr_str.ipynb 20
+# %% ../nbs/00_repr_str.ipynb 21
 def lovely(t: torch.Tensor, # Tensor of interest
             verbose=False,  # Whether to show the full tensor
             plain=False,    # Just print if exactly as before
