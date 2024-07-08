@@ -17,7 +17,7 @@ from .repr_chans import ChanProxy
 
 # %% ../nbs/10_patch.ipynb 4
 def monkey_patch(cls=torch.Tensor):
-    "Monkey-patch lovely features into `cls`" 
+    "Monkey-patch lovely features into `cls`"
 
     if not hasattr(cls, '_plain_repr'):
         if cls is torch.Tensor:
@@ -29,7 +29,7 @@ def monkey_patch(cls=torch.Tensor):
             cls._plain_str = cls.__str__
 
     @patch_to(cls)
-    def __repr__(self: torch.Tensor, *, tensor_contents=None):        
+    def __repr__(self: torch.Tensor, *, tensor_contents=None):
         return str(StrProxy(self))
 
     # Plain - the old behavior
@@ -51,7 +51,7 @@ def monkey_patch(cls=torch.Tensor):
     @patch_to(cls, as_prop=True)
     def rgb(t: torch.Tensor):
         return RGBProxy(t)
-    
+
     # .chans and .chans(...)
     @patch_to(cls, as_prop=True)
     def chans(t: torch.Tensor):
@@ -61,3 +61,7 @@ def monkey_patch(cls=torch.Tensor):
     @patch_to(cls, as_prop=True)
     def plt(t: torch.Tensor):
         return PlotProxy(t)
+
+    # The base class repr handler nn.Parameter better.
+    if "__repr__" in torch.nn.Parameter.__dict__:
+        del torch.nn.Parameter.__repr__
