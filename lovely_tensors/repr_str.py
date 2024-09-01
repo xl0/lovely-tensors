@@ -17,7 +17,7 @@ from .utils.misc import to_numpy
 # %% ../nbs/00_repr_str.ipynb 6
 def type_to_dtype(t: str) -> torch.dtype:
     "Convert str, e.g. 'float32' to torch.dtype e.g torch.float32"
-    
+
     dtp = vars(torch)[t]
     assert isinstance(dtp, torch.dtype)
     return dtp
@@ -52,9 +52,9 @@ def plain_str(x: torch.Tensor):
 # %% ../nbs/00_repr_str.ipynb 11
 def is_nasty(t: torch.Tensor):
     """Return true of any `t` values are inf or nan"""
-    
-    if t.numel() == 0: return False # amin/amax don't like zero-lenght tensors
 
+    if t.numel() == 0: return False # amin/amax don't like zero-lenght tensors
+    if (t.device.type == "meta"): return False
     # Unlike .min()/.max(), amin/amax do not allocate extra GPU memory.
 
     t_min = t.amin().cpu()
@@ -66,8 +66,9 @@ def is_nasty(t: torch.Tensor):
 def torch_to_str_common(t: torch.Tensor,  # Input
                         color=True,       # ANSI color highlighting
                         ) -> str:
-    
+
     if t.numel() == 0: return ansi_color("empty", "grey", color)
+    if t.device.type == "meta": return ansi_color("meta", "grey", color)
 
     # Unlike .min()/.max(), amin/amax do not allocate extra GPU memory.
     amin, amax = t.amin().cpu(), t.amax().cpu()
@@ -124,14 +125,14 @@ def to_str(t: torch.Tensor,
     else:
         shape = str(list(t.shape)) if t.ndim else None
     type_str = sparse_join([tname, shape], sep="")
-    
+
     dev = str(t.device) if t.device.type != "cpu" else None
     dtype = short_dtype(t)
     grad_fn = t.grad_fn.name() if t.grad_fn else None
     # PyTorch does not want you to know, but all `grad_fn``
     # tensors actuall have `requires_grad=True`` too.
-    grad = "grad" if t.requires_grad else None 
-    
+    grad = "grad" if t.requires_grad else None
+
 
     # For complex tensors, just show the shape / size part for now.
     if not t.is_complex():
@@ -160,7 +161,9 @@ def to_str(t: torch.Tensor,
             elif get_config().show_mem_above <= nbytes:
                 numel = bytes_to_human(nbytes)
 
-            vals = pretty_str(to_numpy(t)) if 0 < t.numel() <= 10 else None
+            vals = None
+            if t.device.type != "meta":
+                vals = pretty_str(to_numpy(t)) if 0 < t.numel() <= 10 else None
             res = sparse_join([type_str, dtype, numel, common, grad, grad_fn, dev, vals])
     else:
         res = plain_repr(t)
@@ -173,7 +176,7 @@ def to_str(t: torch.Tensor,
         with config(show_mem_above=torch.inf):
             deep_width = min((t.shape[0]), conf.deeper_width) # Print at most this many lines
             deep_lines = [ " "*conf.indent*(lvl+1) + to_str(t[i,:], depth=depth-1, lvl=lvl+1)
-                                for i in range(deep_width)] 
+                                for i in range(deep_width)]
 
             # If we were limited by width, print ...
             if deep_width < t.shape[0]: deep_lines.append(" "*conf.indent*(lvl+1) + "...")
@@ -199,7 +202,7 @@ class StrProxy():
         self.lvl=lvl
         self.color=color
         history_warning()
-    
+
     def __repr__(self):
         return to_str(self.t, plain=self.plain, verbose=self.verbose,
                       depth=self.depth, lvl=self.lvl, color=self.color)
