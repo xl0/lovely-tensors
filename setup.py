@@ -1,6 +1,5 @@
 from pkg_resources import parse_version
 from configparser import ConfigParser
-import itertools
 import os.path
 import setuptools
 from distutils.command.build import build
@@ -45,7 +44,7 @@ class InstallLibWithHook(install_lib):
         self.outputs = [dest]
 
     def get_outputs(self):
-        return itertools.chain(install_lib.get_outputs(self), self.outputs)
+        return install_lib.get_outputs(self) + self.outputs
 
 
 class DevelopWithHook(develop):
