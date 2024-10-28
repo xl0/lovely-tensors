@@ -2,5 +2,6 @@ include settings.ini
 include LICENSE
 include CONTRIBUTING.md
 include README.md
-include lovely_tensors_hook.pth
+include _lovely_tensors_hook.pth
+include _lovely_tensors_hook.py
 recursive-exclude * __pycache__

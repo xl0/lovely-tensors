@@ -8,51 +8,50 @@ from setuptools.command.easy_install import easy_install
 from setuptools.command.install_lib import install_lib
 assert parse_version(setuptools.__version__)>=parse_version('36.2')
 
-LOVELY_TENSORS_HOOK_SRC = "lovely_tensors_hook.py"
-LOVELY_TENSORS_HOOK = "lovely_tensors_hook.pth"
-
-
-def create_hook(src_path, dest_path):
-    with open(src_path, 'r') as f:
-        src_code = f.read()
-    with open(dest_path, 'w') as f:
-        print(f"import os; exec({src_code!r})", file=f)
+LOVELY_TENSORS_PTH = "_lovely_tensors_hook.pth"
+LOVELY_TENSORS_PY = "_lovely_tensors_hook.py"
 
 
 class BuildWithHook(build):
     def run(self):
         build.run(self)
-        path = os.path.join(os.path.dirname(__file__), LOVELY_TENSORS_HOOK_SRC)
-        dest = os.path.join(self.build_lib, LOVELY_TENSORS_HOOK)
-        self.make_file([path], dest, create_hook, [path, dest])
+        for f in [LOVELY_TENSORS_PTH, LOVELY_TENSORS_PY]:
+            source = os.path.join(os.path.dirname(__file__), f)
+            dest = os.path.join(self.build_lib, f)
+            self.copy_file(source, dest)
 
 
 class EasyInstallWithHook(easy_install):
     def run(self):
         easy_install.run(self)
-        path = os.path.join(self.build_directory, LOVELY_TENSORS_HOOK)
-        dest = os.path.join(self.install_dir, LOVELY_TENSORS_HOOK)
-        self.copy_file(path, dest)
+        for f in [LOVELY_TENSORS_PTH, LOVELY_TENSORS_PY]:
+            source = os.path.join(os.path.dirname(__file__), f)
+            dest = os.path.join(self.install_dir, f)
+            self.copy_file(source, dest)
 
 
 class InstallLibWithHook(install_lib):
     def run(self):
         install_lib.run(self)
-        path = os.path.join(self.build_dir, LOVELY_TENSORS_HOOK)
-        dest = os.path.join(self.install_dir, LOVELY_TENSORS_HOOK)
-        self.copy_file(path, dest)
-        self.outputs = [dest]
+        outputs = []
+        for f in [LOVELY_TENSORS_PTH, LOVELY_TENSORS_PY]:
+            source = os.path.join(os.path.dirname(__file__), f)
+            dest = os.path.join(self.install_dir, f)
+            self.copy_file(source, dest)
+            outputs.append(dest)
+        self.outputs = outputs
 
     def get_outputs(self):
-        return install_lib.get_outputs(self) + self.outputs
+        return [*install_lib.get_outputs(self), *self.outputs]
 
 
 class DevelopWithHook(develop):
     def run(self):
         develop.run(self)
-        path = os.path.join(self.build_directory, LOVELY_TENSORS_HOOK)
-        dest = os.path.join(self.install_dir, LOVELY_TENSORS_HOOK)
-        self.copy_file(path, dest)
+        for f in [LOVELY_TENSORS_PTH, LOVELY_TENSORS_PY]:
+            source = os.path.join(os.path.dirname(__file__), f)
+            dest = os.path.join(self.install_dir, f)
+            self.copy_file(source, dest)
 
 
 # note: all settings are in settings.ini; edit there, not here
