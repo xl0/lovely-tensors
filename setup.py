@@ -4,7 +4,6 @@ import os.path
 import setuptools
 from distutils.command.build import build
 from setuptools.command.develop import develop
-from setuptools.command.easy_install import easy_install
 from setuptools.command.install_lib import install_lib
 assert parse_version(setuptools.__version__)>=parse_version('36.2')
 
@@ -18,15 +17,6 @@ class BuildWithHook(build):
         for f in [LOVELY_TENSORS_PTH, LOVELY_TENSORS_PY]:
             source = os.path.join(os.path.dirname(__file__), f)
             dest = os.path.join(self.build_lib, f)
-            self.copy_file(source, dest)
-
-
-class EasyInstallWithHook(easy_install):
-    def run(self):
-        easy_install.run(self)
-        for f in [LOVELY_TENSORS_PTH, LOVELY_TENSORS_PY]:
-            source = os.path.join(os.path.dirname(__file__), f)
-            dest = os.path.join(self.install_dir, f)
             self.copy_file(source, dest)
 
 
@@ -107,7 +97,6 @@ setuptools.setup(
     # https://github.com/Qix-/better-exceptions/blob/f7f1476e57129dc74d241b4377b0df39c37bc8a7/setup.py
     cmdclass = {
         'build': BuildWithHook,
-        'easy_install': EasyInstallWithHook,
         'install_lib': InstallLibWithHook,
         'develop': DevelopWithHook,
     },
