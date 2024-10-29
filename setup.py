@@ -1,7 +1,28 @@
 from pkg_resources import parse_version
 from configparser import ConfigParser
+import os.path
 import setuptools
+from setuptools.command.install_lib import install_lib
 assert parse_version(setuptools.__version__)>=parse_version('36.2')
+
+LOVELY_TENSORS_PTH = "_lovely_tensors_hook.pth"
+LOVELY_TENSORS_PY = "_lovely_tensors_hook.py"
+
+
+class InstallLibWithHook(install_lib):
+    def run(self):
+        install_lib.run(self)
+        outputs = []
+        for f in [LOVELY_TENSORS_PTH, LOVELY_TENSORS_PY]:
+            source = os.path.join(os.path.dirname(__file__), f)
+            dest = os.path.join(self.install_dir, f)
+            self.copy_file(source, dest)
+            outputs.append(dest)
+        self.outputs = outputs
+
+    def get_outputs(self):
+        return [*install_lib.get_outputs(self), *self.outputs]
+
 
 # note: all settings are in settings.ini; edit there, not here
 config = ConfigParser(delimiters=['='])
@@ -51,6 +72,11 @@ setuptools.setup(
     entry_points = {
         'console_scripts': cfg.get('console_scripts','').split(),
         'nbdev': [f'{cfg.get("lib_path")}={cfg.get("lib_path")}._modidx:d']
+    },
+    # The import hooks mechanism is inspired by the one used in better_exceptions
+    # https://github.com/Qix-/better-exceptions/blob/f7f1476e57129dc74d241b4377b0df39c37bc8a7/setup.py
+    cmdclass = {
+        'install_lib': InstallLibWithHook,
     },
     **setup_cfg)
 
