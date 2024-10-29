@@ -3,7 +3,6 @@ from configparser import ConfigParser
 import os.path
 import setuptools
 from distutils.command.build import build
-from setuptools.command.develop import develop
 from setuptools.command.install_lib import install_lib
 assert parse_version(setuptools.__version__)>=parse_version('36.2')
 
@@ -33,15 +32,6 @@ class InstallLibWithHook(install_lib):
 
     def get_outputs(self):
         return [*install_lib.get_outputs(self), *self.outputs]
-
-
-class DevelopWithHook(develop):
-    def run(self):
-        develop.run(self)
-        for f in [LOVELY_TENSORS_PTH, LOVELY_TENSORS_PY]:
-            source = os.path.join(os.path.dirname(__file__), f)
-            dest = os.path.join(self.install_dir, f)
-            self.copy_file(source, dest)
 
 
 # note: all settings are in settings.ini; edit there, not here
@@ -98,7 +88,6 @@ setuptools.setup(
     cmdclass = {
         'build': BuildWithHook,
         'install_lib': InstallLibWithHook,
-        'develop': DevelopWithHook,
     },
     **setup_cfg)
 
