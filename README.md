@@ -494,7 +494,7 @@ func(torch.tensor([1,2,3]))
 
     tensor[3] i64 x∈[2, 6] μ=4.000 σ=2.000 [2, 4, 6]
 
-## Inport hook
+## Import hook
 
 Lovely tensors installes an import hook. Set `LOVELY_TENSORS=1`, and it
 will load automatically, no need to modify the code: \> Note: Don’t set
