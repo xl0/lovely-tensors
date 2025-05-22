@@ -494,7 +494,7 @@ func(torch.tensor([1,2,3]))
 
     tensor[3] i64 x∈[2, 6] μ=4.000 σ=2.000 [2, 4, 6]
 
-## Inport hook
+## Import hook
 
 Lovely tensors installes an import hook. Set `LOVELY_TENSORS=1`, and it
 will load automatically, no need to modify the code: \> Note: Don’t set
@@ -515,7 +515,9 @@ LOVELY_TENSORS=1 python test.py
     x: tensor[4, 16] n=64 x∈[-1.652, 1.813] μ=-0.069 σ=0.844
 
 This is especially useful in combination with [Better
-Exceptions](https://github.com/Qix-/better-exceptions):
+Exceptions](https://github.com/Qix-/better-exceptions): \> Note: Better
+exceptions seems to be not working with Python 3.13:
+https://github.com/Qix-/better-exceptions/issues/134
 
 ``` python
 import torch
@@ -537,5 +539,5 @@ BETTER_EXCEPTIONS=1  LOVELY_TENSORS=1 python test.py
         y = torch.matmul(x, w)
             │            │  └ tensor[15, 8] n=120 x∈[-2.355, 2.165] μ=0.142 σ=0.989
             │            └ tensor[4, 16] n=64 x∈[-1.834, 2.421] μ=0.103 σ=0.896
-            └ <module 'torch' from '/home/xl0/mambaforge/envs/torch25-py313/lib/python3.12/site-packages/torch/__init__.py'>
+            └ <module 'torch' from '/home/xl0/mambaforge/envs/torch25-py312/lib/python3.12/site-packages/torch/__init__.py'>
     RuntimeError: mat1 and mat2 shapes cannot be multiplied (4x16 and 15x8)
