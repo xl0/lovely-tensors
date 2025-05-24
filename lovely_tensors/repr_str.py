@@ -175,7 +175,7 @@ def to_str(t: torch.Tensor,
     if depth and t.dim() > 1:
         with config(show_mem_above=torch.inf):
             deep_width = min((t.shape[0]), conf.deeper_width) # Print at most this many lines
-            deep_lines = [ " "*conf.indent*(lvl+1) + to_str(t[i,:], depth=depth-1, lvl=lvl+1)
+            deep_lines = [ " "*conf.indent*(lvl+1) + to_str(t[i,:], depth=depth-1, lvl=lvl+1, color=color)
                                 for i in range(deep_width)]
 
             # If we were limited by width, print ...
