@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['lovely']
 
-# %% ../nbs/00_repr_str.ipynb 3
+# %% ../nbs/00_repr_str.ipynb
 import warnings
 
 import torch
@@ -14,7 +14,7 @@ from lovely_numpy import config as lnp_config
 from .utils.config import get_config, config
 from .utils.misc import to_numpy
 
-# %% ../nbs/00_repr_str.ipynb 6
+# %% ../nbs/00_repr_str.ipynb
 def type_to_dtype(t: str) -> torch.dtype:
     "Convert str, e.g. 'float32' to torch.dtype e.g torch.float32"
 
@@ -22,7 +22,7 @@ def type_to_dtype(t: str) -> torch.dtype:
     assert isinstance(dtp, torch.dtype)
     return dtp
 
-# %% ../nbs/00_repr_str.ipynb 8
+# %% ../nbs/00_repr_str.ipynb
 dtnames = { type_to_dtype(k): v
                 for k,v in {"float32": "",
                             "float16": "f16",
@@ -40,7 +40,7 @@ def short_dtype(x):
     # split(".") to torch.uint4 -> uint4
     return dtnames.get(x.dtype, str(x.dtype).split(".")[-1])
 
-# %% ../nbs/00_repr_str.ipynb 10
+# %% ../nbs/00_repr_str.ipynb
 def plain_repr(x: torch.Tensor):
     "Pick the right function to get a plain repr"
     return x._plain_repr() if hasattr(x, "_plain_repr") else repr(x)
@@ -49,7 +49,7 @@ def plain_str(x: torch.Tensor):
     "Pick the right function to get a plain str."
     return x._plain_str() if hasattr(x, "_plain_str") else str(x)
 
-# %% ../nbs/00_repr_str.ipynb 11
+# %% ../nbs/00_repr_str.ipynb
 def is_nasty(t: torch.Tensor):
     """Return true of any `t` values are inf or nan"""
 
@@ -62,7 +62,7 @@ def is_nasty(t: torch.Tensor):
 
     return (t_min.isnan() or t_min.isinf() or t_max.isinf()).item()
 
-# %% ../nbs/00_repr_str.ipynb 13
+# %% ../nbs/00_repr_str.ipynb
 def torch_to_str_common(t: torch.Tensor,  # Input
                         color=True,       # ANSI color highlighting
                         ) -> str:
@@ -83,19 +83,19 @@ def torch_to_str_common(t: torch.Tensor,  # Input
 
     return sparse_join([ summary, zeros ])
 
-# %% ../nbs/00_repr_str.ipynb 14
+# %% ../nbs/00_repr_str.ipynb
 # tensor.is_cpu was only introduced in 1.13.
 def is_cpu(t: torch.Tensor):
     return t.device == torch.device("cpu")
 
-# %% ../nbs/00_repr_str.ipynb 15
+# %% ../nbs/00_repr_str.ipynb
 # Fake tensors are used by torch.compile when tracing the graph, or something.
 try:
     from torch._subclasses.fake_tensor import is_fake
 except ImportError:
     is_fake = lambda t: False
 
-# %% ../nbs/00_repr_str.ipynb 16
+# %% ../nbs/00_repr_str.ipynb
 @torch.no_grad()
 def to_str(t: torch.Tensor,
             plain: bool=False,
@@ -185,14 +185,14 @@ def to_str(t: torch.Tensor,
 
     return res
 
-# %% ../nbs/00_repr_str.ipynb 17
+# %% ../nbs/00_repr_str.ipynb
 def history_warning():
     "Issue a warning (once) ifw e are running in IPYthon with output cache enabled"
 
     if "get_ipython" in globals() and get_ipython().cache_size > 0:
         warnings.warn("IPYthon has its output cache enabled. See https://xl0.github.io/lovely-tensors/history.html")
 
-# %% ../nbs/00_repr_str.ipynb 20
+# %% ../nbs/00_repr_str.ipynb
 class StrProxy():
     def __init__(self, t: torch.Tensor, plain=False, verbose=False, depth=0, lvl=0, color=None):
         self.t = t
@@ -212,7 +212,7 @@ class StrProxy():
     def __call__(self, depth=1):
         return StrProxy(self.t, depth=depth)
 
-# %% ../nbs/00_repr_str.ipynb 21
+# %% ../nbs/00_repr_str.ipynb
 def lovely(t: torch.Tensor, # Tensor of interest
             verbose=False,  # Whether to show the full tensor
             plain=False,    # Just print if exactly as before

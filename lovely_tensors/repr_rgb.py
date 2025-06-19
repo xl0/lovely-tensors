@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['rgb']
 
-# %% ../nbs/01_repr_rgb.ipynb 5
+# %% ../nbs/01_repr_rgb.ipynb
 from typing import Any, Optional as O
 
 from matplotlib import axes, figure
@@ -21,7 +21,7 @@ from .utils.misc import to_numpy
 from .utils.config import get_config
 
 
-# %% ../nbs/01_repr_rgb.ipynb 6
+# %% ../nbs/01_repr_rgb.ipynb
 # This is here for the monkey-patched tensor use case.
 
 # I want to be able to call both `tensor.rgb` and `tensor.rgb(stats)`. For the
@@ -69,7 +69,7 @@ class RGBProxy():
             metadata={"Software": "Matplotlib, https://matplotlib.org/"})
 
 
-# %% ../nbs/01_repr_rgb.ipynb 7
+# %% ../nbs/01_repr_rgb.ipynb
 def rgb(x           :torch.Tensor,  # Tensor to display. [[...], C,H,W] or [[...], H,W,C]
         denorm      :Any =None,     # Reverse per-channel normalizatoin
         cl          :Any =False,    # Channel-last

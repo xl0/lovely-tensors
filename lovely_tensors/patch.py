@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['monkey_patch']
 
-# %% ../nbs/10_patch.ipynb 3
+# %% ../nbs/10_patch.ipynb
 from typing import Any, Optional as O
 
 import torch
@@ -15,7 +15,7 @@ from .repr_rgb import RGBProxy
 from .repr_plt import PlotProxy
 from .repr_chans import ChanProxy
 
-# %% ../nbs/10_patch.ipynb 4
+# %% ../nbs/10_patch.ipynb
 def monkey_patch(cls=torch.Tensor):
     "Monkey-patch lovely features into `cls`"
 

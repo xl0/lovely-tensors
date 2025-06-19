@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['chans']
 
-# %% ../nbs/05_repr_chans.ipynb 5
+# %% ../nbs/05_repr_chans.ipynb
 from typing import Any, Optional as O
 
 import torch
@@ -18,7 +18,7 @@ from .utils.misc import to_numpy
 from .utils.config import get_config
 
 
-# %% ../nbs/05_repr_chans.ipynb 6
+# %% ../nbs/05_repr_chans.ipynb
 class ChanProxy():   
     def __init__(self, t: torch.Tensor):
         self.t = t
@@ -65,7 +65,7 @@ class ChanProxy():
         return print_figure(self.fig, fmt="png", pad_inches=0,
             metadata={"Software": "Matplotlib, https://matplotlib.org/"})
 
-# %% ../nbs/05_repr_chans.ipynb 7
+# %% ../nbs/05_repr_chans.ipynb
 def chans(  x: torch.Tensor,                # Input, shape=([...], H, W)
             cmap        :str    ="twilight",# Use matplotlib colormap by this name
             cm_below    :str    ="blue",    # Color for values below -1
