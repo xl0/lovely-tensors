@@ -8,7 +8,6 @@ from typing import Any, Optional as O
 
 import torch
 from matplotlib import pyplot as plt, axes, figure
-from IPython.core.pylabtools import print_figure
 
 from lovely_numpy.utils.utils import cached_property
 from lovely_numpy.repr_chans import fig_chans
@@ -19,10 +18,10 @@ from .utils.config import get_config
 
 
 # %% ../nbs/05_repr_chans.ipynb
-class ChanProxy():   
+class ChanProxy():
     def __init__(self, t: torch.Tensor):
         self.t = t
-        self.params = dict(cmap = "twilight", 
+        self.params = dict(cmap = "twilight",
                     cm_below="blue",
                     cm_above="red",
                     cm_ninf="cyan",
@@ -36,7 +35,7 @@ class ChanProxy():
                     ax=None)
 
     def __call__(self,
-                 cmap       :O[str]=None, 
+                 cmap       :O[str]=None,
                  cm_below   :O[str]=None,
                  cm_above   :O[str]=None,
                  cm_ninf    :O[str]=None,
@@ -48,7 +47,7 @@ class ChanProxy():
                  scale      :O[int]=None,
                  cl         :Any=None,
                  ax         :O[axes.Axes]=None):
-        
+
         self.params.update( {   k:v for
                                 k,v in locals().items()
                                 if k != "self" and v is not None } )
@@ -62,6 +61,7 @@ class ChanProxy():
             return fig_chans(to_numpy(self.t), **self.params)
 
     def _repr_png_(self):
+        from IPython.core.pylabtools import print_figure
         return print_figure(self.fig, fmt="png", pad_inches=0,
             metadata={"Software": "Matplotlib, https://matplotlib.org/"})
 
