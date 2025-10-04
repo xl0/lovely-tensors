@@ -1,0 +1,248 @@
+[
+  {
+    "objectID": "03b_utils.misc.html",
+    "href": "03b_utils.misc.html",
+    "title": "🧂 Misc utils",
+    "section": "",
+    "text": "source\n\nto_numpy\n\n to_numpy (t:torch.Tensor)\n\n\nbf16 = torch.ones((3,10,10), dtype=torch.bfloat16)\nbf16\n\ntensor[3, 10, 10] bf16 n=300 x∈[1.000, 1.000] μ=1.000 σ=0.\n\n\n\nbf16.plt\n\n\n\n\n\n\n\n\n\nbf16.rgb\n\n\n\n\n\n\n\n\n\nbf16.chans"
+  },
+  {
+    "objectID": "patch.html",
+    "href": "patch.html",
+    "title": "🙉 Monkey-patching",
+    "section": "",
+    "text": "source\n\nmonkey_patch\n\n monkey_patch (cls=&lt;class 'torch.Tensor'&gt;)\n\nMonkey-patch lovely features into cls\n\nmonkey_patch()\n\n\nimage = torch.load(\"mysteryman.pt\")\n\n/tmp/ipykernel_172230/672345934.py:1: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.\n  image = torch.load(\"mysteryman.pt\")\n\n\n\nspicy = image.flatten()[:12].clone()\n\nspicy[0] *= 10000\nspicy[1] /= 10000\nspicy[2] = float('inf')\nspicy[3] = float('-inf')\nspicy[4] = float('nan')\n\nspicy = spicy.reshape((2,6))\nspicy\n\n\ntensor[2, 6] n=12 x∈[-3.541e+03, -3.369e-05] μ=-393.776 σ=1.180e+03 +Inf! -Inf! NaN!\n\n\n\n\nspicy.v\n\n\ntensor[2, 6] n=12 x∈[-3.541e+03, -3.369e-05] μ=-393.776 σ=1.180e+03 +Inf! -Inf! NaN!\ntensor([[-3.5405e+03, -3.3693e-05,         inf,        -inf,         nan,\n         -4.0543e-01],\n        [-4.2255e-01, -4.9105e-01, -5.0818e-01, -5.5955e-01, -5.4243e-01,\n         -5.0818e-01]])\n\n\n\n\nspicy.p\n\ntensor([[-3.5405e+03, -3.3693e-05,         inf,        -inf,         nan,\n         -4.0543e-01],\n        [-4.2255e-01, -4.9105e-01, -5.0818e-01, -5.5955e-01, -5.4243e-01,\n         -5.0818e-01]])\n\n\n\nimage.deeper\n\ntensor[3, 196, 196] n=115248 (0.4Mb) x∈[-2.118, 2.640] μ=-0.388 σ=1.073\n  tensor[196, 196] n=38416 x∈[-2.118, 2.249] μ=-0.324 σ=1.036\n  tensor[196, 196] n=38416 x∈[-1.966, 2.429] μ=-0.274 σ=0.973\n  tensor[196, 196] n=38416 x∈[-1.804, 2.640] μ=-0.567 σ=1.178\n\n\n\nimage[:3,:3,:5].deeper(depth=2)\n\ntensor[3, 3, 5] n=45 x∈[-1.316, -0.197] μ=-0.593 σ=0.306\n  tensor[3, 5] n=15 x∈[-0.765, -0.337] μ=-0.492 σ=0.124\n    tensor[5] x∈[-0.440, -0.337] μ=-0.385 σ=0.041 [-0.354, -0.337, -0.405, -0.440, -0.388]\n    tensor[5] x∈[-0.662, -0.405] μ=-0.512 σ=0.108 [-0.405, -0.423, -0.491, -0.577, -0.662]\n    tensor[5] x∈[-0.765, -0.474] μ=-0.580 σ=0.125 [-0.474, -0.474, -0.542, -0.645, -0.765]\n  tensor[3, 5] n=15 x∈[-0.513, -0.197] μ=-0.321 σ=0.099\n    tensor[5] x∈[-0.303, -0.197] μ=-0.243 σ=0.055 [-0.197, -0.197, -0.303, -0.303, -0.215]\n    tensor[5] x∈[-0.408, -0.232] μ=-0.327 σ=0.084 [-0.250, -0.232, -0.338, -0.408, -0.408]\n    tensor[5] x∈[-0.513, -0.285] μ=-0.394 σ=0.102 [-0.303, -0.285, -0.390, -0.478, -0.513]\n  tensor[3, 5] n=15 x∈[-1.316, -0.672] μ=-0.964 σ=0.176\n    tensor[5] x∈[-0.985, -0.672] μ=-0.846 σ=0.123 [-0.672, -0.985, -0.881, -0.776, -0.916]\n    tensor[5] x∈[-1.212, -0.724] μ=-0.989 σ=0.179 [-0.724, -1.072, -0.968, -0.968, -1.212]\n    tensor[5] x∈[-1.316, -0.828] μ=-1.058 σ=0.179 [-0.828, -1.125, -1.020, -1.003, -1.316]\n\n\n\n# Paramster is printed in a slingle line with the class name.\ntorch.nn.Parameter(torch.zeros(10, 10))\n\n\nParameter[10, 10] n=100 all_zeros grad\n\n\n\n\nt = torch.empty(3, 3, device=\"meta\")\nt\n\n\ntensor[3, 3] n=9 meta meta\n\n\n\n\nimage.rgb\n\n\n\n\n\n\n\n\n\nin_stats = ( (0.485, 0.456, 0.406),     # mean\n             (0.229, 0.224, 0.225) )    # std\nimage.rgb(in_stats)\n\n\n\n\n\n\n\n\n\nmean = torch.tensor(in_stats[0])[:,None,None]\nstd = torch.tensor(in_stats[1])[:,None,None]\n\n(image*std + mean).chans # all pixels in [0, 1] range\n\n\n\n\n\n\n\n\n\n(image*0.3+0.5) # Slightly outside of [0, 1] range\n\ntensor[3, 196, 196] n=115248 x∈[-0.135, 1.292] μ=0.384 σ=0.322\n\n\n\n(image*0.3+0.5).chans # shows clipping (bright blue/red)\n\n\n\n\n\n\n\n\n\nimage.plt\n\n\n\n\n\n\n\n\n\nimage.plt(center=\"mean\")\n\n\n\n\n\n\n\n\n\nfig, ax = plt.subplots(figsize=(6, 2))\nplt.close(fig)\nimage.plt(ax=ax)\nfig",
+    "crumbs": [
+      "✨ Misc",
+      "🙉 Monkey-patching"
+    ]
+  },
+  {
+    "objectID": "repr_str.html",
+    "href": "repr_str.html",
+    "title": "🧾 View as a summary",
+    "section": "",
+    "text": "spicy = randoms[:12].clone()\n\nspicy[0] *= 10000\nspicy[1] /= 10000\nspicy[3] = float('inf')\nspicy[4] = float('-inf')\nspicy[5] = float('nan')\nspicy = spicy.reshape((2,6))\n\n\nsource\n\nlovely\n\n lovely (t:torch.Tensor, verbose=False, plain=False, depth=0, color=None)\n\n\n\n\n\nType\nDefault\nDetails\n\n\n\n\nt\nTensor\n\nTensor of interest\n\n\nverbose\nbool\nFalse\nWhether to show the full tensor\n\n\nplain\nbool\nFalse\nJust print if exactly as before\n\n\ndepth\nint\n0\nShow stats in depth\n\n\ncolor\nNoneType\nNone\nForce color (True/False) or auto.\n\n\n\n\n\nExamples\n\nprint(lovely(randoms[0]))\nprint(lovely(randoms[:2]))\nprint(lovely(randoms[:6].view(2, 3))) # More than 2 elements -&gt; show statistics\nprint(lovely(randoms[:11]))           # More than 10 -&gt; suppress data output\n\ntensor 1.927\ntensor[2] μ=1.707 σ=0.311 [1.927, 1.487]\ntensor[2, 3] n=6 x∈[-2.106, 1.927] μ=0.276 σ=1.594 [[1.927, 1.487, 0.901], [-2.106, 0.678, -1.235]]\ntensor[11] x∈[-2.106, 1.927] μ=0.046 σ=1.384\n\n\n\ngrad = torch.tensor(1., requires_grad=True, dtype=torch.float64)\nprint(lovely(grad)); print(lovely(grad+1))\n\ntensor f64 grad 1.000\ntensor f64 grad AddBackward0 2.000\n\n\n\nif torch.cuda.is_available():\n    print(lovely(torch.tensor(1., device=torch.device(\"cuda:0\"))))\n    test_eq(str(lovely(torch.tensor(1., device=torch.device(\"cuda:0\")))), \"tensor cuda:0 1.000\")\n\ntensor cuda:0 1.000\n\n\nDo we have any floating point nasties? Is the tensor all zeros?\n\n# Statistics and range are calculated on good values only, if there are at lest 3 of them.\nlovely(spicy)\n\n\ntensor[2, 6] n=12 x∈[-1.605, 1.927e+04] μ=2.141e+03 σ=6.423e+03 +Inf! -Inf! NaN!\n\n\n\n\nlovely(spicy, color=False)\n\ntensor[2, 6] n=12 x∈[-1.605, 1.927e+04] μ=2.141e+03 σ=6.423e+03 +Inf! -Inf! NaN!\n\n\n\nlovely(torch.tensor([float(\"nan\")]*11))\n\n\ntensor[11] NaN!\n\n\n\n\nlovely(torch.zeros(12))\n\n\ntensor[12] all_zeros\n\n\n\n\nlovely(torch.randn([0,0,0], dtype=torch.float16))\n\n\ntensor[0, 0, 0] f16 empty\n\n\n\n\nlovely(torch.tensor([1,2,3], dtype=torch.int32))\n\ntensor[3] i32 x∈[1, 3] μ=2.000 σ=1.000 [1, 2, 3]\n\n\n\ntorch.set_printoptions(linewidth=120)\nlovely(spicy, verbose=True)\n\n\ntensor[2, 6] n=12 x∈[-1.605, 1.927e+04] μ=2.141e+03 σ=6.423e+03 +Inf! -Inf! NaN!\ntensor([[ 1.9269e+04,  1.4873e-04,  9.0072e-01,         inf,        -inf,         nan],\n        [-4.3067e-02, -1.6047e+00, -7.5214e-01,  1.6487e+00, -3.9248e-01, -1.4036e+00]])\n\n\n\n\nlovely(spicy, plain=True)\n\ntensor([[ 1.9269e+04,  1.4873e-04,  9.0072e-01,         inf,        -inf,         nan],\n        [-4.3067e-02, -1.6047e+00, -7.5214e-01,  1.6487e+00, -3.9248e-01, -1.4036e+00]])\n\n\n\nimage = torch.load(\"mysteryman.pt\")\nimage[1,2,3] = float('nan')\n\nlovely(image, depth=2) # Limited by set_config(deeper_lines=N)\n\n\ntensor[3, 196, 196] n=115248 (0.4Mb) x∈[-2.118, 2.640] μ=-0.388 σ=1.073 NaN!\n  tensor[196, 196] n=38416 x∈[-2.118, 2.249] μ=-0.324 σ=1.036\n    tensor[196] x∈[-1.912, 2.249] μ=-0.673 σ=0.522\n    tensor[196] x∈[-1.861, 2.163] μ=-0.738 σ=0.418\n    tensor[196] x∈[-1.758, 2.198] μ=-0.806 σ=0.397\n    tensor[196] x∈[-1.656, 2.249] μ=-0.849 σ=0.369\n    tensor[196] x∈[-1.673, 2.198] μ=-0.857 σ=0.357\n    tensor[196] x∈[-1.656, 2.146] μ=-0.848 σ=0.372\n    tensor[196] x∈[-1.433, 2.215] μ=-0.784 σ=0.397\n    tensor[196] x∈[-1.279, 2.249] μ=-0.695 σ=0.486\n    tensor[196] x∈[-1.364, 2.249] μ=-0.637 σ=0.539\n    ...\n  tensor[196, 196] n=38416 x∈[-1.966, 2.429] μ=-0.274 σ=0.973 NaN!\n    tensor[196] x∈[-1.861, 2.411] μ=-0.529 σ=0.556\n    tensor[196] x∈[-1.826, 2.359] μ=-0.562 σ=0.473\n    tensor[196] x∈[-1.756, 2.376] μ=-0.622 σ=0.459 NaN!\n    tensor[196] x∈[-1.633, 2.429] μ=-0.664 σ=0.430\n    tensor[196] x∈[-1.651, 2.376] μ=-0.669 σ=0.399\n    tensor[196] x∈[-1.633, 2.376] μ=-0.701 σ=0.391\n    tensor[196] x∈[-1.563, 2.429] μ=-0.670 σ=0.380\n    tensor[196] x∈[-1.475, 2.429] μ=-0.616 σ=0.386\n    tensor[196] x∈[-1.511, 2.429] μ=-0.593 σ=0.399\n    ...\n  tensor[196, 196] n=38416 x∈[-1.804, 2.640] μ=-0.567 σ=1.178\n    tensor[196] x∈[-1.717, 2.396] μ=-0.982 σ=0.350\n    tensor[196] x∈[-1.752, 2.326] μ=-1.034 σ=0.314\n    tensor[196] x∈[-1.648, 2.379] μ=-1.086 σ=0.314\n    tensor[196] x∈[-1.630, 2.466] μ=-1.121 σ=0.305\n    tensor[196] x∈[-1.717, 2.448] μ=-1.120 σ=0.302\n    tensor[196] x∈[-1.717, 2.431] μ=-1.166 σ=0.314\n    tensor[196] x∈[-1.560, 2.448] μ=-1.124 σ=0.326\n    tensor[196] x∈[-1.421, 2.431] μ=-1.064 σ=0.383\n    tensor[196] x∈[-1.526, 2.396] μ=-1.047 σ=0.417\n    ...\n\n\n\n\nt = torch.zeros(2, 3, 4, names=('N', 'C', None))\ntest_eq(str(lovely(t)), \"tensor[N=2, C=3, 4] n=24 \\x1b[38;2;127;127;127mall_zeros\\x1b[0m\")\n\nlovely(t)\n\n/tmp/ipykernel_377816/3561422158.py:1: UserWarning: Named tensors and all their associated APIs are an experimental feature and subject to change. Please do not use them for anything important until they are released as stable. (Triggered internally at /pytorch/c10/core/TensorImpl.h:1935.)\n  t = torch.zeros(2, 3, 4, names=('N', 'C', None))\n\n\n\ntensor[N=2, C=3, 4] n=24 all_zeros\n\n\n\n\nMeta device\n\nt = torch.empty(3,3, device=\"meta\")\nlovely(t)\n\n\ntensor[3, 3] n=9 meta meta\n\n\n\n\n\nCUDA memory is not leaked\n\ndef memstats():\n    allocated = int(torch.cuda.memory_allocated() // (1024*1024))\n    max_allocated = int(torch.cuda.max_memory_allocated() // (1024*1024))\n    return f\"Allocated: {allocated} MB, Max: {max_allocated} Mb\"\n\nif torch.cuda.is_available():\n    cudamem = torch.cuda.memory_allocated()\n    print(f\"before allocation: {memstats()}\")\n    numbers = torch.randn((3, 1024, 1024), device=\"cuda\") # 12Mb image\n    torch.cuda.synchronize()\n\n    print(f\"after allocation: {memstats()}\")\n    # Note, the return value of lovely() is not a string, but a\n    # StrProxy that holds reference to 'numbers'. You have to del\n    # the references to it, but once it's gone, the reference to\n    # the tensor is gone too.\n    display(lovely(numbers) )\n    print(f\"after repr: {memstats()}\")\n\n    del numbers\n    # torch.cuda.memory.empty_cache()\n\n    print(f\"after cleanup: {memstats()}\")\n    test_eq(cudamem &gt;= torch.cuda.memory_allocated(), True)\n\nbefore allocation: Allocated: 0 MB, Max: 0 Mb\nafter allocation: Allocated: 12 MB, Max: 12 Mb\n\n\ntensor[3, 1024, 1024] n=3145728 (12Mb) x∈[-5.013, 5.150] μ=-0.000 σ=0.999 cuda:0\n\n\nafter repr: Allocated: 12 MB, Max: 12 Mb\nafter cleanup: Allocated: 0 MB, Max: 12 Mb\n\n\n\n# We don't really supposed complex numbers yet\nc = torch.randn(5, dtype=torch.complex64)\nlovely(c)\n\ntensor([-0.4011-0.4035j,  1.1300+0.0788j, -0.0277+0.9978j, -0.4636+0.6064j, -1.1505-0.9865j])",
+    "crumbs": [
+      "🔎 Tensor representations",
+      "🧾 View as a summary"
+    ]
+  },
+  {
+    "objectID": "history.html",
+    "href": "history.html",
+    "title": "📜 IPython’s history obsession",
+    "section": "",
+    "text": "Let’s have a look at what happens when a variable falls off the end of a cell.\n\ntorch.cuda.memory_allocated()\n\n0\n\n\n\nt = torch.tensor(10, device=\"cuda\")\nt\n\ntensor(10, device='cuda:0')\n\n\n\ntorch.cuda.memory_allocated()\n\n512\n\n\n\ndel t\ngc.collect()\ntorch.cuda.empty_cache()\ntorch.cuda.memory_allocated()\n\n512\n\n\nAbove, I allocated a tensor in CUDA memory and displayed it as the cell output, then deleted it.\nI did not use Lovely Tensors, just plain PyTorch.\nWhy is the CUDA memory not freed? Is there still a reference to the tensor somewhere?\n\nYes.\n\n\ndir()[:10] # Global variables\n\n['In',\n 'Out',\n '_',\n '_2',\n '_3',\n '_4',\n '_5',\n '_VSCode_matplotLib_FigureFormats',\n '__',\n '___']\n\n\nDo you see the _ variables?\nThey are created by IPython and every cell output you run is saved:\nhttps://ipython.readthedocs.io/en/stable/interactive/reference.html#output-caching-system\n\nprint(_3) # Here is my tensor from cell 3\n\ntensor(10, device='cuda:0')\n\n\nIf this is not the behavior you want, you can disable it by adding\n%config ZMQInteractiveShell.cache_size = 0\nat the begining of your notebook, but I think this only works in plain Jupyter and not Jupyter in vscode.\nAlternatively, find your pytorch config file (for me it’s ~/.ipython/profile_default/ipython_kernel_config.py)\nand set ZMQInteractiveShell.cache_size to 0.",
+    "crumbs": [
+      "✨ Misc",
+      "📜 IPython's history obsession"
+    ]
+  },
+  {
+    "objectID": "utils.config.html",
+    "href": "utils.config.html",
+    "title": "🤔 Config",
+    "section": "",
+    "text": "Type\nDefault\nDetails\n\n\n\n\nprecision\nint\n3\nDigits after .\n\n\nthreshold_max\nint\n3\n.abs() larger than 1e3 -&gt; Sci mode\n\n\nthreshold_min\nint\n-4\n.abs() smaller that 1e-4 -&gt; Sci mode\n\n\nsci_mode\nNoneType\nNone\nSci mode (2.3e4). None=auto\n\n\nshow_mem_above\nint\n1024\nShow memory footprint above this threshold\n\n\nindent\nint\n2\nIndent for .deeper()\n\n\ncolor\nbool\nTrue\nANSI colors in text\n\n\ndeeper_width\nint\n9\nFor .deeper, width per level\n\n\nplt_seed\nint\n42\nSampling seed for plot\n\n\nfig_close\nbool\nTrue\nClose matplotlib Figure\n\n\nfig_show\nbool\nFalse\nCall plt.show() for .plt, .chans and .rgb\n\n\n\n\n\n\nsource",
+    "crumbs": [
+      "✨ Misc",
+      "🤔 Config"
+    ]
+  },
+  {
+    "objectID": "utils.config.html#examples",
+    "href": "utils.config.html#examples",
+    "title": "🤔 Config",
+    "section": "Examples",
+    "text": "Examples\n\nimport torch\nfrom lovely_tensors import set_config, get_config, config, monkey_patch\n\n\nmonkey_patch()\n\n\nPrecision\n\nset_config(precision=5)\ntorch.tensor([1., 2, float(\"nan\")])\n\n\ntensor[3] μ=1.50000 σ=0.70711 NaN! [1.00000, 2.00000, nan]\n\n\n\n\n\nScientific mode\n\nset_config(sci_mode=True) # Force always on\ntorch.tensor([1., 2, float(\"nan\")])\n\n\ntensor[3] μ=1.50000e+00 σ=7.07107e-01 NaN! [1.00000e+00, 2.00000e+00, nan]\n\n\n\n\n\nColor on/off\n\nset_config(color=False) # Force always off\ntorch.tensor([1., 2, float(\"nan\")])\n\ntensor[3] μ=1.50000e+00 σ=7.07107e-01 NaN! [1.00000e+00, 2.00000e+00, nan]\n\n\n\ntest_eq(str(torch.tensor([1., 2, float(\"nan\")])),\n        'tensor[3] μ=1.50000e+00 σ=7.07107e-01 NaN! [1.00000e+00, 2.00000e+00, nan]')\n\n\n\nControl .deeper\n\nset_config(deeper_width=3) \nimage = torch.load(\"mysteryman.pt\")\nimage[1,100,100] = float('nan')\n\nimage.deeper(2)\n\ntensor[3, 196, 196] n=115248 (0.4Mb) x∈[-2.11790e+00, 2.64000e+00] μ=-3.88310e-01 σ=1.07319e+00 NaN!\n  tensor[196, 196] n=38416 x∈[-2.11790e+00, 2.24891e+00] μ=-3.24352e-01 σ=1.03588e+00\n    tensor[196] x∈[-1.91241e+00, 2.24891e+00] μ=-6.73483e-01 σ=5.21962e-01\n    tensor[196] x∈[-1.86103e+00, 2.16328e+00] μ=-7.38488e-01 σ=4.18080e-01\n    tensor[196] x∈[-1.75828e+00, 2.19753e+00] μ=-8.05501e-01 σ=3.96848e-01\n    ...\n  tensor[196, 196] n=38416 x∈[-1.96569e+00, 2.42857e+00] μ=-2.73903e-01 σ=9.72665e-01 NaN!\n    tensor[196] x∈[-1.86064e+00, 2.41106e+00] μ=-5.28772e-01 σ=5.55960e-01\n    tensor[196] x∈[-1.82563e+00, 2.35854e+00] μ=-5.61732e-01 σ=4.72772e-01\n    tensor[196] x∈[-1.75560e+00, 2.37605e+00] μ=-6.21756e-01 σ=4.58436e-01\n    ...\n  tensor[196, 196] n=38416 x∈[-1.80444e+00, 2.64000e+00] μ=-5.66673e-01 σ=1.17776e+00\n    tensor[196] x∈[-1.71730e+00, 2.39599e+00] μ=-9.81537e-01 σ=3.50000e-01\n    tensor[196] x∈[-1.75216e+00, 2.32627e+00] μ=-1.03418e+00 σ=3.13970e-01\n    tensor[196] x∈[-1.64758e+00, 2.37856e+00] μ=-1.08647e+00 σ=3.14213e-01\n    ...\n\n\n\ntest_eq(len(str(image.deeper(2))), 1062)\n\n\n\nIn-memory size of data\n\nprint(torch.ones((1024, 1024)))\nset_config(show_mem_above=torch.inf) # Don't show the memory footprint\nprint(torch.ones((1024, 1024)))\n\ntensor[1024, 1024] n=1048576 (4Mb) x∈[1.00000e+00, 1.00000e+00] μ=1.00000e+00 σ=0.\ntensor[1024, 1024] n=1048576 x∈[1.00000e+00, 1.00000e+00] μ=1.00000e+00 σ=0.\n\n\n\n\nReser to defaults\n\nset_config(precision=None, sci_mode=None, color=None, deeper_width=None, show_mem_above=None)\ntorch.tensor([1., 2, float(\"nan\")])\n\n\ntensor[3] μ=1.500 σ=0.707 NaN! [1.000, 2.000, nan]\n\n\n\n\ntest_eq(str(torch.tensor([1., 2, float(\"nan\")])),\n    'tensor[3] μ=1.500 σ=0.707 \\x1b[31mNaN!\\x1b[0m [1.000, 2.000, nan]')\n\n\n\nContext manager\n\ndisplay(torch.tensor([1., 2, torch.nan]))\nwith config(sci_mode=True, color=False):\n    display(torch.tensor([1., 2, torch.nan]))\ndisplay(torch.tensor([1., 2, torch.nan]))\n\n\ntensor[3] μ=1.500 σ=0.707 NaN! [1.000, 2.000, nan]\n\n\n\ntensor[3] μ=1.500e+00 σ=7.071e-01 NaN! [1.000e+00, 2.000e+00, nan]\n\n\n\ntensor[3] μ=1.500 σ=0.707 NaN! [1.000, 2.000, nan]\n\n\n\n\n\nMatplotlib and seed\n\n_ = a.plt() # The figure was closed, nothing is displayed\n\n\nset_config(fig_close=False)\n_ = a.plt() # figure was not closed. All figures that are not closed are displayed after the cell runs.\n\n\n\n\n\n\n\n\nFor performance reasons, .plt will randomly sample up tp max_s elements from the data (10k be default).\nYou can change the seed used for this sampling (42 by default):\n\nset_config(plt_seed=1)\na.plt(max_s=100)\n\n\n\n\n\n\n\n\n\nset_config(plt_seed=2)\na.plt(max_s=100)\n\n\n\n\n\n\n\n\nMore details in matplotlib",
+    "crumbs": [
+      "✨ Misc",
+      "🤔 Config"
+    ]
+  },
+  {
+    "objectID": "repr_rgb.html",
+    "href": "repr_rgb.html",
+    "title": "🖌️ View as RGB images",
+    "section": "",
+    "text": "source\n\nrgb\n\n rgb (x:torch.Tensor, denorm:Any=None, cl:Any=False, gutter_px:int=3,\n      frame_px:int=1, scale:int=1, view_width:int=966,\n      ax:Optional[matplotlib.axes._axes.Axes]=None)\n\n\n\n\n\n\n\n\n\n\n\nType\nDefault\nDetails\n\n\n\n\nx\nTensor\n\nTensor to display. [[…], C,H,W] or [[…], H,W,C]\n\n\ndenorm\nAny\nNone\nReverse per-channel normalizatoin\n\n\ncl\nAny\nFalse\nChannel-last\n\n\ngutter_px\nint\n3\nIf more than one tensor -&gt; tile with this gutter width\n\n\nframe_px\nint\n1\nIf more than one tensor -&gt; tile with this frame width\n\n\nscale\nint\n1\nScale up. Can’t scale down.\n\n\nview_width\nint\n966\ntarget width of the image\n\n\nax\nOptional\nNone\nUse this Axes\n\n\nReturns\nRGBProxy\n\n\n\n\n\n\nrgb(image)\n\n\n\n\n\n\n\n\n\nrgb(image, scale=2)\n\n\n\n\n\n\n\n\n\ntwo_images = torch.stack([image]*2)\ntwo_images\n\ntensor[2, 3, 196, 196] n=230496 (0.9Mb) x∈[-2.118, 2.640] μ=-0.388 σ=1.073\n\n\n\nin_stats = (    (0.485, 0.456, 0.406),  # Mean\n                (0.229, 0.224, 0.225) ) # std\nrgb(two_images, denorm=in_stats)\n\n\n\n\n\n\n\n\n\n# Make 8 images with progressively higher brightness and stack them 2x2x2.\neight_images = (torch.stack([image]*8) + torch.linspace(-2, 2, 8)[:,None,None,None])\neight_images = (eight_images\n                    .mul(torch.tensor(in_stats[1])[:,None,None])\n                    .add(torch.tensor(in_stats[0])[:,None,None])\n                    .clamp(0,1)\n                    .view(2,2,2,3,196,196)\n)\neight_images\n\ntensor[2, 2, 2, 3, 196, 196] n=921984 (3.5Mb) x∈[0., 1.000] μ=0.382 σ=0.319\n\n\n\nrgb(eight_images)\n\n\n\n\n\n\n\n\n\n# You can do channel-last too:\nrgb(image.permute(1, 2, 0), cl=True)",
+    "crumbs": [
+      "🔎 Tensor representations",
+      "🖌️ View as RGB images"
+    ]
+  },
+  {
+    "objectID": "repr_plt.html",
+    "href": "repr_plt.html",
+    "title": "📊 View as a histogram",
+    "section": "",
+    "text": "source\n\nplot\n\n plot (x:torch.Tensor, center:str='zero', max_s:int=10000, plt0:Any=True,\n       ax:Optional[matplotlib.axes._axes.Axes]=None)\n\n\n\n\n\nType\nDefault\nDetails\n\n\n\n\nx\nTensor\n\nTensor to explore\n\n\ncenter\nstr\nzero\nCenter plot on zero, mean, or range\n\n\nmax_s\nint\n10000\nDraw up to this many samples. =0 to draw all\n\n\nplt0\nAny\nTrue\nTake zero values into account\n\n\nax\nOptional\nNone\nOptionally provide a matplotlib axes.\n\n\nReturns\nPlotProxy\n\n\n\n\n\n\ntorch.manual_seed(42)\nt = torch.randn(100000)+3\nplot(t)\n\n\n\n\n\n\n\n\n\nplot(t, center=\"range\")\n\n\n\n\n\n\n\n\n\nplot(t, center=\"mean\")\n\n\n\n\n\n\n\n\n\nplot(torch.nn.functional.relu(t-3))\n\n\n\n\n\n\n\n\n\nplot(torch.nn.functional.relu(t-3), plt0=False)\n\n\n\n\n\n\n\n\n\nfig, ax, = plt.subplots(figsize=(6, 2))\nfig.tight_layout()\nplot(t, ax=ax);",
+    "crumbs": [
+      "🔎 Tensor representations",
+      "📊 View as a histogram"
+    ]
+  },
+  {
+    "objectID": "index.html#install",
+    "href": "index.html#install",
+    "title": "❤️ Lovely Tensors",
+    "section": "Install",
+    "text": "Install\npip install lovely-tensors\nor\nmamba install lovely-tensors\nor\nconda install -c conda-forge lovely-tensors",
+    "crumbs": [
+      "❤️ Lovely Tensors"
+    ]
+  },
+  {
+    "objectID": "index.html#how-to-use",
+    "href": "index.html#how-to-use",
+    "title": "❤️ Lovely Tensors",
+    "section": "How to use",
+    "text": "How to use\nHow often do you find yourself debugging PyTorch code? You dump a tensor to the cell output, and see this:\n\nnumbers\n\ntensor([[[-0.3541, -0.3369, -0.4054,  ..., -0.5596, -0.4739,  2.2489],\n         [-0.4054, -0.4226, -0.4911,  ..., -0.9192, -0.8507,  2.1633],\n         [-0.4739, -0.4739, -0.5424,  ..., -1.0390, -1.0390,  2.1975],\n         ...,\n         [-0.9020, -0.8335, -0.9363,  ..., -1.4672, -1.2959,  2.2318],\n         [-0.8507, -0.7822, -0.9363,  ..., -1.6042, -1.5014,  2.1804],\n         [-0.8335, -0.8164, -0.9705,  ..., -1.6555, -1.5528,  2.1119]],\n\n        [[-0.1975, -0.1975, -0.3025,  ..., -0.4776, -0.3725,  2.4111],\n         [-0.2500, -0.2325, -0.3375,  ..., -0.7052, -0.6702,  2.3585],\n         [-0.3025, -0.2850, -0.3901,  ..., -0.7402, -0.8102,  2.3761],\n         ...,\n         [-0.4251, -0.2325, -0.3725,  ..., -1.0903, -1.0203,  2.4286],\n         [-0.3901, -0.2325, -0.4251,  ..., -1.2304, -1.2304,  2.4111],\n         [-0.4076, -0.2850, -0.4776,  ..., -1.2829, -1.2829,  2.3410]],\n\n        [[-0.6715, -0.9853, -0.8807,  ..., -0.9678, -0.6890,  2.3960],\n         [-0.7238, -1.0724, -0.9678,  ..., -1.2467, -1.0201,  2.3263],\n         [-0.8284, -1.1247, -1.0201,  ..., -1.2641, -1.1596,  2.3786],\n         ...,\n         [-1.2293, -1.4733, -1.3861,  ..., -1.5081, -1.2641,  2.5180],\n         [-1.1944, -1.4559, -1.4210,  ..., -1.6476, -1.4733,  2.4308],\n         [-1.2293, -1.5256, -1.5081,  ..., -1.6824, -1.5256,  2.3611]]])\n\n\nWas it really useful for you, as a human, to see all these numbers?\nWhat is the shape? The size?\nWhat are the statistics?\nAre any of the values nan or inf?\nIs it an image of a man holding a tench?\n\nimport lovely_tensors as lt\n\n\nlt.monkey_patch()",
+    "crumbs": [
+      "❤️ Lovely Tensors"
+    ]
+  },
+  {
+    "objectID": "index.html#summary",
+    "href": "index.html#summary",
+    "title": "❤️ Lovely Tensors",
+    "section": "Summary",
+    "text": "Summary\n\nnumbers # torch.Tensor\n\ntensor[3, 196, 196] n=115248 (0.4Mb) x∈[-2.118, 2.640] μ=-0.388 σ=1.073\n\n\n\nnumbers.rgb\n\n\n\n\n\n\n\n\n\nnumbers.plt\n\n\n\n\n\n\n\n\nBetter, huh?\n\nnumbers[1,:6,1] # Still shows values if there are not too many.\n\ntensor[6] x∈[-0.443, -0.197] μ=-0.311 σ=0.091 [-0.197, -0.232, -0.285, -0.373, -0.443, -0.338]\n\n\n\nspicy = numbers[0,:12,0].clone()\n\nspicy[0] *= 10000\nspicy[1] /= 10000\nspicy[2] = float('inf')\nspicy[3] = float('-inf')\nspicy[4] = float('nan')\n\nspicy = spicy.reshape((2,6))\nspicy # Spicy stuff\n\n\ntensor[2, 6] n=12 x∈[-3.541e+03, -4.054e-05] μ=-393.842 σ=1.180e+03 +Inf! -Inf! NaN!\n\n\n\n\ntorch.zeros(10, 10) # A zero tensor - make it obvious\n\n\ntensor[10, 10] n=100 all_zeros\n\n\n\n\nspicy.v # Verbose\n\n\ntensor[2, 6] n=12 x∈[-3.541e+03, -4.054e-05] μ=-393.842 σ=1.180e+03 +Inf! -Inf! NaN!\ntensor([[-3.5405e+03, -4.0543e-05,         inf,        -inf,         nan, -6.1093e-01],\n        [-6.1093e-01, -5.9380e-01, -5.9380e-01, -5.4243e-01, -5.4243e-01, -5.4243e-01]])\n\n\n\n\nspicy.p # The plain old way\n\ntensor([[-3.5405e+03, -4.0543e-05,         inf,        -inf,         nan, -6.1093e-01],\n        [-6.1093e-01, -5.9380e-01, -5.9380e-01, -5.4243e-01, -5.4243e-01, -5.4243e-01]])",
+    "crumbs": [
+      "❤️ Lovely Tensors"
+    ]
+  },
+  {
+    "objectID": "index.html#named-dimensions",
+    "href": "index.html#named-dimensions",
+    "title": "❤️ Lovely Tensors",
+    "section": "Named dimensions",
+    "text": "Named dimensions\n\nnamed_numbers = numbers.rename(\"C\", \"H\",\"W\")\nnamed_numbers\n\n/home/xl0/mambaforge/envs/lovely-py31-torch25/lib/python3.10/site-packages/torch/_tensor.py:1420: UserWarning: Named tensors and all their associated APIs are an experimental feature and subject to change. Please do not use them for anything important until they are released as stable. (Triggered internally at ../c10/core/TensorImpl.h:1925.)\n  return super().rename(names)\n\n\ntensor[C=3, H=196, W=196] n=115248 (0.4Mb) x∈[-2.118, 2.640] μ=-0.388 σ=1.073",
+    "crumbs": [
+      "❤️ Lovely Tensors"
+    ]
+  },
+  {
+    "objectID": "index.html#going-.deeper",
+    "href": "index.html#going-.deeper",
+    "title": "❤️ Lovely Tensors",
+    "section": "Going .deeper",
+    "text": "Going .deeper\n\nnumbers.deeper\n\ntensor[3, 196, 196] n=115248 (0.4Mb) x∈[-2.118, 2.640] μ=-0.388 σ=1.073\n  tensor[196, 196] n=38416 x∈[-2.118, 2.249] μ=-0.324 σ=1.036\n  tensor[196, 196] n=38416 x∈[-1.966, 2.429] μ=-0.274 σ=0.973\n  tensor[196, 196] n=38416 x∈[-1.804, 2.640] μ=-0.567 σ=1.178\n\n\n\n# You can go deeper if you need to\n# And we can use `.deeper` with named dimensions.\n\nnamed_numbers.deeper(2)\n\ntensor[C=3, H=196, W=196] n=115248 (0.4Mb) x∈[-2.118, 2.640] μ=-0.388 σ=1.073\n  tensor[H=196, W=196] n=38416 x∈[-2.118, 2.249] μ=-0.324 σ=1.036\n    tensor[W=196] x∈[-1.912, 2.249] μ=-0.673 σ=0.522\n    tensor[W=196] x∈[-1.861, 2.163] μ=-0.738 σ=0.418\n    tensor[W=196] x∈[-1.758, 2.198] μ=-0.806 σ=0.397\n    tensor[W=196] x∈[-1.656, 2.249] μ=-0.849 σ=0.369\n    tensor[W=196] x∈[-1.673, 2.198] μ=-0.857 σ=0.357\n    tensor[W=196] x∈[-1.656, 2.146] μ=-0.848 σ=0.372\n    tensor[W=196] x∈[-1.433, 2.215] μ=-0.784 σ=0.397\n    tensor[W=196] x∈[-1.279, 2.249] μ=-0.695 σ=0.486\n    tensor[W=196] x∈[-1.364, 2.249] μ=-0.637 σ=0.539\n    ...\n  tensor[H=196, W=196] n=38416 x∈[-1.966, 2.429] μ=-0.274 σ=0.973\n    tensor[W=196] x∈[-1.861, 2.411] μ=-0.529 σ=0.556\n    tensor[W=196] x∈[-1.826, 2.359] μ=-0.562 σ=0.473\n    tensor[W=196] x∈[-1.756, 2.376] μ=-0.622 σ=0.458\n    tensor[W=196] x∈[-1.633, 2.429] μ=-0.664 σ=0.430\n    tensor[W=196] x∈[-1.651, 2.376] μ=-0.669 σ=0.399\n    tensor[W=196] x∈[-1.633, 2.376] μ=-0.701 σ=0.391\n    tensor[W=196] x∈[-1.563, 2.429] μ=-0.670 σ=0.380\n    tensor[W=196] x∈[-1.475, 2.429] μ=-0.616 σ=0.386\n    tensor[W=196] x∈[-1.511, 2.429] μ=-0.593 σ=0.399\n    ...\n  tensor[H=196, W=196] n=38416 x∈[-1.804, 2.640] μ=-0.567 σ=1.178\n    tensor[W=196] x∈[-1.717, 2.396] μ=-0.982 σ=0.350\n    tensor[W=196] x∈[-1.752, 2.326] μ=-1.034 σ=0.314\n    tensor[W=196] x∈[-1.648, 2.379] μ=-1.086 σ=0.314\n    tensor[W=196] x∈[-1.630, 2.466] μ=-1.121 σ=0.305\n    tensor[W=196] x∈[-1.717, 2.448] μ=-1.120 σ=0.302\n    tensor[W=196] x∈[-1.717, 2.431] μ=-1.166 σ=0.314\n    tensor[W=196] x∈[-1.560, 2.448] μ=-1.124 σ=0.326\n    tensor[W=196] x∈[-1.421, 2.431] μ=-1.064 σ=0.383\n    tensor[W=196] x∈[-1.526, 2.396] μ=-1.047 σ=0.417\n    ...",
+    "crumbs": [
+      "❤️ Lovely Tensors"
+    ]
+  },
+  {
+    "objectID": "index.html#now-in-.rgb-color",
+    "href": "index.html#now-in-.rgb-color",
+    "title": "❤️ Lovely Tensors",
+    "section": "Now in .rgb color",
+    "text": "Now in .rgb color\nThe important queston - is it our man?\n\nnumbers.rgb\n\n\n\n\n\n\n\n\nMaaaaybe? Looks like someone normalized him.\n\nin_stats = ( (0.485, 0.456, 0.406),     # mean\n             (0.229, 0.224, 0.225) )    # std\n\n# numbers.rgb(in_stats, cl=True) # For channel-last input format\nnumbers.rgb(in_stats)\n\n\n\n\n\n\n\n\nIt’s indeed our hero, the Tenchman!",
+    "crumbs": [
+      "❤️ Lovely Tensors"
+    ]
+  },
+  {
+    "objectID": "index.html#plt-the-statistics",
+    "href": "index.html#plt-the-statistics",
+    "title": "❤️ Lovely Tensors",
+    "section": ".plt the statistics",
+    "text": ".plt the statistics\n\n(numbers+3).plt(center=\"mean\", max_s=1000)\n\n\n\n\n\n\n\n\n\n(numbers).plt\n\n\n\n\n\n\n\n\n\n(numbers+3).plt(center=\"range\")",
+    "crumbs": [
+      "❤️ Lovely Tensors"
+    ]
+  },
+  {
+    "objectID": "index.html#see-the-.chans",
+    "href": "index.html#see-the-.chans",
+    "title": "❤️ Lovely Tensors",
+    "section": "See the .chans",
+    "text": "See the .chans\n\n# .chans will map values betwen [-1,1] to colors.\n# Make our values fit into that range to avoid clipping.\nmean = torch.tensor(in_stats[0])[:,None,None]\nstd = torch.tensor(in_stats[1])[:,None,None]\nnumbers_01 = (numbers*std + mean)\nnumbers_01\n\ntensor[3, 196, 196] n=115248 (0.4Mb) x∈[0., 1.000] μ=0.361 σ=0.248\n\n\n\nnumbers_01.chans\n\n\n\n\n\n\n\n\nLet’s try with a Convolutional Neural Network\n\nfrom torchvision.models import vgg11\n\n\nfeatures: torch.nn.Sequential = vgg11().features\n\n# I saved the first 5 layers in \"features.pt\"\n_ = features.load_state_dict(torch.load(\"../features.pt\", weights_only=True), strict=False)\n\n\n# Activatons of the second max pool layer of VGG11\nacts = (features[:6](numbers[None])[0]/2) # /2 to reduce clipping\nacts\n\ntensor[128, 49, 49] n=307328 (1.2Mb) x∈[0., 12.508] μ=0.367 σ=0.634 grad DivBackward0\n\n\n\nacts[:4].chans(cmap=\"coolwarm\", scale=4)",
+    "crumbs": [
+      "❤️ Lovely Tensors"
+    ]
+  },
+  {
+    "objectID": "index.html#grouping",
+    "href": "index.html#grouping",
+    "title": "❤️ Lovely Tensors",
+    "section": "Grouping",
+    "text": "Grouping\n\n# Make 8 images with progressively higher brightness and stack them 2x2x2.\neight_images = (torch.stack([numbers]*8)\n                    .add(torch.linspace(-3, 3, 8)[:,None,None,None])\n                    .mul(torch.tensor(in_stats[1])[:,None,None])\n                    .add(torch.tensor(in_stats[0])[:,None,None])\n                    .clamp(0,1)\n                    .view(2,2,2,3,196,196)\n)\neight_images\n\ntensor[2, 2, 2, 3, 196, 196] n=921984 (3.5Mb) x∈[0., 1.000] μ=0.411 σ=0.369\n\n\n\neight_images.rgb\n\n\n\n\n\n\n\n\n\n# Weights of the second conv layer of VGG11\nfeatures[3].weight\n\nParameter[128, 64, 3, 3] n=73728 (0.3Mb) x∈[-0.783, 0.776] μ=-0.004 σ=0.065 grad\n\n\nI want +/- 2σ to fall in the range [-1..1]\n\nweights = features[3].weight.data\nweights = weights / (2*2*weights.std()) # *2 because we want 2σ on both sides, so 4σ\n# weights += weights.std() * 2\nweights.plt\n\n\n\n\n\n\n\n\n\n# Weights of the second conv layer (64ch -&gt; 128ch) of VGG11,\n# grouped per output channel.\nweights.chans(frame_px=1, gutter_px=0)\n\n\n\n\n\n\n\n\nIt’s a bit hard to see. Scale up 10x, but onyl show the first 4 filters.\n\nweights[:4].chans(frame_px=1, gutter_px=0, scale=10)",
+    "crumbs": [
+      "❤️ Lovely Tensors"
+    ]
+  },
+  {
+    "objectID": "index.html#options-docs",
+    "href": "index.html#options-docs",
+    "title": "❤️ Lovely Tensors",
+    "section": "Options | Docs",
+    "text": "Options | Docs\n\nfrom lovely_tensors import set_config, config, lovely, get_config\n\n\nset_config(precision=1, sci_mode=True, color=False)\ntorch.tensor([1, 2, torch.nan])\n\ntensor[3] μ=1.5e+00 σ=7.1e-01 NaN! [1.0e+00, 2.0e+00, nan]\n\n\n\nset_config(precision=None, sci_mode=None, color=None) # None -&gt; Reset to defaults\n\n\nprint(torch.tensor([1., 2]))\n# Or with config context manager.\nwith config(sci_mode=True, precision=5):\n    print(torch.tensor([1., 2]))\n\nprint(torch.tensor([1., 2]))\n\ntensor[2] μ=1.500 σ=0.707 [1.000, 2.000]\ntensor[2] μ=1.50000e+00 σ=7.07107e-01 [1.00000e+00, 2.00000e+00]\ntensor[2] μ=1.500 σ=0.707 [1.000, 2.000]",
+    "crumbs": [
+      "❤️ Lovely Tensors"
+    ]
+  },
+  {
+    "objectID": "index.html#without-.monkey_patch",
+    "href": "index.html#without-.monkey_patch",
+    "title": "❤️ Lovely Tensors",
+    "section": "Without .monkey_patch",
+    "text": "Without .monkey_patch\n\nlt.lovely(spicy)\n\n\ntensor[2, 6] n=12 x∈[-3.541e+03, -4.054e-05] μ=-393.842 σ=1.180e+03 +Inf! -Inf! NaN!\n\n\n\n\nlt.lovely(spicy, verbose=True)\n\n\ntensor[2, 6] n=12 x∈[-3.541e+03, -4.054e-05] μ=-393.842 σ=1.180e+03 +Inf! -Inf! NaN!\ntensor([[-3.5405e+03, -4.0543e-05,         inf,        -inf,         nan, -6.1093e-01],\n        [-6.1093e-01, -5.9380e-01, -5.9380e-01, -5.4243e-01, -5.4243e-01, -5.4243e-01]])\n\n\n\n\nlt.lovely(numbers, depth=1)\n\ntensor[3, 196, 196] n=115248 (0.4Mb) x∈[-2.118, 2.640] μ=-0.388 σ=1.073\n  tensor[196, 196] n=38416 x∈[-2.118, 2.249] μ=-0.324 σ=1.036\n  tensor[196, 196] n=38416 x∈[-1.966, 2.429] μ=-0.274 σ=0.973\n  tensor[196, 196] n=38416 x∈[-1.804, 2.640] μ=-0.567 σ=1.178\n\n\n\nlt.rgb(numbers, in_stats)\n\n\n\n\n\n\n\n\n\nlt.plot(numbers, center=\"mean\")\n\n\n\n\n\n\n\n\n\nlt.chans(numbers_01)",
+    "crumbs": [
+      "❤️ Lovely Tensors"
+    ]
+  },
+  {
+    "objectID": "index.html#matplotlib-integration-docs",
+    "href": "index.html#matplotlib-integration-docs",
+    "title": "❤️ Lovely Tensors",
+    "section": "Matplotlib integration | Docs",
+    "text": "Matplotlib integration | Docs\n\nnumbers.rgb(in_stats).fig # matplotlib figure\n\n\n\n\n\n\n\n\n\n(numbers*0.3+0.5).chans.fig # matplotlib figure\n\n\n\n\n\n\n\n\n\nnumbers.plt.fig.savefig('pretty.svg') # Save it\n\n\n!file pretty.svg; rm pretty.svg\n\npretty.svg: SVG Scalable Vector Graphics image\n\n\n\nAdd content to existing Axes\n\nfig = plt.figure(figsize=(8,3))\nfig.set_constrained_layout(True)\ngs = fig.add_gridspec(2,2)\nax1 = fig.add_subplot(gs[0, :])\nax2 = fig.add_subplot(gs[1, 0])\nax3 = fig.add_subplot(gs[1,1:])\n\nax2.set_axis_off()\nax3.set_axis_off()\n\nnumbers_01.plt(ax=ax1)\nnumbers_01.rgb(ax=ax2)\nnumbers_01.chans(ax=ax3);",
+    "crumbs": [
+      "❤️ Lovely Tensors"
+    ]
+  },
+  {
+    "objectID": "index.html#torch.compile",
+    "href": "index.html#torch.compile",
+    "title": "❤️ Lovely Tensors",
+    "section": "torch.compile()",
+    "text": "torch.compile()\nJust works.\n\ndef func(x):\n    return x*2\n\nif torch.__version__ &gt;= \"2.0\":\n    func = torch.compile(func)\n\nfunc(torch.tensor([1,2,3]))\n\ntensor[3] i64 x∈[2, 6] μ=4.000 σ=2.000 [2, 4, 6]",
+    "crumbs": [
+      "❤️ Lovely Tensors"
+    ]
+  },
+  {
+    "objectID": "index.html#import-hook",
+    "href": "index.html#import-hook",
+    "title": "❤️ Lovely Tensors",
+    "section": "Import hook",
+    "text": "Import hook\nLovely tensors installes an import hook. Set LOVELY_TENSORS=1, and it will load automatically, no need to modify the code: &gt; Note: Don’t set it globally, or all python scripts you run will import LT and PyTorch, which will slow things down.\nimport torch\n\nx = torch.randn(4, 16)\nprint(x)\nLOVELY_TENSORS=1 python test.py\nx: tensor[4, 16] n=64 x∈[-1.652, 1.813] μ=-0.069 σ=0.844\nThis is especially useful in combination with Better Exceptions: &gt; Note: Better exceptions seems to be not working with Python 3.13: https://github.com/Qix-/better-exceptions/issues/134\nimport torch\n\nx = torch.randn(4, 16)\nprint(f\"x: {x}\")\n\nw = torch.randn(15, 8) \ny = torch.matmul(x, w) # Dimension mismatch\nBETTER_EXCEPTIONS=1  LOVELY_TENSORS=1 python test.py \nx: tensor[4, 16] n=64 x∈[-1.834, 2.421] μ=0.103 σ=0.896\nTraceback (most recent call last):\n  File \"/home/xl0/work/projects/lovely-tensors/test.py\", line 7, in &lt;module&gt;\n    y = torch.matmul(x, w)\n        │            │  └ tensor[15, 8] n=120 x∈[-2.355, 2.165] μ=0.142 σ=0.989\n        │            └ tensor[4, 16] n=64 x∈[-1.834, 2.421] μ=0.103 σ=0.896\n        └ &lt;module 'torch' from '/home/xl0/mambaforge/envs/torch25-py312/lib/python3.12/site-packages/torch/__init__.py'&gt;\nRuntimeError: mat1 and mat2 shapes cannot be multiplied (4x16 and 15x8)",
+    "crumbs": [
+      "❤️ Lovely Tensors"
+    ]
+  },
+  {
+    "objectID": "repr_chans.html",
+    "href": "repr_chans.html",
+    "title": "📺 View channels",
+    "section": "",
+    "text": "source\n\nchans\n\n chans (x:torch.Tensor, cmap:str='twilight', cm_below:str='blue',\n        cm_above:str='red', cm_ninf:str='cyan', cm_pinf:str='fuchsia',\n        cm_nan:str='yellow', view_width:int=966, gutter_px:int=3,\n        frame_px:int=1, scale:int=1, cl:Any=False,\n        ax:Optional[matplotlib.axes._axes.Axes]=None)\n\nMap tensor values to colors. RGB[A] color is added as channel-last\n\n\n\n\nType\nDefault\nDetails\n\n\n\n\nx\nTensor\n\nInput, shape=([…], H, W)\n\n\ncmap\nstr\ntwilight\nUse matplotlib colormap by this name\n\n\ncm_below\nstr\nblue\nColor for values below -1\n\n\ncm_above\nstr\nred\nColor for values above 1\n\n\ncm_ninf\nstr\ncyan\nColor for -inf values\n\n\ncm_pinf\nstr\nfuchsia\nColor for +inf values\n\n\ncm_nan\nstr\nyellow\nColor for NaN values\n\n\nview_width\nint\n966\nTry to produce an image at most this wide\n\n\ngutter_px\nint\n3\nDraw write gutters when tiling the images\n\n\nframe_px\nint\n1\nDraw black frame around each image\n\n\nscale\nint\n1\n\n\n\ncl\nAny\nFalse\n\n\n\nax\nOptional\nNone\n\n\n\nReturns\nChanProxy\n\n\n\n\n\n\nin_stats = ( (0.485, 0.456, 0.406), (0.229, 0.224, 0.225) )\n\nimage = torch.load(\"mysteryman.pt\")\nimage = (image * torch.tensor(in_stats[1])[:,None,None])\nimage += torch.tensor(in_stats[0])[:,None,None]\n\nimage.rgb\n\n\n\n\n\n\n\n\n\nchans(image)\n\n\n\n\n\n\n\n\n\n# In R\nimage[0,0:32,32:64] = -1.1 # Below min\nimage[0,0:32,96:128] = 1.1 # Above max\n# In G\nimage[1,0:32,64:96] = float(\"nan\")\n# In B\nimage[2,0:32,0:32] = float(\"-inf\")\nimage[2,0:32,128:128+32] = float(\"+inf\")\n\nchans(image, cmap=\"viridis\", cm_below=\"black\", cm_above=\"white\")\n\n\n\n\n\n\n\n\n\n# 4 images, stacked 2x2\nchans(torch.stack([image]*4).view(2,2,3,196,196))",
+    "crumbs": [
+      "🔎 Tensor representations",
+      "📺 View channels"
+    ]
+  },
+  {
+    "objectID": "matplotlib.html",
+    "href": "matplotlib.html",
+    "title": "🎭 Matplotlib integration",
+    "section": "",
+    "text": ".fig\n.rgb, .chans and .plt all have a .fig attribute that returns a matplotlib figure object.\n\na = numbers.rgb.fig # matplotlib figure\nprint(type(a))\na\n\n&lt;class 'matplotlib.figure.Figure'&gt;\n\n\n\n\n\n\n\n\n\n\nnumbers.chans.fig\n\n\n\n\n\n\n\n\n\nnumbers.plt.fig\n\n\n\n\n\n\n\n\n\nnumbers.plt(center=\"mean\").fig\n\n\n\n\n\n\n\n\n\n\nSaving the figure\nYou can save the figure by calling its savefig method:\n\nnumbers.rgb.fig.savefig(\"tench.jpg\")\n\n\n!file tench.jpg; rm tench.jpg\n\ntench.jpg: JPEG image data, JFIF standard 1.01, resolution (DPI), density 100x100, segment length 16, baseline, precision 8, 196x196, components 3\n\n\n\n\nUsing existing Axes\nAll functions allow an ax= argument that accepts an existing Axes object into which they will plot:\n\nfig = plt.figure(figsize=(8,3))\nfig.set_constrained_layout(True)\ngs = fig.add_gridspec(2,2)\nax1 = fig.add_subplot(gs[0, :])\nax2 = fig.add_subplot(gs[1, 0])\nax3 = fig.add_subplot(gs[1,1:])\n\nax2.set_axis_off()\nax3.set_axis_off()\n\nnumbers.plt(ax=ax1)\nnumbers.rgb(ax=ax2)\nnumbers.chans(ax=ax3);\n\n\n\n\n\n\n\n\n\n\nWithout Jupyter\nBy default, the Lovely functions will call plt.close(fig) on the figures they create.\nThis prevents displaying the figures twice when running in Jupyter.\nIf you are not using Jupyter, here are 2 configuration options you might want to set:\nfig_close=False\n#!/usr/bin/env python\nfrom lovely_tensors import config, set_config\n\n...\n\nset_config(fig_close=False)\nnumbers.chans()\n\n# or, using the context manager:\nwith config(fig_close=False):\n    numbers.chans()\n\nplt.show() # Will show all open figures\nfig_show=True\nIf set, lovely will call plt.show() after each figure creation.\nYou don’t need to set fig_close=False manually.\nset_config(fig_show=True)\n\nnumbers.chans() # Figure generated and shown\n\n# Note, you have to use the \"call\" syntax `( )`, as figure\n# generation is not triggerd by just accessing the attribute\n\nnumbers.chans  # No figure generated\n\nf = numbers.plt.fig # figure generated, shown, and returned.\nNote, plt.show() closes all figures.",
+    "crumbs": [
+      "✨ Misc",
+      "🎭 Matplotlib integration"
+    ]
+  }
+]
