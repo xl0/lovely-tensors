@@ -71,7 +71,7 @@ class RGBProxy():
 
 # %% ../nbs/01_repr_rgb.ipynb
 def rgb(x           :torch.Tensor,  # Tensor to display. [[...], C,H,W] or [[...], H,W,C]
-        denorm      :Any =None,     # Reverse per-channel normalizatoin
+        denorm      :Any =None,     # Reverse per-channel normalization
         cl          :Any =False,    # Channel-last
         gutter_px   :int =3,        # If more than one tensor -> tile with this gutter width
         frame_px    :int =1,        # If more than one tensor -> tile with this frame width
