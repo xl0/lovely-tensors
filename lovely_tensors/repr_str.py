@@ -149,7 +149,7 @@ def to_str(t: torch.Tensor,
                         sci_mode=conf.sci_mode):
 
                     # I don't think .grad can be not-floating point, but let's leave it here just in case.
-                    if is_nasty(t_no_names.grad) or not t.grad.is_floating_point():
+                    if is_nasty(t_no_names.grad) or not t_no_names.grad.is_floating_point():
                         common = np_to_str_common(to_numpy(t_no_names.grad), color=color, ddof=1)
                     else:
                         common = torch_to_str_common(t_no_names.grad, color=color)
