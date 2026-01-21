@@ -152,6 +152,43 @@ spicy.p # The plain old way
     tensor([[-3.5405e+03, -4.0543e-05,         inf,        -inf,         nan, -6.1093e-01],
             [-6.1093e-01, -5.9380e-01, -5.9380e-01, -5.4243e-01, -5.4243e-01, -5.4243e-01]])
 
+## Gradient
+
+``` python
+torch.manual_seed(1)
+
+
+# with config(color=False):
+grad = torch.randn((5, 5), requires_grad=True, dtype=torch.float64)
+grad_plus_one = grad+1
+
+print(f"Before .backward:\n{grad}\n")
+
+# We can't access .grad of non-leaf tensors, unless
+print(f"Before .backward, non-leaf node: {grad_plus_one}\n")
+
+grad_plus_one.prod().backward()
+
+grad.grad[0,0] = float("-inf")
+
+print(f"After .backward():\n{grad}\n")
+
+grad.grad.zero_()
+
+print(f"After .zero_() on .grad:\n{grad}")
+```
+
+    Before .backward:
+    tensor[5, 5] f64 n=25 x∈[-0.992, 2.575] μ=0.314 σ=0.907 grad=None
+
+    Before .backward, non-leaf node: tensor[5, 5] f64 n=25 x∈[0.008, 3.575] μ=1.314 σ=0.907 grad (non-leaf) AddBackward0
+
+    After .backward():
+    tensor[5, 5] f64 n=25 x∈[-0.992, 2.575] μ=0.314 σ=0.907 grad={ x∈[0.020, 9.100] μ=0.458 σ=1.842 -Inf! }
+
+    After .zero_() on .grad:
+    tensor[5, 5] f64 n=25 x∈[-0.992, 2.575] μ=0.314 σ=0.907 grad={ all_zeros }
+
 ## Named dimensions
 
 ``` python
@@ -225,7 +262,7 @@ The important queston - is it our man?
 numbers.rgb
 ```
 
-![](index_files/figure-commonmark/cell-16-output-1.png)
+![](index_files/figure-commonmark/cell-17-output-1.png)
 
 *Maaaaybe?* Looks like someone normalized him.
 
@@ -241,7 +278,7 @@ numbers.rgb(in_stats)
 # numbers.rgb(denorm="minmax") # Use the min/max elements in each channel to scale the input to [0..1]
 ```
 
-![](index_files/figure-commonmark/cell-17-output-1.png)
+![](index_files/figure-commonmark/cell-18-output-1.png)
 
 It’s indeed our hero, the Tenchman!
 
@@ -251,19 +288,19 @@ It’s indeed our hero, the Tenchman!
 (numbers+3).plt(center="mean", max_s=1000)
 ```
 
-![](index_files/figure-commonmark/cell-18-output-1.svg)
+![](index_files/figure-commonmark/cell-19-output-1.svg)
 
 ``` python
 (numbers).plt
 ```
 
-![](index_files/figure-commonmark/cell-19-output-1.svg)
+![](index_files/figure-commonmark/cell-20-output-1.svg)
 
 ``` python
 (numbers+3).plt(center="range")
 ```
 
-![](index_files/figure-commonmark/cell-20-output-1.svg)
+![](index_files/figure-commonmark/cell-21-output-1.svg)
 
 ## See the `.chans`
 
@@ -282,7 +319,7 @@ numbers_01
 numbers_01.chans
 ```
 
-![](index_files/figure-commonmark/cell-22-output-1.png)
+![](index_files/figure-commonmark/cell-23-output-1.png)
 
 Let’s try with a Convolutional Neural Network
 
@@ -309,7 +346,7 @@ acts
 acts[:4].chans(cmap="coolwarm", scale=4)
 ```
 
-![](index_files/figure-commonmark/cell-26-output-1.png)
+![](index_files/figure-commonmark/cell-27-output-1.png)
 
 ## Grouping
 
@@ -331,7 +368,7 @@ eight_images
 eight_images.rgb
 ```
 
-![](index_files/figure-commonmark/cell-28-output-1.png)
+![](index_files/figure-commonmark/cell-29-output-1.png)
 
 ``` python
 # Weights of the second conv layer of VGG11
@@ -349,7 +386,7 @@ weights = weights / (2*2*weights.std()) # *2 because we want 2σ on both sides, 
 weights.plt
 ```
 
-![](index_files/figure-commonmark/cell-30-output-1.svg)
+![](index_files/figure-commonmark/cell-31-output-1.svg)
 
 ``` python
 # Weights of the second conv layer (64ch -> 128ch) of VGG11,
@@ -357,7 +394,7 @@ weights.plt
 weights.chans(frame_px=1, gutter_px=0)
 ```
 
-![](index_files/figure-commonmark/cell-31-output-1.png)
+![](index_files/figure-commonmark/cell-32-output-1.png)
 
 It’s a bit hard to see. Scale up 10x, but onyl show the first 4 filters.
 
@@ -365,7 +402,7 @@ It’s a bit hard to see. Scale up 10x, but onyl show the first 4 filters.
 weights[:4].chans(frame_px=1, gutter_px=0, scale=10)
 ```
 
-![](index_files/figure-commonmark/cell-32-output-1.png)
+![](index_files/figure-commonmark/cell-33-output-1.png)
 
 ## Options \| [Docs](https://xl0.github.io/lovely-tensors/utils.config.html)
 
@@ -426,19 +463,19 @@ lt.lovely(numbers, depth=1)
 lt.rgb(numbers, in_stats)
 ```
 
-![](index_files/figure-commonmark/cell-40-output-1.png)
+![](index_files/figure-commonmark/cell-41-output-1.png)
 
 ``` python
 lt.plot(numbers, center="mean")
 ```
 
-![](index_files/figure-commonmark/cell-41-output-1.svg)
+![](index_files/figure-commonmark/cell-42-output-1.svg)
 
 ``` python
 lt.chans(numbers_01)
 ```
 
-![](index_files/figure-commonmark/cell-42-output-1.png)
+![](index_files/figure-commonmark/cell-43-output-1.png)
 
 ## Matplotlib integration \| [Docs](https://xl0.github.io/lovely-tensors/matplotlib.html)
 
@@ -446,13 +483,13 @@ lt.chans(numbers_01)
 numbers.rgb(in_stats).fig # matplotlib figure
 ```
 
-![](index_files/figure-commonmark/cell-43-output-1.png)
+![](index_files/figure-commonmark/cell-44-output-1.png)
 
 ``` python
 (numbers*0.3+0.5).chans.fig # matplotlib figure
 ```
 
-![](index_files/figure-commonmark/cell-44-output-1.png)
+![](index_files/figure-commonmark/cell-45-output-1.png)
 
 ``` python
 numbers.plt.fig.savefig('pretty.svg') # Save it
@@ -482,7 +519,7 @@ numbers_01.rgb(ax=ax2)
 numbers_01.chans(ax=ax3);
 ```
 
-![](index_files/figure-commonmark/cell-47-output-1.png)
+![](index_files/figure-commonmark/cell-48-output-1.png)
 
 ## torch.compile()
 
