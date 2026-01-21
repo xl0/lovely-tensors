@@ -52,7 +52,10 @@ def plain_str(x: torch.Tensor):
 
 # %% ../nbs/00_repr_str.ipynb #bac2db65
 def is_nasty(t: torch.Tensor):
-    """Return true of any `t` values are inf or nan"""
+    """Return true of any `t` values are inf or nan or a weird type"""
+
+    # fp8s are nasty
+    if t.is_floating_point() and  t.element_size() < 2: return True
 
     if t.numel() == 0: return False # amin/amax don't like zero-lenght tensors
     if (t.device.type == "meta"): return False

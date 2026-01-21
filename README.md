@@ -165,7 +165,7 @@ grad_plus_one = grad+1
 print(f"Before .backward:\n{grad}\n")
 
 # We can't access .grad of non-leaf tensors, unless
-print(f"Before .backward, non-leaf node: {grad_plus_one}\n")
+print(f"Before .backward, non-leaf node:\n{grad_plus_one}\n")
 
 grad_plus_one.prod().backward()
 
@@ -181,7 +181,8 @@ print(f"After .zero_() on .grad:\n{grad}")
     Before .backward:
     tensor[5, 5] f64 n=25 x∈[-0.992, 2.575] μ=0.314 σ=0.907 grad=None
 
-    Before .backward, non-leaf node: tensor[5, 5] f64 n=25 x∈[0.008, 3.575] μ=1.314 σ=0.907 grad (non-leaf) AddBackward0
+    Before .backward, non-leaf node:
+    tensor[5, 5] f64 n=25 x∈[0.008, 3.575] μ=1.314 σ=0.907 grad (non-leaf) AddBackward0
 
     After .backward():
     tensor[5, 5] f64 n=25 x∈[-0.992, 2.575] μ=0.314 σ=0.907 grad={ x∈[0.020, 9.100] μ=0.458 σ=1.842 -Inf! }

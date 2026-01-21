@@ -10,5 +10,7 @@ import torch
 # %% ../../nbs/03b_utils.misc.ipynb #9f6f5585
 def to_numpy(t: torch.Tensor) -> np.ndarray:
     t = t.detach().cpu()
-    if t.dtype is torch.bfloat16: t = t.to(torch.float32)
+    # .numpy() can't properly handle bf16 or float8 variants.
+    if t.dtype is torch.bfloat16 or (t.is_floating_point() and t.element_size() < 2):
+        t = t.to(torch.float32)
     return t.numpy()
