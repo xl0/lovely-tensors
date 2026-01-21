@@ -164,8 +164,6 @@ def to_str(t: torch.Tensor,
 
     # For complex tensors, just show the shape / size part for now.
     if not t.is_complex():
-        if color is None: color=conf.color
-        if in_debugger(): color=False
         # `lovely-numpy` is used to calculate stats when doing so on GPU would require
         # memory allocation (not float tensors, tensors with bad numbers), or if the
         # data is on CPU (because numpy is faster).
