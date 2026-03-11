@@ -13,6 +13,18 @@ from lovely_numpy import config as np_config
 # %% ../../nbs/03a_utils.config.ipynb #3a08f70b
 class Config(SimpleNamespace):
     "Config"
+    precision: int
+    threshold_max: int
+    threshold_min: int
+    sci_mode: Optional[bool]
+    show_mem_above: int
+    indent: int
+    color: bool
+    verbose: bool
+    deeper_width: int
+    plt_seed: int
+    fig_close: bool
+    fig_show: bool
     def __init__(self,
             precision     = 3,    # Digits after `.`
             threshold_max = 3,    # .abs() larger than 1e3 -> Sci mode
@@ -66,7 +78,7 @@ def set_config( precision       :Optional[Union[Default,int]]  =D,
                 setattr(_config, k, v)
 
 # %% ../../nbs/03a_utils.config.ipynb #db943758
-def get_config():
+def get_config() -> Config:
     "Get a copy of config variables"
     return copy(_config)
 

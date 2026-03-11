@@ -1,11 +1,38 @@
 [build-system]
-requires = ["setuptools>=64.0"]
+requires = ["setuptools>=64"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name="lovely-tensors"
-requires-python=">=3.7"
-dynamic = [ "keywords", "description", "version", "dependencies", "optional-dependencies", "readme", "license", "authors", "classifiers", "entry-points", "scripts", "urls"]
+name = "lovely-tensors"
+dynamic = ["version"]
+description = "❤️ Lovely Tensors"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [{name = "Alexey Zaytsev", email = "alexey.zaytsev@gmail.com"}]
+keywords = ['jupyter', 'pytorch', 'tensor', 'visualisation']
+classifiers = ["Natural Language :: English", "Intended Audience :: Developers", "Development Status :: 3 - Alpha", "Programming Language :: Python :: 3", "Programming Language :: Python :: 3 :: Only"]
+dependencies = ['torch', 'lovely-numpy>=0.2.20']
 
-[tool.uv]
-cache-keys = [{ file = "pyproject.toml" }, { file = "settings.ini" }, { file = "setup.py" }]
+[project.urls]
+Repository = "https://github.com/xl0/lovely-tensors"
+Documentation = "https://xl0.github.io/lovely-tensors"
+
+[project.entry-points.nbdev]
+lovely_tensors = "lovely_tensors._modidx:d"
+
+[project.optional-dependencies]
+dev = ['nbdev', 'twine', 'setuptools']
+
+[tool.setuptools.cmdclass]
+install_lib = "_setuptools_hooks.InstallLibWithHook"
+
+[tool.setuptools.dynamic]
+version = {attr = "lovely_tensors.__version__"}
+
+[tool.setuptools.packages.find]
+include = ["lovely_tensors", "lovely_tensors.*"]
+
+[tool.nbdev]
+branch = 'master'
+custom_sidebar = true
