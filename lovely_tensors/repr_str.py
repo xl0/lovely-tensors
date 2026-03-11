@@ -88,7 +88,7 @@ def torch_to_str_common(t: torch.Tensor,            # Input
                 if sample_vals.dtype not in (torch.float32, torch.float64):
                     sample_vals = sample_vals.to(torch.float32)
                 counts, _ = torch.histogram(sample_vals, bins=10, range=(amin.item(), amax.item()))
-                minmax = f"x∈[{pretty_str(amin)} |{unicode_miniplot(counts.numpy())}| {pretty_str(amax)}]" if t.numel() > 2 else None
+                minmax = f"x∈[{pretty_str(amin)} |{unicode_miniplot(counts.numpy())}| {pretty_str(amax)}]"
             else:
                 minmax = f"x∈[{pretty_str(amin)}, {pretty_str(amax)}]"
         else: minmax = None
