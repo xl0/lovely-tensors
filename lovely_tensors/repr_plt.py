@@ -47,7 +47,7 @@ class PlotProxy():
         return self
 
     @cached_property
-    def fig(self) -> figure.Figure|figure.SubFigure:
+    def fig(self) -> Union[figure.Figure, figure.SubFigure]:
         cfg = get_config()
 
         with np_config( fig_close=cfg.fig_close,

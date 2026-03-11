@@ -6,7 +6,6 @@ __all__ = ['lovely']
 # %% ../nbs/00_repr_str.ipynb #1b81072a
 import warnings
 
-from typing import Optional
 import torch
 
 from lovely_numpy import np_to_str_common, pretty_str, sparse_join, ansi_color, in_debugger, bytes_to_human

@@ -20,7 +20,7 @@ class Config(SimpleNamespace):
     show_mem_above: int
     indent: int
     color: bool
-    verbose: bool
+    verbose_grad: bool
     deeper_width: int
     plt_seed: int
     fig_close: bool
