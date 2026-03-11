@@ -32,7 +32,7 @@ def sample( x       :torch.Tensor,
             rng = torch.Generator(device=x.device)
             rng.manual_seed(get_config().plt_seed)
 
-            idx = torch.randint(0, max_s, (max_s,), generator=rng, device=x.device)
+            idx = torch.randint(0, x.numel(), (max_s,), generator=rng, device=x.device)
             x = x.view(-1)[idx]
 
     return (x, x_min, x_max)
