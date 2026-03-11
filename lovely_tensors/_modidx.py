@@ -73,5 +73,6 @@ d = { 'settings': { 'branch': 'master',
                                                                                          'lovely_tensors/utils/config.py'),
                                              'lovely_tensors.utils.config.set_config': ( 'utils.config.html#set_config',
                                                                                          'lovely_tensors/utils/config.py')},
-            'lovely_tensors.utils.misc': { 'lovely_tensors.utils.misc.to_numpy': ( 'utils.misc.html#to_numpy',
+            'lovely_tensors.utils.misc': { 'lovely_tensors.utils.misc.sample': ('utils.misc.html#sample', 'lovely_tensors/utils/misc.py'),
+                                           'lovely_tensors.utils.misc.to_numpy': ( 'utils.misc.html#to_numpy',
                                                                                    'lovely_tensors/utils/misc.py')}}}

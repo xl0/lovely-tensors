@@ -29,6 +29,7 @@ from .utils.config import get_config
 
 class RGBProxy():
     """Flexible `PIL.Image.Image` wrapper"""
+    params: dict
 
     def __init__(self, t:torch.Tensor):
         assert t.ndim >= 3, f"Expecting at least 3 dimensions, got shape{t.shape}={t.dim()}"

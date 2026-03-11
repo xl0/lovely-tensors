@@ -6,6 +6,36 @@ __all__ = ['to_numpy']
 # %% ../../nbs/03b_utils.misc.ipynb #89be7f95
 import numpy as np
 import torch
+from . import get_config 
+
+# %% ../../nbs/03b_utils.misc.ipynb #c8afc5a4
+def sample( x       :torch.Tensor,
+            max_s   :int,
+            plt0    :bool):
+
+    # Samples up to max_s elements and returns
+    #   - samples from x
+    #   - original x min (None = no good numbes in x)
+    #   - original x max (None = no good numbes in x)
+
+    # Ignore NaN and Inf.
+    x = x[ x.isfinite() ]
+    x_min = x_max = None
+
+    if x.numel():
+        x_min, x_max = x.amin(), x.amax()
+
+        # An option to ignore zeros
+        if not plt0: x = x[x != 0.]
+
+        if x.numel() > max_s and max_s > 0:
+            rng = torch.Generator(device=x.device)
+            rng.manual_seed(get_config().plt_seed)
+
+            idx = torch.randint(0, max_s, (max_s,), generator=rng, device=x.device)
+            x = x.view(-1)[idx]
+
+    return (x, x_min, x_max)
 
 # %% ../../nbs/03b_utils.misc.ipynb #9f6f5585
 def to_numpy(t: torch.Tensor) -> np.ndarray:
