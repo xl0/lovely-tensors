@@ -4,4 +4,5 @@ include CONTRIBUTING.md
 include README.md
 include _lovely_tensors_hook.pth
 include _lovely_tensors_hook.py
+include _setuptools_hooks.py
 recursive-exclude * __pycache__
