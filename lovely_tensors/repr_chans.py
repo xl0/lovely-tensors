@@ -9,7 +9,7 @@ from typing import Any, Optional as O
 import torch
 from matplotlib import pyplot as plt, axes, figure
 
-from lovely_numpy.utils.utils import cached_property
+from functools import cached_property
 from lovely_numpy.repr_chans import fig_chans
 from lovely_numpy import config as np_config
 

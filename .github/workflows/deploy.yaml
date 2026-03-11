@@ -7,4 +7,4 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: fastai/workflows/quarto-ghp@master
+      - uses: fastai/workflows/quarto-ghp3@master

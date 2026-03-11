@@ -6,7 +6,7 @@ __all__ = ['lovely']
 # %% ../nbs/00_repr_str.ipynb #1b81072a
 import warnings
 
-
+from typing import Optional
 import torch
 
 from lovely_numpy import np_to_str_common, pretty_str, sparse_join, ansi_color, in_debugger, bytes_to_human
@@ -44,11 +44,11 @@ def short_dtype(x):
 # %% ../nbs/00_repr_str.ipynb #2f947947
 def plain_repr(x: torch.Tensor):
     "Pick the right function to get a plain repr"
-    return x._plain_repr() if hasattr(x, "_plain_repr") else repr(x)
+    return x._plain_repr() if hasattr(x, "_plain_repr") else repr(x) # type: ignore
 
 def plain_str(x: torch.Tensor):
     "Pick the right function to get a plain str."
-    return x._plain_str() if hasattr(x, "_plain_str") else str(x)
+    return x._plain_str() if hasattr(x, "_plain_str") else str(x) # type: ignore
 
 # %% ../nbs/00_repr_str.ipynb #bac2db65
 def is_nasty(t: torch.Tensor):
@@ -215,7 +215,7 @@ def to_str(t: torch.Tensor,
 def history_warning():
     "Issue a warning (once) ifw e are running in IPYthon with output cache enabled"
 
-    if "get_ipython" in globals() and get_ipython().cache_size > 0:
+    if "get_ipython" in globals() and get_ipython().cache_size > 0: # type: ignore
         warnings.warn("IPYthon has its output cache enabled. See https://xl0.github.io/lovely-tensors/history.html")
 
 # %% ../nbs/00_repr_str.ipynb #b0e20e23

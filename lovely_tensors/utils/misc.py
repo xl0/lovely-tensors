@@ -6,6 +6,7 @@ __all__ = ['to_numpy']
 # %% ../../nbs/03b_utils.misc.ipynb #89be7f95
 import numpy as np
 import torch
+from .config import get_config
 
 # %% ../../nbs/03b_utils.misc.ipynb #9f6f5585
 def to_numpy(t: torch.Tensor) -> np.ndarray:

@@ -10,7 +10,7 @@ from typing import Union, Any, Optional as O
 import torch
 from matplotlib import pyplot as plt, axes, figure, rc_context, rcParams
 
-from lovely_numpy.utils.utils import cached_property
+from functools import cached_property
 from lovely_numpy.repr_plt import fig_plot
 from lovely_numpy import config as np_config
 
@@ -24,6 +24,7 @@ from .utils.config import get_config, config
 
 class PlotProxy():
     """Flexible `PIL.Image.Image` wrapper"""
+    params: dict
 
     def __init__(self, x:torch.Tensor):
         self.x = x
@@ -46,7 +47,7 @@ class PlotProxy():
         return self
 
     @cached_property
-    def fig(self) -> figure.Figure:
+    def fig(self) -> figure.Figure|figure.SubFigure:
         cfg = get_config()
 
         with np_config( fig_close=cfg.fig_close,
