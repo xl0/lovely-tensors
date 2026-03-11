@@ -19,6 +19,7 @@ from .utils.config import get_config
 
 # %% ../nbs/05_repr_chans.ipynb #2b8a3888
 class ChanProxy():
+    params: dict 
     def __init__(self, t: torch.Tensor):
         self.t = t
         self.params = dict(cmap = "twilight",

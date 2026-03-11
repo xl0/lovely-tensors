@@ -25,6 +25,7 @@ class Config(SimpleNamespace):
     plt_seed: int
     fig_close: bool
     fig_show: bool
+    show_histogram: bool
     def __init__(self,
             precision     = 3,    # Digits after `.`
             threshold_max = 3,    # .abs() larger than 1e3 -> Sci mode
@@ -38,6 +39,7 @@ class Config(SimpleNamespace):
             plt_seed      = 42,   # Sampling seed for `plot`
             fig_close     = True, # Close matplotlib Figure
             fig_show      = False,# Call `plt.show()` for `.plt`, `.chans` and `.rgb`
+            show_histogram= True, # Show the histogram in lovely(): '▁▂▃▃▆█▆▃▁▁'
 
     ):
         super().__init__(**{k:v for k,v in locals().items() if k not in ["self", "__class__"]})
@@ -65,7 +67,8 @@ def set_config( precision       :Optional[Union[Default,int]]  =D,
                 verbose_grad    :Optional[Union[Default,bool]] =D,
                 plt_seed        :Optional[Union[Default,int]]  =D,
                 fig_close       :Optional[Union[Default,bool]] =D,
-                fig_show        :Optional[Union[Default,bool]] =D
+                fig_show        :Optional[Union[Default,bool]] =D,
+                show_histogram  :Optional[Union[Default,bool]]  =D,
                 ) -> None:
 
     "Set config variables"
@@ -95,7 +98,8 @@ def config( precision       :Optional[Union[Default,int]]   =D,
             verbose_grad    :Optional[Union[Default,bool]]  =D,
             plt_seed        :Optional[Union[Default,int]]   =D,
             fig_close       :Optional[Union[Default,bool]]  =D,
-            fig_show        :Optional[Union[Default,bool]]  =D
+            fig_show        :Optional[Union[Default,bool]]  =D,
+            show_histogram  :Optional[Union[Default,bool]]  =D,
             ):
 
 

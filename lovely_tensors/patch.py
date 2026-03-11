@@ -24,11 +24,11 @@ def monkey_patch(cls=torch.Tensor):
 
     if cls is torch.Tensor:
         # This avoids invoking the _torch_function_ mechanism
-        cls._plain_repr = torch._tensor_str._str
-        cls._plain_str = torch._tensor_str._str
+        cls._plain_repr = torch._tensor_str._str # type: ignore
+        cls._plain_str = torch._tensor_str._str # type: ignore
     else:
-        cls._plain_repr = cls.__repr__
-        cls._plain_str = cls.__str__
+        cls._plain_repr = cls.__repr__ # type: ignore
+        cls._plain_str = cls.__str__ # type: ignore
 
     @patch_to(cls)
     def __repr__(self: torch.Tensor, *, tensor_contents=None):

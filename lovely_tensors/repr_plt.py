@@ -52,7 +52,7 @@ class PlotProxy():
 
         with np_config( fig_close=cfg.fig_close,
                         fig_show=cfg.fig_show,
-                        plt_seed=cfg.plt_seed ), config(show_mem_above=torch.inf):
+                        plt_seed=cfg.plt_seed), config(show_mem_above=torch.inf, show_histogram=False):
             return fig_plot( to_numpy(self.x),
                             summary=to_str(self.x, color=False),
                             ddof=1,

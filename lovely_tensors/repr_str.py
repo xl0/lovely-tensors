@@ -10,9 +10,10 @@ import torch
 
 from lovely_numpy import np_to_str_common, pretty_str, sparse_join, ansi_color, in_debugger, bytes_to_human
 from lovely_numpy import config as lnp_config
+from lovely_numpy.utils import unicode_miniplot
 
 from .utils.config import get_config, config
-from .utils.misc import to_numpy
+from .utils.misc import to_numpy, sample
 
 # %% ../nbs/00_repr_str.ipynb #ece36bfa
 def type_to_dtype(t: str) -> torch.dtype:
@@ -66,8 +67,9 @@ def is_nasty(t: torch.Tensor):
     return (t_min.isnan() or t_min.isinf() or t_max.isinf()).item()
 
 # %% ../nbs/00_repr_str.ipynb #4487e6df
-def torch_to_str_common(t: torch.Tensor,  # Input
-                        color=True,       # ANSI color highlighting
+def torch_to_str_common(t: torch.Tensor,            # Input
+                        color=True,                 # ANSI color highlighting
+                        show_histogram: bool = False
                         ) -> str:
 
     if t.numel() == 0: return ansi_color("empty", "grey", color)
@@ -80,7 +82,15 @@ def torch_to_str_common(t: torch.Tensor,  # Input
 
     summary = None
     if not zeros:
-        minmax = f"x∈[{pretty_str(amin)}, {pretty_str(amax)}]" if t.numel() > 2 else None
+
+        if t.numel() > 2:
+            if show_histogram and amin != amax and t.numel() > 50:
+                counts, _ = torch.histogram(sample(t, 10000, True)[0], bins=10, range=(amin.item(), amax.item()))
+                minmax = f"x∈[{pretty_str(amin)} |{unicode_miniplot(counts.numpy())}| {pretty_str(amax)}]" if t.numel() > 2 else None
+            else:
+                minmax = f"x∈[{pretty_str(amin)}, {pretty_str(amax)}]"
+        else: minmax = None
+
         meanstd = f"μ={pretty_str(t.mean())} σ={pretty_str(t.std())}" if t.numel() >= 2 else None
         summary = sparse_join([minmax, meanstd])
 
@@ -105,13 +115,17 @@ def to_str(t: torch.Tensor,
             verbose: bool=False,
             depth=0,
             lvl=0,
-            color=None) -> str:
+            color=None,
+            show_histogram=None
+            ) -> str:
 
     if plain or is_fake(t):
         return plain_repr(t)
 
     conf = get_config()
 
+
+    if show_histogram is None: show_histogram=conf.show_histogram
     if color is None: color=conf.color
     if in_debugger(): color=False
 
@@ -152,9 +166,9 @@ def to_str(t: torch.Tensor,
 
                     # I don't think .grad can be not-floating point, but let's leave it here just in case.
                     if is_nasty(t_no_names.grad) or not t_no_names.grad.is_floating_point():
-                        common = np_to_str_common(to_numpy(t_no_names.grad), color=color, ddof=1)
+                        common = np_to_str_common(to_numpy(t_no_names.grad), color=color, ddof=1, show_histogram=show_histogram)
                     else:
-                        common = torch_to_str_common(t_no_names.grad, color=color)
+                        common = torch_to_str_common(t_no_names.grad, color=color, show_histogram=show_histogram)
                 grad += "=" + ansi_color("{ " + common, "blue", color) + ansi_color(" }", "blue", color)
             else:
                 grad += ansi_color("*", "blue", color)
@@ -173,9 +187,9 @@ def to_str(t: torch.Tensor,
                         threshold_max=conf.threshold_max,
                         sci_mode=conf.sci_mode):
             if is_nasty(t_no_names) or not t.is_floating_point():
-                common = np_to_str_common(to_numpy(t), color=color, ddof=1)
+                common = np_to_str_common(to_numpy(t), color=color, ddof=1, show_histogram=show_histogram)
             else:
-                common = torch_to_str_common(t_no_names, color=color)
+                common = torch_to_str_common(t_no_names, color=color, show_histogram=show_histogram)
 
             numel = None
             nbytes = t.numel() * t.element_size()
@@ -200,7 +214,7 @@ def to_str(t: torch.Tensor,
     if depth and t.dim() > 1:
         with config(show_mem_above=torch.inf):
             deep_width = min((t.shape[0]), conf.deeper_width) # Print at most this many lines
-            deep_lines = [ " "*conf.indent*(lvl+1) + to_str(t[i,:], depth=depth-1, lvl=lvl+1, color=color)
+            deep_lines = [ " "*conf.indent*(lvl+1) + to_str(t[i,:], depth=depth-1, lvl=lvl+1, color=color, show_histogram=show_histogram)
                                 for i in range(deep_width)]
 
             # If we were limited by width, print ...
@@ -219,18 +233,19 @@ def history_warning():
 
 # %% ../nbs/00_repr_str.ipynb #b0e20e23
 class StrProxy():
-    def __init__(self, t: torch.Tensor, plain=False, verbose=False, depth=0, lvl=0, color=None):
+    def __init__(self, t: torch.Tensor, plain=False, verbose=False, depth=0, lvl=0, color=None, show_histogram=None):
         self.t = t
         self.plain = plain
         self.verbose = verbose
         self.depth=depth
         self.lvl=lvl
         self.color=color
+        self.show_histogram = show_histogram
         history_warning()
 
     def __repr__(self):
         return to_str(self.t, plain=self.plain, verbose=self.verbose,
-                      depth=self.depth, lvl=self.lvl, color=self.color)
+                      depth=self.depth, lvl=self.lvl, color=self.color, show_histogram=self.show_histogram)
 
     # This is used for .deeper attribute and .deeper(depth=...).
     # The second onthe results in a __call__.
@@ -242,5 +257,7 @@ def lovely(t: torch.Tensor, # Tensor of interest
             verbose=False,  # Whether to show the full tensor
             plain=False,    # Just print if exactly as before
             depth=0,        # Show stats in depth
-            color=None):    # Force color (True/False) or auto.
-    return StrProxy(t, verbose=verbose, plain=plain, depth=depth, color=color)
+            color=None,     # Force color (True/False) or auto.
+            show_histogram=None,# Show the histogram: '▁▂▃▃▆█▆▃▁▁'
+): 
+    return StrProxy(t, verbose=verbose, plain=plain, depth=depth, color=color, show_histogram=show_histogram)
