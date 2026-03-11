@@ -4,13 +4,13 @@
 __all__ = ['rgb']
 
 # %% ../nbs/01_repr_rgb.ipynb #c89fec16
+from functools import cached_property
 from typing import Any, Optional as O
 
 from matplotlib import axes, figure
 from PIL import Image
 import torch
 
-from lovely_numpy.utils.utils import cached_property
 from lovely_numpy.utils.pad import pad_frame_gutters
 from lovely_numpy.utils.tile2d import hypertile
 from lovely_numpy.repr_rgb import fig_rgb

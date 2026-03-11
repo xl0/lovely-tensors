@@ -5,12 +5,12 @@ __all__ = ['plot']
 
 # %% ../nbs/02_repr_plt.ipynb #b4f092f2
 import math
+from functools import cached_property
 from typing import Union, Any, Optional as O
 
 import torch
 from matplotlib import pyplot as plt, axes, figure, rc_context, rcParams
 
-from lovely_numpy.utils.utils import cached_property
 from lovely_numpy.repr_plt import fig_plot
 from lovely_numpy import config as np_config
 
