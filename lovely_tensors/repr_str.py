@@ -200,7 +200,7 @@ def to_str(t: torch.Tensor,
                 if get_config().show_mem_above <= nbytes:
                     numel = sparse_join([numel, f"({bytes_to_human(nbytes)})"])
             elif get_config().show_mem_above <= nbytes:
-                numel = bytes_to_human(nbytes)
+                numel = f"({bytes_to_human(nbytes)})"
 
             vals = None
             if t.device.type != "meta":

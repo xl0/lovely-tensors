@@ -68,7 +68,7 @@ def set_config( precision       :Optional[Union[Default,int]]  =D,
                 plt_seed        :Optional[Union[Default,int]]  =D,
                 fig_close       :Optional[Union[Default,bool]] =D,
                 fig_show        :Optional[Union[Default,bool]] =D,
-                show_histogram  :Optional[Union[Default,bool]]  =D,
+                show_histogram  :Optional[Union[Default,bool]] =D,
                 ) -> None:
 
     "Set config variables"

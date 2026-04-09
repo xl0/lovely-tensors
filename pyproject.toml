@@ -12,7 +12,7 @@ license = {text = "MIT"}
 authors = [{name = "Alexey Zaytsev", email = "alexey.zaytsev@gmail.com"}]
 keywords = ['jupyter', 'pytorch', 'tensor', 'visualisation']
 classifiers = ["Natural Language :: English", "Intended Audience :: Developers", "Development Status :: 3 - Alpha", "Programming Language :: Python :: 3", "Programming Language :: Python :: 3 :: Only"]
-dependencies = ['torch', 'lovely-numpy>=0.2.20']
+dependencies = ['torch', 'lovely-numpy>=0.2.21']
 
 [project.urls]
 Repository = "https://github.com/xl0/lovely-tensors"
